@@ -1,6 +1,6 @@
 type any1 = any
 namespace JSX{
-    export interface IntrinsicAttributes{
+    export interface IntrinsicAttributes extends any1{
         key?: any;
     }
     export type SVGAttributes = any;
