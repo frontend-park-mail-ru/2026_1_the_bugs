@@ -24,22 +24,6 @@ type JSXElementType = JSXElement | JSXComponent<any> | string ;
 type ChildrenType =  JSXElementType | string | (JSXElementType | string)[] | undefined;
 type NormalizedChildrenType = (JSXElementType | string)[];
 
-const flatten=(arr: any): any[]=>{
-    if (!Array.isArray(arr)){
-        return [arr];
-    }
-    const res:  any[] = [];
-    arr.forEach(
-        (element)=>{
-            const delta = flatten(element)
-            delta.forEach(
-                (v)=>{
-                    res.push(v);
-                })
-    })
-    return res;
-
-}
 
 const normalizedChildren = (children: ChildrenType) :NormalizedChildrenType => {
     if (children === undefined){
@@ -48,7 +32,7 @@ const normalizedChildren = (children: ChildrenType) :NormalizedChildrenType => {
     if (!Array.isArray(children)){
         return [children]
     }
-    return flatten(children)
+    return children.flat()
 }
 
 function jsx<PropsType>(
