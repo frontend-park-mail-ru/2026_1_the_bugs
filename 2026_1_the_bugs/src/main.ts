@@ -1,4 +1,4 @@
-import { createApp } from './MyReact/jsx-runtime'
+import { createApp } from './MyReact/my-react'
 import { Test } from './tets'
 
 

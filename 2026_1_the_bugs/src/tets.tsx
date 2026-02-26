@@ -1,13 +1,22 @@
-function El(){
-    let t = "t"
-    return <div class={{t}}>Привет </div>
+function R(){
+    return <div> <div class="dfdf"> dff</div></div>
+}
+
+interface ButtonProps{
+    name: string;
+}
+
+function Button(props: ButtonProps){
+    let {name} = props;
+    return <div>
+        <button onClick={()=>{console.log(1212)}}> {name}</button>
+    </div>
 }
 
 export function Test(){
-    let t = "t"
-    return <div class="djfkdjfj">
-        <form class="dfd" style="color: blue"> dfkdjf</form>
-        <form> df kd jf </form>
-        <El props="dfdf" id={t} key="112"></El>
+
+    return <div>
+        <form style="color: blue"> Введите текст</form>
+        <Button name="df" key="1"></Button>
     </div>
 }
