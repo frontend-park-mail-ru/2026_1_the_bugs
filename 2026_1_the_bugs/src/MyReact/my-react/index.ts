@@ -10,6 +10,11 @@ import type {
     DOMTextNode
 }from '../types/dom'
 
+import {
+    _setActiveInstance,
+    _setActiveStateIndex
+} from '../hooks/index'
+
 const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
     repr.attrs.forEach((_, k)=>{
         if (!newAttrs.has(k)){
@@ -72,7 +77,7 @@ function deepEqual(val1: any, val2: any): boolean{
   return true;
 }
 
-const markDirty = (instance: ComponentInstance<any> ) =>{
+export const markDirty = (instance: ComponentInstance<any> ) =>{
     while (dirtyInstances.length <= instance.depth){
         dirtyInstances.push(new Set());
     }
@@ -86,26 +91,25 @@ const markDirty = (instance: ComponentInstance<any> ) =>{
 };
 
 const schedUpdate = () => {
+    isUpdateScheduled = true;
     for (let i=0; i<dirtyInstances.length; i++){
         dirtyInstances[i].forEach((instance)=>{
             instance.update();
             dirtyInstances[i].delete(instance);
         });
-        window.requestAnimationFrame(()=>{
-            schedUpdate();
-        });
-        return
     }
+    
     isUpdateScheduled = false;
 };
 
 
-class ComponentInstance<PropsType extends ComponentPropsType>{
+export class ComponentInstance<PropsType extends ComponentPropsType>{
     func: (props: PropsType)=>any;
     instanceMap: Map<KeyType, ComponentInstance<any>>;
     domElement: DOMElement | undefined;
     vTree: JSXElement | undefined;
     props: PropsType;
+    states: any[] = [];
     depth: number;
     parent: ComponentInstance<any> | undefined;
 
@@ -126,8 +130,11 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
     }
     updateVTree(){
         //const {props} = this.props
+        _setActiveInstance(this)
+        _setActiveStateIndex(0)
         this.vTree = this.func(this.props)
         console.log(this.vTree)
+        _setActiveInstance(undefined)
     }
     extractVirtualComponents(
         branch: JSXElement, 

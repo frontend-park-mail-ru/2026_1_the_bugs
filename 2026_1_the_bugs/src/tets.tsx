@@ -1,16 +1,13 @@
-function R(){
-    return <div> <div class="dfdf"> dff</div></div>
-}
+import { useState } from "./MyReact/hooks";
 
 interface ButtonProps{
     name: string;
 }
 
 function Button(props: ButtonProps){
-    let {name} = props;
+    const [clicks, setClicks] = useState(0);
     return <div>
-        <button on_click={()=>{console.log(1212)}}> {name}</button>
-        <button on_click={()=>{console.log(1212)}}> {name}</button>
+        <button on_click={()=>{setClicks(clicks+1)}}> {clicks.toString()}</button>
     </div>
 }
 
