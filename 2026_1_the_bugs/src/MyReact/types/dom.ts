@@ -3,6 +3,7 @@ export interface DOMElement{
     elem: Element;
     attrs: Map<string, any>;
     children: (DOMElement | DOMTextNode)[];
+    eventListeners: {type: string, callback: ()=>void}[];
 }
 
 export interface DOMTextNode{

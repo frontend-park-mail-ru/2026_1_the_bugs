@@ -9,12 +9,12 @@ interface ButtonProps{
 function Button(props: ButtonProps){
     let {name} = props;
     return <div>
-        <button onClick={()=>{console.log(1212)}}> {name}</button>
+        <button on_click={()=>{console.log(1212)}}> {name}</button>
+        <button on_click={()=>{console.log(1212)}}> {name}</button>
     </div>
 }
 
 export function Test(){
-
     return <div>
         <form style="color: blue"> Введите текст</form>
         <Button name="df" key="1"></Button>

@@ -25,9 +25,17 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
             }
         }
     )
+    repr.eventListeners.forEach((l)=>{
+        repr.elem.removeEventListener(l.type, l.callback)
+    })
+    repr.eventListeners = []
 
     newAttrs.forEach((v, k)=>{
-        if (!repr.attrs.has(k)){
+        if (k.startsWith("on_")){
+            const typeEvent = k.slice("on_".length)
+            repr.elem.addEventListener(typeEvent, v as ()=>void);
+            repr.eventListeners.push({type: typeEvent, callback: v})
+        }else if(!repr.attrs.has(k)){
             repr.elem.setAttribute(k, v)
         }
     })
@@ -180,6 +188,7 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
                 elem: document.createElement(this.vTree?.tagName),
                 attrs: this.vTree.attributes,
                 children: this.domElement?.children ?? [],
+                eventListeners: this.domElement?.eventListeners ?? [],
             };
             if (parentElem!=null && prevChild!==undefined){
                 parentElem?.replaceChild(this.domElement.elem, prevChild);
@@ -219,6 +228,7 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
                         attrs: new Map(),
                         elem: document.createElement(vNode.tagName),
                         children: [],
+                        eventListeners: [],
                     })
                 }else{
                     domRepr.push({
@@ -260,6 +270,7 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
                         attrs: new Map(),
                         elem: document.createElement(vNode.tagName),
                         children: [],
+                        eventListeners: []
                     }
                     domRepr.splice(domReprIndex, 1, newElemRepr);
                     elemRepr = newElemRepr
