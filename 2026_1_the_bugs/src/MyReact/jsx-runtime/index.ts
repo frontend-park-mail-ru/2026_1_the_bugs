@@ -38,65 +38,6 @@ type ChildrenType =
 type NormalizedChildrenType = (JSXElementType | string)[];
 
 
-const dirtyInstances: Set<ComponentInstance<any>> [] = [];
-let isUpdateScheduled = false;
-
-function deepEqual(val1: any, val2: any): boolean{
-  if (val1 === val2) return true;
-
-  if (val1 == null || val2 == null || typeof val1 !== 'object' || typeof val2 !== 'object') {
-    return val1 === val2;
-  }
-
-  if (Array.isArray(val1) && Array.isArray(val2)) {
-    if (val1.length !== val2.length) return false;
-    for (let i = 0; i < val1.length; i++) {
-      if (!deepEqual(val1[i], val2[i])) return false;
-    }
-    return true;
-  }
-
-  const keys1 = Object.keys(val1);
-  const keys2 = Object.keys(val2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  for (const key of keys1) {
-    if (!Object.prototype.hasOwnProperty.call(val2, key) || !deepEqual(val1[key], val2[key])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-const markDirty = (instance: ComponentInstance<any> ) =>{
-    while (dirtyInstances.length <= instance.depth){
-        dirtyInstances.push(new Set());
-    }
-    dirtyInstances[instance.depth].add(instance);
-    if (!isUpdateScheduled){
-        isUpdateScheduled = true;
-        window.requestAnimationFrame(()=>{
-            schedUpdate();
-        })
-    }
-
-};
-
-const schedUpdate = () => {
-    for (let i=0; i<dirtyInstances.length; i++){
-        dirtyInstances[i].forEach((instance)=>{
-            instance.update();
-            dirtyInstances[i].delete(instance);
-        });
-        window.requestAnimationFrame(()=>{
-            schedUpdate();
-        });
-        return
-    }
-    isUpdateScheduled = false;
-};
-
 const normalizedChildren = (children: ChildrenType) :NormalizedChildrenType => {
     if (children === undefined){
         return []
@@ -155,6 +96,88 @@ interface DOMTextNode{
     node: Node;
 }
 
+const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
+    repr.attrs.forEach((v, k)=>{
+        if (newAttrs.has(k)){
+            repr.attrs.delete(k);
+            repr.elem.removeAttribute(k);
+        }
+    })
+
+    repr.attrs.forEach(
+        (v, k)=>{
+            if (newAttrs.get(k) !== v){
+                repr.elem.setAttribute(k, newAttrs.get(k));
+            }
+        }
+    )
+
+    newAttrs.forEach((v, k)=>{
+        if (!repr.attrs.has(k)){
+            repr.elem.setAttribute(k, v)
+        }
+    })
+}
+
+const dirtyInstances: Set<ComponentInstance<any>> [] = [];
+let isUpdateScheduled = false;
+
+function deepEqual(val1: any, val2: any): boolean{
+  if (val1 === val2) return true;
+
+  if (val1 == null || val2 == null || typeof val1 !== 'object' || typeof val2 !== 'object') {
+    return val1 === val2;
+  }
+
+  if (Array.isArray(val1) && Array.isArray(val2)) {
+    if (val1.length !== val2.length) return false;
+    for (let i = 0; i < val1.length; i++) {
+      if (!deepEqual(val1[i], val2[i])) return false;
+    }
+    return true;
+  }
+
+  const keys1 = Object.keys(val1);
+  const keys2 = Object.keys(val2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (const key of keys1) {
+    if (!Object.prototype.hasOwnProperty.call(val2, key) || !deepEqual(val1[key], val2[key])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+const markDirty = (instance: ComponentInstance<any> ) =>{
+    while (dirtyInstances.length <= instance.depth){
+        dirtyInstances.push(new Set());
+    }
+    dirtyInstances[instance.depth].add(instance);
+    if (!isUpdateScheduled){
+        window.requestAnimationFrame(()=>{
+            schedUpdate();
+        })
+    }
+
+};
+
+const schedUpdate = () => {
+    for (let i=0; i<dirtyInstances.length; i++){
+        dirtyInstances[i].forEach((instance)=>{
+            instance.update();
+            dirtyInstances[i].delete(instance);
+        });
+        window.requestAnimationFrame(()=>{
+            schedUpdate();
+        });
+        return
+    }
+    isUpdateScheduled = false;
+};
+
+
 class ComponentInstance<PropsType extends ComponentPropsType>{
     func: (props: PropsType)=>any;
     instanceMap: Map<KeyType, ComponentInstance<any>>;
@@ -162,18 +185,16 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
     vTree: JSXElement | undefined;
     props: PropsType;
     depth: number;
-    parent: ComponentInstance<any>;
+    parent: ComponentInstance<any> | undefined;
 
-    constructor(func: (props: PropsType)=>any, props: PropsType, parent: ComponentInstance<any>){
+    constructor(func: (props: PropsType)=>any, props: PropsType, parent: ComponentInstance<any> | undefined){
         this.func = func;
         this.props = props;
         this.instanceMap = new Map();
         this.parent = parent;
-        this.depth = parent.depth + 1;
+        this.depth = (parent?.depth ?? 1) + 1;
 
-        this.updateVTree();
-        this.patchInstances();
-        this.patchDOMNodes();
+        this.update();
     }
 
     update(){
@@ -233,9 +254,121 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
 
     }
     patchDOMNodes(){
-        
+        if (this.vTree === undefined){
+            throw new Error()
+        }
+        const parentElem = this.domElement?.elem.parentElement;
+        if (this.domElement?.elem.tagName !== this.vTree.tagName){
+            const prevChild = this.domElement?.elem
+            this.domElement = {
+                type: "element",
+                elem: document.createElement(this.vTree?.tagName),
+                attrs: new Map(),
+                children: this.domElement?.children ?? [],
+            };
+            if (parentElem!=null && prevChild!==undefined){
+                parentElem?.replaceChild(this.domElement.elem, prevChild);
+                
+            }
+        }
+        this.patchDOMNodesImpl(this.vTree.children, this.domElement.children, this.domElement.elem)
     }
-    patchDOMNodesImpl(){
+    patchDOMNodesImpl(
+        branch: (JSXElementType | string)[], 
+        domRepr: (DOMElement | DOMTextNode)[],
+        parentElement: Element
+    ){
+        let branchIndex = 0;
+        let domReprIndex = 0;
+
+        const nodeArray: Node[] = [];
+
+        while(1){
+            if (branch.length <= branchIndex){
+                break;
+            }
+          
+            
+            const vNode = branch[branchIndex];
+
+            if (typeof vNode !== "string" && vNode.type === "component"){
+                nodeArray.push(
+                    (
+                        (this.instanceMap.get(vNode.key) as ComponentInstance<any>)
+                        .domElement as DOMElement
+                    ).elem
+                );
+                branchIndex++;
+                continue;
+            }
+            if (domReprIndex == domRepr.length){
+                if (typeof vNode !== "string"){
+                    domRepr.push({
+                        type:"element",
+                        attrs: new Map(),
+                        elem: document.createElement(vNode.tagName),
+                        children: [],
+                    })
+                }else{
+                    domRepr.push({
+                        type:"textNode",
+                        text: vNode,
+                        node: document.createTextNode(vNode),
+                    });
+                }
+                
+            }
+            const domNode = domRepr[domReprIndex];
+            if (typeof vNode === "string" && domNode.type === "element")
+            {
+                domNode.elem.parentElement?.removeChild(domNode.elem);
+                domRepr.splice(domReprIndex, 1);
+                continue;
+
+            }
+            if (typeof vNode !== "string" && domNode.type === "textNode")
+            {
+                domNode.node.parentElement?.removeChild(domNode.node);
+                domRepr.splice(domReprIndex, 1)
+                continue;
+
+            }
+            if (typeof vNode === "string" && domNode.type === "textNode")
+            {
+                domNode.node.textContent == vNode;
+                branchIndex ++;
+                domReprIndex ++;
+                nodeArray.push(domNode.node);
+                continue
+            }
+            if (typeof vNode !== "string" && domNode.type !== "textNode"){
+                if (domNode.elem.tagName !== vNode.tagName){
+                    const newElemRepr: DOMElement = {
+                        type: "element", 
+                        attrs: new Map(),
+                        elem: document.createElement(vNode.tagName),
+                        children: [],
+                    }
+                    domRepr.splice(domReprIndex, 1, newElemRepr);
+                    nodeArray.push(newElemRepr.elem)
+                }
+                const elemRepr = domRepr[domReprIndex] as DOMElement;
+                patchAttributes(elemRepr , vNode.attributes)
+                this.patchDOMNodesImpl(vNode.children, elemRepr.children, elemRepr.elem)
+                branchIndex++;
+                domReprIndex++;
+            }
+        }
+        while(domRepr.length > domReprIndex){
+            const r=domRepr[domReprIndex]
+            if (r.type === "element"){
+                r.elem.parentElement?.removeChild(r.elem);
+            }else{
+                r.node.parentElement?.removeChild(r.node);
+            }
+            domRepr.splice(domReprIndex, 1);
+        }
+        parentElement.replaceChildren(...nodeArray);
 
     }
 
@@ -252,5 +385,13 @@ class ComponentInstance<PropsType extends ComponentPropsType>{
 
 }
 
+
+const createApp = (elem: Element, fn: ()=>JSXElementType) =>{
+    const inst = new ComponentInstance<any>(fn, {}, undefined);
+    elem.appendChild(inst.domElement?.elem as Node);
+    
+}
+
 export type {JSX};
 export {jsx, jsx as jsxs, jsx as jsxDEV};
+export {createApp};

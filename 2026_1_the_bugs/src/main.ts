@@ -1,3 +1,6 @@
+import { createApp } from './MyReact/jsx-runtime'
 import { Test } from './tets'
 
-console.log(Test());
+
+const root = document.getElementById("app") as Element
+createApp(root, Test);
