@@ -169,7 +169,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
 
         this.instanceMap.forEach(
             (v, k)=>{
-                if (!deepEqual(v.props, (this.instanceMap.get(k) as ComponentInstance<any>).props)){
+                if (!deepEqual(v.props, (newInstanceMap.get(k) as JSXComponent<any>).props)){
                     markDirty(v);
                 }
         });
