@@ -1,19 +1,65 @@
+import { ListManager } from "./array";
 import { useState } from "./MyReact/hooks";
 
-interface ButtonProps{
+interface ButtonProps {
     name: string;
 }
 
-function Button(props: ButtonProps){
+function Button(props: ButtonProps) {
+    // Проверяем инициализацию и обновление состояния
     const [clicks, setClicks] = useState(0);
-    return <div>
-        <button on_click={()=>{setClicks(clicks+1)}}> {clicks.toString()}</button>
-    </div>
+    const [text, setText] = useState("Нажми меня");
+
+    return (
+        <div style="border: 1px solid black; padding: 10px; margin: 5px">
+            <p>Кнопка: {props.name}</p>
+            <button 
+                on_click={() => {
+                    setClicks(clicks + 1);
+                    if (clicks + 1 >= 5) setText("Ого, уже много!");
+                }}
+            > 
+                {text}: {clicks.toString()}
+            </button>
+        </div>
+    );
 }
 
-export function Test(){
-    return <div>
-        <form style="color: blue"> Введите текст</form>
-        <Button name="df" key="1"></Button>
-    </div>
+function InputTest() {
+    // Проверяем работу useState со строками
+    const [value, setValue] = useState("");
+
+    return (
+        <div style="margin-top: 20px">
+            <input 
+                type="text" 
+                placeholder="Пиши тут..."
+                on_input={(e: any) => {setValue(e.target.value);}} 
+            />
+            <p style="color: green">Вы ввели: {value}</p>
+        </div>
+    );
+}
+
+export function Test() {
+    return (
+        <div style="font-family: sans-serif; padding: 20px">
+            <h1 style="color: blue">MyReact Test App</h1>
+            
+            <section>
+                <h3>Счетчики (проверка независимости state)</h3>
+                {/* Два разных ключа - два разных инстанса */}
+                <Button name="Первый" key="btn-1" />
+                <Button name="Второй" key="btn-2" />
+            </section>
+
+            <section>
+                <h3>Инпуты</h3>
+                <InputTest />
+            </section>
+            <section>
+                <ListManager></ListManager>
+            </section>
+        </div>
+    );
 }

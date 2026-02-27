@@ -93,10 +93,17 @@ export const markDirty = (instance: ComponentInstance<any> ) =>{
 const schedUpdate = () => {
     isUpdateScheduled = true;
     for (let i=0; i<dirtyInstances.length; i++){
+        if (dirtyInstances[i].size === 0){
+            continue
+        }
         dirtyInstances[i].forEach((instance)=>{
             instance.update();
             dirtyInstances[i].delete(instance);
         });
+        window.requestAnimationFrame(()=>{
+            schedUpdate();
+        })
+        return
     }
     
     isUpdateScheduled = false;
@@ -173,14 +180,13 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                     markDirty(v);
                 }
         });
-        console.log("newInstanceMap: ", newInstanceMap)
         newInstanceMap.forEach(
             (v, k)=>{
                 if (!this.instanceMap.has(k)){
                     this.instanceMap.set(k, new ComponentInstance<any>(v.func, v.props, this));
                 }
         });
-        console.log(this.instanceMap)
+
 
     }
     patchDOMNodes(){
@@ -202,6 +208,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 
             }
         }
+        console.log(this.vTree, this.domElement)
         this.patchDOMNodesImpl(this.vTree.children, this.domElement.children, this.domElement.elem)
     }
     patchDOMNodesImpl(
@@ -213,6 +220,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         let domReprIndex = 0;
 
         const nodeArray: Node[] = [];
+        
 
         while(1){
             if (branch.length <= branchIndex){

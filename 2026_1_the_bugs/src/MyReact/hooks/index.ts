@@ -5,12 +5,10 @@ let activeStateindex: number = 0;
 
 export function _setActiveInstance(instance: ComponentInstance<any> | undefined) {
     activeInstance = instance;
-    console.log("activeInstance set internally to:", activeInstance);
 }
 
 export function _setActiveStateIndex(stateIndex: number) {
     activeStateindex = stateIndex;
-    console.log("activeStateindex set internally to:", stateIndex);
 }
 
 
@@ -28,7 +26,6 @@ export function useState<T>(initialState: T): [T, (newState: T)=>void]{
     return [
         activeInstance.states[idx], 
         (newState: T)=>{
-            console.log(newState)
             curInstance.states[idx] = newState;
             markDirty(curInstance);
         }
