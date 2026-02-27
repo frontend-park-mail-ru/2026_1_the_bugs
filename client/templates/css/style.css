@@ -130,7 +130,6 @@ img {
 }
 
 .search__input {
-  #visibility: hidden;
   border: none;
   background: transparent;
   padding: 10px 16px;
