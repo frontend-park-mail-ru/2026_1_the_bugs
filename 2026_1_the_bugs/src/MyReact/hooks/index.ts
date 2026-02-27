@@ -24,7 +24,7 @@ export function useState<T>(initialState: T): [T, (newState: T)=>void]{
     const idx = activeStateindex;
     activeStateindex++;
     return [
-        activeInstance.states[idx], 
+        activeInstance.states[idx],
         (newState: T)=>{
             curInstance.states[idx] = newState;
             markDirty(curInstance);

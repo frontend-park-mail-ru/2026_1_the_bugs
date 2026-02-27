@@ -13,12 +13,12 @@ function ListItemComponent(props: { item: ListItem }) {
     return <li style="margin: 5px 0;">{props.item.text} (ID: {props.item.id.toString()})</li>;
 }
 function Input(props: {onClick: (e: any)=>void, val: string}){
-    return<span>
+    return<div>
         <input 
             type="text"
             value={props.val}
             on_input={props.onClick}
-            placeholder="Новый элемент..."/></span>;
+            placeholder="Новый элемент..."/></div>;
 }
 
 export function ListManager() {
@@ -34,6 +34,12 @@ export function ListManager() {
             ]);
             setNextId(nextId + 1); // Увеличиваем ID для следующего элемента
             setNewItemText("");     // Очищаем поле ввода
+        }else{
+            setItems([
+                ...items, // Берем старые элементы
+                { id: nextId, text: "пусто" } // Добавляем новый
+            ]);
+            setNextId(nextId + 1);
         }
     };
 

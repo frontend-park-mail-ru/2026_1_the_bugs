@@ -26,6 +26,7 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
     repr.attrs.forEach(
         (v, k)=>{
             if (newAttrs.get(k) !== v){
+                console.log(newAttrs.get(k), v)
                 repr.elem.setAttribute(k, newAttrs.get(k));
             }
         }
@@ -176,7 +177,9 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
 
         this.instanceMap.forEach(
             (v, k)=>{
-                if (!deepEqual(v.props, (newInstanceMap.get(k) as JSXComponent<any>).props)){
+                const newProps = (newInstanceMap.get(k) as JSXComponent<any>).props
+                if (!deepEqual(v.props, newProps)){
+                    v.props = newProps
                     markDirty(v);
                 }
         });
@@ -219,7 +222,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         let branchIndex = 0;
         let domReprIndex = 0;
 
-        const nodeArray: Node[] = [];
+        const nodeArray: Node[] = []; // TODO: поменять на точечную функцию reorder
         
 
         while(1){
@@ -233,6 +236,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 nodeArray.push(
                     ((this.instanceMap.get(vNode.key) as ComponentInstance<any>).domElement as DOMElement ).elem
                 );
+                parentElement.appendChild(((this.instanceMap.get(vNode.key) as ComponentInstance<any>).domElement as DOMElement ).elem);
                 branchIndex++;
                 continue;
             }
@@ -275,6 +279,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 branchIndex ++;
                 domReprIndex ++;
                 nodeArray.push(domNode.node);
+                parentElement.appendChild(domNode.node);
                 continue
             }
             if (typeof vNode !== "string" && domNode.type !== "textNode"){
@@ -292,6 +297,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                     
                 }
                 patchAttributes(elemRepr , vNode.attributes)
+                parentElement.appendChild(elemRepr.elem);
                 nodeArray.push(elemRepr.elem)
                 this.patchDOMNodesImpl(vNode.children, elemRepr.children, elemRepr.elem)
                 branchIndex++;
@@ -307,7 +313,10 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             }
             domRepr.splice(domReprIndex, 1);
         }
-        parentElement.replaceChildren(...nodeArray);
+        //parentElement.replaceChildren(...nodeArray);
+
+
+
 
     }
 
