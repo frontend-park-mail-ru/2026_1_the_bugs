@@ -27,11 +27,20 @@ function jsx<PropsType extends ComponentPropsType>(
         const attributes = new Map<string, any>();
         Object.entries(props).forEach(
             ([k, v])=>{
-                if (k !== "children"){
+                if (k !== "children" ){
+                    if (k === "disabled" && !v){
+                        return
+                    }
                     attributes.set(k, v)
                 }
             }
         )
+        console.log("element",{
+            type: "element",
+            tagName: type,
+            attributes: attributes,
+            children: normalizedChildren(props.children)
+        })
         return {
             type: "element",
             tagName: type,
@@ -43,6 +52,13 @@ function jsx<PropsType extends ComponentPropsType>(
         if (key === undefined){
             key = props.key
         }
+        console.log("component",{
+            type: "component",
+            key: key,
+            func: type,
+            props,
+            children: normalizedChildren(props.children)
+        })
         return {
             type: "component",
             key: key,

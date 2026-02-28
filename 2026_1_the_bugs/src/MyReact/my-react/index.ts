@@ -16,6 +16,7 @@ import {
 } from '../hooks/index'
 
 const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
+    console.log(repr.attrs, newAttrs)
     repr.attrs.forEach((_, k)=>{
         if (!newAttrs.has(k)){
             repr.attrs.delete(k);
@@ -43,15 +44,14 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
             repr.elem.addEventListener(typeEvent, v as ()=>void);
             repr.eventListeners.push({type: typeEvent, callback: v})
         }else if (k === "value" && repr.elem instanceof HTMLInputElement) {
-      // Для input используем свойство .value
-        repr.elem.value = v;
-        repr.attrs.set(k, v);
-
+            repr.elem.value = v;
+            repr.attrs.set(k, v)
         }else if(!repr.attrs.has(k)){
             repr.attrs.set(k, v)
             repr.elem.setAttribute(k, v)
         }
     })
+    console.log("NEW ATTRS", repr.attrs)
 }
 
 const dirtyInstances: Set<ComponentInstance<any>> [] = [];
@@ -153,7 +153,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         _setActiveInstance(this)
         _setActiveStateIndex(0)
         this.vTree = this.func(this.props)
-        console.log(this.states)
         _setActiveInstance(undefined)
     }
     extractVirtualComponents(
@@ -167,7 +166,10 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             if (ch.type == "element"){
                 this.extractVirtualComponents(ch, mapToAdd)
             }else{
-                mapToAdd.set(ch.key, ch);
+                if (ch.key !== undefined){
+                    mapToAdd.set(ch.key, ch);
+                }
+                
             }
         })
     }
@@ -178,7 +180,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         const newInstanceMap = new Map<KeyType, JSXComponent<any>>();
         this.extractVirtualComponents(this.vTree, newInstanceMap);
         
-
+        
         this.instanceMap.forEach(
             (v, k)=>{
                 if (!newInstanceMap.has(k)){
@@ -237,27 +239,28 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         let branchIndex = 0;
         let domReprIndex = 0;
 
-
         while(1){
             if (branch.length <= branchIndex){
                 break;
             }
           
             const vNode = branch[branchIndex];
+            if (typeof vNode !== "string" && vNode?.type == undefined){
+                branchIndex++;
+                continue
+            }
 
            if (typeof vNode !== "string" && vNode.type === "component") {
                 const compInstance = this.instanceMap.get(vNode.key) as ComponentInstance<any>;
                 const compDom = compInstance.domElement;
                 if (!compDom) throw new Error("Component has no DOM element");
 
-                // Синхронизируем domRepr
                 if (domReprIndex >= domRepr.length) {
                     domRepr.push(compDom);
                 } else if (domRepr[domReprIndex] !== compDom) {
                     domRepr.splice(domReprIndex, 1, compDom);
                 }
 
-                // Вставляем на правильную позицию, если ещё не там
                 const currentNode = parentElement.childNodes[domReprIndex];
                 if (compDom.elem !== currentNode) {
                     parentElement.insertBefore(compDom.elem, currentNode);
@@ -267,7 +270,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 domReprIndex++;
                 continue;
             }
-            if (domReprIndex == domRepr.length){
+            if (domReprIndex >= domRepr.length){
                 if (typeof vNode !== "string"){
                     domRepr.push({
                         type:"element",
@@ -319,14 +322,14 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                         children: [],
                         eventListeners: []
                     }
-                    domRepr.splice(domReprIndex, 1, newElemRepr);
-                    parentElement.replaceChildren(elemRepr.elem, newElemRepr.elem)
+                    parentElement.insertBefore(newElemRepr.elem, domNode.elem);
+                    domRepr.splice(domReprIndex, 0, newElemRepr);
                     elemRepr = newElemRepr
                     
                 }
                 patchAttributes(elemRepr , vNode.attributes)
                 const currentNode = parentElement.childNodes[domReprIndex];
-                if(!parentElement.contains(elemRepr.elem)){
+                if (elemRepr.elem !== currentNode) {
                     parentElement.insertBefore(elemRepr.elem, currentNode);
                 }
                 

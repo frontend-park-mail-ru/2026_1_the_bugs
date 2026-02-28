@@ -27,6 +27,7 @@ export function ListManager() {
     const [items, setItems] = useState<ListItem[]>([]);
     const [newItemText, setNewItemText] = useState("");
     const [nextId, setNextId] = useState(0);
+    const [is, setIs] = useState(false);
 
     const addItem = () => {
         if (newItemText.trim()) { // Добавляем только если текст не пустой
@@ -37,6 +38,12 @@ export function ListManager() {
             setNextId(nextId + 1); // Увеличиваем ID для следующего элемента
             setNewItemText("");     // Очищаем поле ввода
         }
+        if (nextId > 0 && nextId < 3){
+            setIs(true)
+        }else{
+            setIs(false)
+        }
+
     };
 
     const handleInputChange = (e: any) => {
@@ -46,6 +53,8 @@ export function ListManager() {
     return (
         <div style="border: 1px solid green; padding: 15px; margin-top: 20px;">
             <h3>Список элементов</h3>
+
+            {is && <h3>Слишком много элементов</h3>}
             
             <div>
                 <Input key="input" onClick={handleInputChange} val={newItemText}> </Input> 
