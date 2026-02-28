@@ -27,6 +27,7 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
         (v, k)=>{
             if (newAttrs.get(k) !== v){
                 console.log(newAttrs.get(k), v)
+                repr.attrs.set(k, newAttrs.get(k))
                 repr.elem.setAttribute(k, newAttrs.get(k));
             }
         }
@@ -41,7 +42,13 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
             const typeEvent = k.slice("on_".length)
             repr.elem.addEventListener(typeEvent, v as ()=>void);
             repr.eventListeners.push({type: typeEvent, callback: v})
+        }else if (k === "value" && repr.elem instanceof HTMLInputElement) {
+      // Для input используем свойство .value
+        repr.elem.value = v;
+        repr.attrs.set(k, v);
+
         }else if(!repr.attrs.has(k)){
+            repr.attrs.set(k, v)
             repr.elem.setAttribute(k, v)
         }
     })
@@ -53,10 +60,15 @@ let isUpdateScheduled = false;
 function deepEqual(val1: any, val2: any): boolean{
   if (val1 === val2) return true;
 
+  if (typeof val1 === 'function' && typeof val2 === 'function'){
+    return true
+  }
+
+
   if (val1 == null || val2 == null || typeof val1 !== 'object' || typeof val2 !== 'object') {
     return val1 === val2;
   }
-
+  
   if (Array.isArray(val1) && Array.isArray(val2)) {
     if (val1.length !== val2.length) return false;
     for (let i = 0; i < val1.length; i++) {
@@ -141,7 +153,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         _setActiveInstance(this)
         _setActiveStateIndex(0)
         this.vTree = this.func(this.props)
-        console.log(this.vTree)
+        console.log(this.states)
         _setActiveInstance(undefined)
     }
     extractVirtualComponents(
@@ -197,7 +209,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             throw new Error()
         }
         const parentElem = this.domElement?.elem.parentElement;
-        if (this.domElement?.elem.tagName !== this.vTree.tagName){
+        if (this.domElement?.elem.tagName.toLowerCase() !== this.vTree.tagName){
             const prevChild = this.domElement?.elem
             this.domElement = {
                 type: "element",
@@ -206,11 +218,14 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 children: this.domElement?.children ?? [],
                 eventListeners: this.domElement?.eventListeners ?? [],
             };
+            
             if (parentElem!=null && prevChild!==undefined){
                 parentElem?.replaceChild(this.domElement.elem, prevChild);
                 
             }
+            
         }
+        patchAttributes(this.domElement, this.vTree.attributes)
         console.log(this.vTree, this.domElement)
         this.patchDOMNodesImpl(this.vTree.children, this.domElement.children, this.domElement.elem)
     }
@@ -222,8 +237,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         let branchIndex = 0;
         let domReprIndex = 0;
 
-        const nodeArray: Node[] = []; // TODO: поменять на точечную функцию reorder
-        
 
         while(1){
             if (branch.length <= branchIndex){
@@ -232,12 +245,26 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
           
             const vNode = branch[branchIndex];
 
-            if (typeof vNode !== "string" && vNode.type === "component"){
-                nodeArray.push(
-                    ((this.instanceMap.get(vNode.key) as ComponentInstance<any>).domElement as DOMElement ).elem
-                );
-                parentElement.appendChild(((this.instanceMap.get(vNode.key) as ComponentInstance<any>).domElement as DOMElement ).elem);
+           if (typeof vNode !== "string" && vNode.type === "component") {
+                const compInstance = this.instanceMap.get(vNode.key) as ComponentInstance<any>;
+                const compDom = compInstance.domElement;
+                if (!compDom) throw new Error("Component has no DOM element");
+
+                // Синхронизируем domRepr
+                if (domReprIndex >= domRepr.length) {
+                    domRepr.push(compDom);
+                } else if (domRepr[domReprIndex] !== compDom) {
+                    domRepr.splice(domReprIndex, 1, compDom);
+                }
+
+                // Вставляем на правильную позицию, если ещё не там
+                const currentNode = parentElement.childNodes[domReprIndex];
+                if (compDom.elem !== currentNode) {
+                    parentElement.insertBefore(compDom.elem, currentNode);
+                }
+
                 branchIndex++;
+                domReprIndex++;
                 continue;
             }
             if (domReprIndex == domRepr.length){
@@ -276,15 +303,15 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             if (typeof vNode === "string" && domNode.type === "textNode")
             {
                 domNode.node.textContent = vNode;
-                branchIndex ++;
-                domReprIndex ++;
-                nodeArray.push(domNode.node);
-                parentElement.appendChild(domNode.node);
-                continue
+                const refNode = parentElement.childNodes[domReprIndex];
+                parentElement.insertBefore(domNode.node, refNode);
+                branchIndex++;
+                domReprIndex++;
+                continue;
             }
             if (typeof vNode !== "string" && domNode.type !== "textNode"){
                 let elemRepr = domNode
-                if (domNode.elem.tagName !== vNode.tagName){
+                if (domNode.elem.tagName.toLowerCase() !== vNode.tagName){
                     const newElemRepr: DOMElement = {
                         type: "element", 
                         attrs: new Map(),
@@ -293,12 +320,16 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                         eventListeners: []
                     }
                     domRepr.splice(domReprIndex, 1, newElemRepr);
+                    parentElement.replaceChildren(elemRepr.elem, newElemRepr.elem)
                     elemRepr = newElemRepr
                     
                 }
                 patchAttributes(elemRepr , vNode.attributes)
-                parentElement.appendChild(elemRepr.elem);
-                nodeArray.push(elemRepr.elem)
+                const currentNode = parentElement.childNodes[domReprIndex];
+                if(!parentElement.contains(elemRepr.elem)){
+                    parentElement.insertBefore(elemRepr.elem, currentNode);
+                }
+                
                 this.patchDOMNodesImpl(vNode.children, elemRepr.children, elemRepr.elem)
                 branchIndex++;
                 domReprIndex++;
@@ -313,11 +344,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             }
             domRepr.splice(domReprIndex, 1);
         }
-        //parentElement.replaceChildren(...nodeArray);
-
-
-
-
     }
 
     destroy(){

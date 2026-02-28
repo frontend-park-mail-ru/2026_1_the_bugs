@@ -45,21 +45,19 @@ export function Test() {
     return (
         <div style="font-family: sans-serif; padding: 20px">
             <h1 style="color: blue">MyReact Test App</h1>
-            
-            <section>
+            <div>
                 <h3>Счетчики (проверка независимости state)</h3>
                 {/* Два разных ключа - два разных инстанса */}
                 <Button name="Первый" key="btn-1" />
                 <Button name="Второй" key="btn-2" />
-            </section>
-
-            <section>
+            </div>
+            <div>
                 <h3>Инпуты</h3>
-                <InputTest />
-            </section>
-            <section>
-                <ListManager></ListManager>
-            </section>
+                <InputTest key="inpuths" />
+            </div>
+            <div>
+                <ListManager key="listmanager"></ListManager>
+            </div>
         </div>
     );
 }

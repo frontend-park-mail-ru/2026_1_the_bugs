@@ -18,7 +18,9 @@ function Input(props: {onClick: (e: any)=>void, val: string}){
             type="text"
             value={props.val}
             on_input={props.onClick}
-            placeholder="Новый элемент..."/></div>;
+            placeholder="Новый элемент..."/>
+        {props.val}
+        </div>;
 }
 
 export function ListManager() {
@@ -34,12 +36,6 @@ export function ListManager() {
             ]);
             setNextId(nextId + 1); // Увеличиваем ID для следующего элемента
             setNewItemText("");     // Очищаем поле ввода
-        }else{
-            setItems([
-                ...items, // Берем старые элементы
-                { id: nextId, text: "пусто" } // Добавляем новый
-            ]);
-            setNextId(nextId + 1);
         }
     };
 
@@ -52,11 +48,10 @@ export function ListManager() {
             <h3>Список элементов</h3>
             
             <div>
-                <Input onClick={handleInputChange} val={newItemText}> </Input> 
+                <Input key="input" onClick={handleInputChange} val={newItemText}> </Input> 
                 <button on_click={addItem} style="margin-left: 10px;">Добавить</button>
             </div>
 
-            {/* Важно: Используем ul/li и ключи! */}
             <ul style="margin-top: 10px; padding-left: 20px;">
                 {items.map((item) => (
                     // Ключи критичны для обновления списков
