@@ -271,6 +271,14 @@ img {
   height: 14px;
 }
 
+button{
+  transition: transform 1.1s ease;
+}
+
+button:active{
+  transform: translateY(1px);
+}
+
 @media (max-width: 768px) {
   .page {
     padding: 24px;
@@ -278,17 +286,5 @@ img {
 
   .cards {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
-  }
-}
-
-@media (max-width: 1200px) {
-  .cards {
-    grid-template-columns: repeat(3, minmax(220px, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .cards {
-    grid-template-columns: 1fr;
   }
 }
