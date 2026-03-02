@@ -31,7 +31,12 @@ function jsx<PropsType extends ComponentPropsType>(
                     if (k === "disabled" && !v){
                         return
                     }
-                    attributes.set(k, v)
+                    if (k === "className"){
+                        attributes.set("class", v)
+                    }
+                    else{
+                        attributes.set(k, v)
+                    }
                 }
             }
         )
@@ -73,4 +78,4 @@ function jsx<PropsType extends ComponentPropsType>(
 
 
 export type {JSX};
-export {jsx, jsx as jsxs, jsx as jsxDEV};
+export {jsx, jsx as jsxs};

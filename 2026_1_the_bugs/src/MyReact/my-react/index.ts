@@ -39,8 +39,8 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
     repr.eventListeners = []
 
     newAttrs.forEach((v, k)=>{
-        if (k.startsWith("on_")){
-            const typeEvent = k.slice("on_".length)
+        if (k.startsWith("on") && k[2] == k[2].toUpperCase()){
+            const typeEvent = k.slice("on".length).toLocaleLowerCase()
             repr.elem.addEventListener(typeEvent, v as ()=>void);
             repr.eventListeners.push({type: typeEvent, callback: v})
         }else if (k === "value" && repr.elem instanceof HTMLInputElement) {

@@ -1,6 +1,5 @@
 import { createApp } from './MyReact/my-react'
-import { ListManager } from './array'
-import LoginPage from './auth'
+import LoginPage from './LoginPage/LoginPage.tsx'
 
 
 const root = document.getElementById("app") as Element
