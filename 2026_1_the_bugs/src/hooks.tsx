@@ -23,9 +23,13 @@ function Timer() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    let counter = count
     if (!visible) return;
     console.log('Timer: интервал запущен');
-    const interval = setInterval(() => {setCount(count + 1)}, 100);
+    const interval = setInterval(() => {
+        counter++;
+        setCount(counter)
+    }, 1000);
     return () => {
       console.log('Timer: интервал очищен');
       clearInterval(interval);
