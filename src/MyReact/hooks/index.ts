@@ -31,3 +31,20 @@ export function useState<T>(initialState: T): [T, (newState: T)=>void]{
         }
     ]
 }
+
+export function useEffect(effect: () => void | (() => void), deps?: any[]) {
+  if (activeInstance === undefined) {
+    throw new Error('useEffect must be called inside a component');
+  }
+
+  const idx = activeInstance.effectIndex++;
+  let eff = activeInstance.effects[idx];
+
+  if (!eff) {
+    eff = { execute: effect, deps };
+    activeInstance.effects[idx] = eff;
+  } else {
+    eff.execute = effect;
+    eff.deps = deps;
+  }
+}
