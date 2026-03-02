@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -10,8 +11,11 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "paths":{
+      "@my-react/*": ["./src/MyReact/*"]
+    },
     "jsx": "react-jsx",
-    "jsxImportSource": "./MyReact",
+    "jsxImportSource": "@my-react",
     "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,
