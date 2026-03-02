@@ -16,7 +16,6 @@ import {
 } from '../hooks/index'
 
 const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
-    console.log(repr.attrs, newAttrs)
     repr.attrs.forEach((_, k)=>{
         if (!newAttrs.has(k)){
             repr.attrs.delete(k);
@@ -27,7 +26,6 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
     repr.attrs.forEach(
         (v, k)=>{
             if (newAttrs.get(k) !== v){
-                console.log(newAttrs.get(k), v)
                 repr.attrs.set(k, newAttrs.get(k))
                 repr.elem.setAttribute(k, newAttrs.get(k));
             }
@@ -46,12 +44,21 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>)=>{
         }else if (k === "value" && repr.elem instanceof HTMLInputElement) {
             repr.elem.value = v;
             repr.attrs.set(k, v)
+        }else if (k === "style" && typeof v === "object" && v !== null) {
+            const oldStyle = repr.attrs.get("style") || {};
+            for (const prop in oldStyle) {
+                if (!(prop in v)) {
+                    (repr.elem as any).style[prop] = "";
+                }
+            }
+            // Применяем новые стили
+            Object.assign((repr.elem as any).style, v);
+            repr.attrs.set(k, v); // сохраняем объект для будущих сравнений
         }else if(!repr.attrs.has(k)){
             repr.attrs.set(k, v)
             repr.elem.setAttribute(k, v)
         }
     })
-    console.log("NEW ATTRS", repr.attrs)
 }
 
 const dirtyInstances: Set<ComponentInstance<any>> [] = [];
@@ -175,6 +182,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 return;
             }
             if (ch.type == "element"){
+
                 this.extractVirtualComponents(ch, mapToAdd)
             }else{
                 if (ch.key !== undefined){
@@ -262,7 +270,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             
         }
         patchAttributes(this.domElement, this.vTree.attributes)
-        console.log(this.vTree, this.domElement)
         this.patchDOMNodesImpl(this.vTree.children, this.domElement.children, this.domElement.elem)
     }
     patchDOMNodesImpl(

@@ -1,6 +1,6 @@
 import { createApp } from '@my-react/my-react'
-import {TestPage} from './hooks'
+import {HomePage} from './pages/HomePage'
 
 
 const root = document.getElementById("app") as Element
-createApp(root, TestPage);
+createApp(root, HomePage);
