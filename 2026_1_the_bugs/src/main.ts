@@ -1,6 +1,6 @@
-import { createApp } from './MyReact/my-react'
-import LoginPage from './LoginPage/LoginPage.tsx'
+import { createApp } from '@my-react/my-react'
+import {TestPage} from './hooks'
 
 
 const root = document.getElementById("app") as Element
-createApp(root, LoginPage);
+createApp(root, TestPage);

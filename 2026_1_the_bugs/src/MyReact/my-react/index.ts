@@ -122,6 +122,13 @@ const schedUpdate = () => {
     isUpdateScheduled = false;
 };
 
+type Effect = {
+  execute: () => void | (() => void);
+  deps?: any[];
+  prevDeps?: any[];
+  cleanup?: () => void;
+};
+
 
 export class ComponentInstance<PropsType extends ComponentPropsType>{
     func: (props: PropsType)=>any;
@@ -132,6 +139,8 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
     states: any[] = [];
     depth: number;
     parent: ComponentInstance<any> | undefined;
+    effects: Effect[] = [];
+    effectIndex: number = 0;     
 
     constructor(func: (props: PropsType)=>any, props: PropsType, parent: ComponentInstance<any> | undefined){
         this.func = func;
@@ -147,11 +156,13 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
         this.updateVTree();
         this.patchInstances();
         this.patchDOMNodes();
+        this.flushEffects();
     }
     updateVTree(){
         //const {props} = this.props
         _setActiveInstance(this)
         _setActiveStateIndex(0)
+        this.effectIndex = 0;
         this.vTree = this.func(this.props)
         _setActiveInstance(undefined)
     }
@@ -206,6 +217,29 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
 
 
     }
+    flushEffects() {
+        for (const eff of this.effects) {
+            if (!eff) continue;
+
+            const depsChanged = 
+            !eff.prevDeps ||
+            eff.deps?.length !== eff.prevDeps.length ||
+            eff.deps?.some((dep, i) => !deepEqual(dep, eff.prevDeps?.[i]));
+
+            if (depsChanged) {
+                if (eff.cleanup) {
+                    eff.cleanup();
+                }
+                const cleanup = eff.execute();
+                if (typeof cleanup === 'function') {
+                    eff.cleanup = cleanup;
+                } else {
+                    eff.cleanup = undefined;
+                }
+            eff.prevDeps = eff.deps ? [...eff.deps] : undefined;
+            }
+        }
+        }
     patchDOMNodes(){
         if (this.vTree === undefined){
             throw new Error()

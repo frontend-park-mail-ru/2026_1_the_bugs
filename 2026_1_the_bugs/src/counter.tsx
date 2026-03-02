@@ -1,5 +1,5 @@
 import { ListManager } from "./array";
-import { useState } from "./MyReact/hooks";
+import { useState, useEffect } from "@my-react/hooks";
 
 interface ButtonProps {
     name: string;
@@ -9,13 +9,19 @@ function Button(props: ButtonProps) {
     // Проверяем инициализацию и обновление состояния
     const [clicks, setClicks] = useState(0);
     const [text, setText] = useState("Нажми меня");
+
+    useEffect(
+        ()=>{
+            setClicks(10);
+        }
+    )
     
 
     return (
         <div style="border: 1px solid black; padding: 10px; margin: 5px">
             <p>Кнопка: {props.name}</p>
             <button 
-                on_click={() => {
+                onClick={() => {
                     setClicks(clicks + 1);
                     if (clicks + 1 >= 5) setText("Ого, уже много!");
                 }}
@@ -36,7 +42,7 @@ function InputTest() {
             <input 
                 type="text" 
                 placeholder="Пиши тут..."
-                on_input={(e: any) => {setValue(e.target.value);}} 
+                onInput={(e: any) => {setValue(e.target.value);}} 
             />
             <p style="color: green">Вы ввели: {value}</p>
         </div>

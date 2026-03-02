@@ -1,6 +1,6 @@
 // App.tsx (добавляем в тот же файл или в отдельный, если создаешь модульную структуру)
 
-import { useState } from "./MyReact/hooks";
+import { useState } from "@my-react/hooks";
 interface ListItem {
     id: number;
     text: string;
@@ -17,7 +17,7 @@ function Input(props: {onClick: (e: any)=>void, val: string}){
         <input 
             type="text"
             value={props.val}
-            on_input={props.onClick}
+            onInput={props.onClick}
             placeholder="Новый элемент..."/>
         {props.val}
         </div>;
@@ -58,7 +58,7 @@ export function ListManager() {
             
             <div>
                 <Input key="input" onClick={handleInputChange} val={newItemText}> </Input> 
-                <button on_click={addItem} style="margin-left: 10px;">Добавить</button>
+                <button onClick={addItem} style="margin-left: 10px;">Добавить</button>
             </div>
 
             <ul style="margin-top: 10px; padding-left: 20px;">
