@@ -21,7 +21,10 @@ export function HomePage() {
   };
 
   const openAuthModal = () => setIsAuthModalOpen(true);
-  const closeAuthModal = () => setIsAuthModalOpen(false);
+  const closeAuthModal = () => {
+        setIsAuthModalOpen(false)
+        document.body.style.overflow = ''
+    }
 
   return (
     <div>

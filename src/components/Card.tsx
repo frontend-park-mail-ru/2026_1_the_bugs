@@ -24,7 +24,7 @@ export function Card({ apartment }: CardProps) {
             </svg>
             {apartment.location}
           </span>
-          <span>{apartment.area} м²</span>
+          <span>{apartment.area.toString()} м²</span>
         </div>
         <div className="card__footer">                   
           <span className={`card__rate ${ratingClass}`}>
