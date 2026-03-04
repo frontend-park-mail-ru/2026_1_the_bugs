@@ -1,10 +1,25 @@
 import { useState, useEffect } from '@my-react/hooks';
 
 import "../css/modal.css"
+import "../css/errors.css"
 import { authService } from '../services/api';
+import { type ErrorAlert } from '../types';
+import type { ErrorResponse } from 'src/types/api';
+
 
 interface AuthModalProps {
   onClose: () => void;
+}
+
+const getErrorMessage = (status: number): string => {
+  const messages: Record<number, string> = {
+    400: 'Неверный email или пароль',
+    401: 'Пользователь не авторизован',
+    404: 'Пользователь не найден',
+    429: 'Слишком много попыток. Попробуйте через минуту',
+    500: 'Ошибка сервера. Попробуйте позже'
+  };
+  return messages[status] || 'Что-то пошло не так';
 }
 
 export function AuthModal({ onClose }: AuthModalProps) {
@@ -16,12 +31,18 @@ export function AuthModal({ onClose }: AuthModalProps) {
   const [regPassword, setRegPassword] = useState('');
   const [regConfirm, setRegConfirm] = useState('');
 
+  const [error, setError] = useState<ErrorAlert | undefined>(undefined) 
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
   }, []);
+
+  const clearError = () => {
+    setError(undefined);
+  };
 
   const handleOverlayClick = (e: MouseEvent) => {
     if ((e.target as HTMLElement).classList.contains('modal')) {
@@ -42,7 +63,11 @@ export function AuthModal({ onClose }: AuthModalProps) {
 
         onClose();
     } catch (error: any) {
-      alert('Ошибка входа: ' + error.message);
+        const e = error as ErrorResponse
+        console.log(e.status)
+        const msg = getErrorMessage(e.status)
+        console.log(msg)
+        setError({message: msg})
     } finally {
       setIsLoading(false);
     }
@@ -51,8 +76,12 @@ export function AuthModal({ onClose }: AuthModalProps) {
   const handleRegister = async (e: Event) => {
     e.preventDefault();
     if (regPassword !== regConfirm) {
-      alert('Пароли не совпадают');
+      setError({message: "Пароли не совпадают!"})
       return;
+    }
+    if (regPassword.length < 8){
+        setError({message: "Пароль должен быть как минимум 8 символов"})
+        return;
     }
     setIsLoading(true);
     try {
@@ -62,7 +91,8 @@ export function AuthModal({ onClose }: AuthModalProps) {
         });
       onClose();
     } catch (error: any) {
-      alert('Ошибка регистрации: ' + error.message);
+      const e = error as ErrorResponse
+      setError({message: getErrorMessage(e.status)})
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +103,22 @@ export function AuthModal({ onClose }: AuthModalProps) {
       <div className="modal-content">
         <button className="close-button" onClick={onClose}></button>
         <div>
+          {error && (
+            <div 
+              className={`error-banner ${error ? 'show' : ''}`}
+              role="alert"
+            >
+              <div className="error-icon">⚠️</div>
+              <div className="error-text">{error.message}</div>
+              <button 
+                className="error-close"
+                onClick={clearError}
+                aria-label="Закрыть уведомление"
+              >
+                 ×
+              </button>
+            </div>
+          )}
           <h2 className="auth-title">{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
 
           <form

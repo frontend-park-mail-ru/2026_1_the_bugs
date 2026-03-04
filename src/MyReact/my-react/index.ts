@@ -181,8 +181,10 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             if (typeof ch === "string"){
                 return;
             }
+            if (ch === undefined){
+                return;
+            }
             if (ch.type == "element"){
-
                 this.extractVirtualComponents(ch, mapToAdd)
             }else{
                 if (ch.key !== undefined){

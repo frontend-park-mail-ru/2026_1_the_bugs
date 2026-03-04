@@ -10,3 +10,7 @@ export interface Apartment {
 }
 
 
+
+export interface ErrorAlert{
+    message: string;
+}
