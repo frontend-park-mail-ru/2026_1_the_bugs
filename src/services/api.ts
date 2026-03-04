@@ -38,7 +38,7 @@ class AuthService {
             {"Content-Type": "application/x-www-form-urlencoded"}
         );
         apiService.setToken(cred.access_token);
-        this.startRefreshTimer(5);
+        this.startRefreshTimer(cred.expire_at);
     }
 
     async register(data: {email: string, password: string}) {

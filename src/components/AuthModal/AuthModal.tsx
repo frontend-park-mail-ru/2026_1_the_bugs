@@ -1,10 +1,12 @@
 import { useState, useEffect } from '@my-react/hooks';
 
-import "../css/modal.css"
-import "../css/errors.css"
-import { authService } from '../services/api';
-import { type ErrorAlert } from '../types';
+import "./AuthModal.css"
+import "../../css/modal.css"
+
+import { authService } from '../../services/api';
+import { type ErrorAlert } from '../../types';
 import type { ErrorResponse } from 'src/types/api';
+import { ErrorsAlert } from '../Errors/Errors';
 
 
 interface AuthModalProps {
@@ -104,20 +106,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
         <button className="close-button" onClick={onClose}>&times;</button>
         <div>
           {error && (
-            <div 
-              className={`error-banner ${error ? 'show' : ''}`}
-              role="alert"
-            >
-              <div className="error-icon">⚠️</div>
-              <div className="error-text">{error.message}</div>
-              <button 
-                className="error-close"
-                onClick={clearError}
-                aria-label="Закрыть уведомление"
-              >
-                 ×
-              </button>
-            </div>
+            <ErrorsAlert key="error" errorMessage={error.message} clearError={clearError}></ErrorsAlert>
           )}
           <h2 className="auth-title">{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
 

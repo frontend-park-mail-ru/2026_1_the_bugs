@@ -306,7 +306,11 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
 
                 const currentNode = parentElement.childNodes[domReprIndex];
                 if (compDom.elem !== currentNode) {
-                    parentElement.insertBefore(compDom.elem, currentNode);
+                    if (currentNode && currentNode.parentElement === parentElement) {
+                        parentElement.insertBefore(compDom.elem, currentNode);
+                    } else {
+                        parentElement.appendChild(compDom.elem);
+                    }
                 }
 
                 branchIndex++;
@@ -350,7 +354,11 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             {
                 domNode.node.textContent = vNode;
                 const refNode = parentElement.childNodes[domReprIndex];
-                parentElement.insertBefore(domNode.node, refNode);
+                if (refNode && refNode.parentElement === parentElement) {
+                    parentElement.insertBefore(domNode.node, refNode);
+                } else {
+                    parentElement.appendChild(domNode.node);
+                }
                 branchIndex++;
                 domReprIndex++;
                 continue;
@@ -365,7 +373,11 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                         children: [],
                         eventListeners: []
                     }
-                    parentElement.insertBefore(newElemRepr.elem, domNode.elem);
+                    if (domNode.elem.parentElement === parentElement) {
+                        parentElement.insertBefore(newElemRepr.elem, domNode.elem);
+                    } else {
+                        parentElement.appendChild(newElemRepr.elem);
+                    }
                     domRepr.splice(domReprIndex, 0, newElemRepr);
                     elemRepr = newElemRepr
                     
@@ -373,7 +385,11 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 patchAttributes(elemRepr , vNode.attributes)
                 const currentNode = parentElement.childNodes[domReprIndex];
                 if (elemRepr.elem !== currentNode) {
-                    parentElement.insertBefore(elemRepr.elem, currentNode);
+                    if (currentNode && currentNode.parentElement === parentElement) {
+                        parentElement.insertBefore(elemRepr.elem, currentNode);
+                    } else {
+                        parentElement.appendChild(elemRepr.elem);
+                    }
                 }
                 
                 this.patchDOMNodesImpl(vNode.children, elemRepr.children, elemRepr.elem)

@@ -1,0 +1,16 @@
+:root {
+  --bg: #f6f6f5;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6f6f6f;
+  --accent: #f08dcc;
+  --accent-hover: #e07bbd;
+  --dark: #121212;
+  --border: rgba(0, 0, 0, 0.06);
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 6px 30px #f08dcc66;
+
+  --radius-S: 30px;
+  --radius-M: 0px;
+  --radius-L: 999px;
+}

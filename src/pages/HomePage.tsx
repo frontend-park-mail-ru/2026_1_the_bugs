@@ -2,11 +2,8 @@ import { useState } from '@my-react/hooks';
 import { Header } from '../components/Header';
 import { Hero } from '../components/Here';
 import { CardList } from '../components/CardList';
-import { AuthModal } from '../components/AuthModal';
+import { AuthModal } from '../components/AuthModal/AuthModal';
 import { apartments } from '../data/apartments';
-
-import "../css/style.css"
-
 
 export function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);

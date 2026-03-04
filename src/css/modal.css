@@ -27,7 +27,7 @@
 
 /* Контент окна */
 .modal-content {
-  border-radius: 12px;
+  border-radius: 20px;
   background-color: var(--bg);
   padding: 40px 40px 20px 40px;
   border: none;
@@ -109,7 +109,7 @@
   display: grid;
   grid-template-columns: 1fr auto auto;
   background: var(--card);
-  border-radius: 999px;
+  border-radius: var(--radius-L);
   box-shadow: var(--shadow);
   width: min(520px, 100%);
   gap: 8px;
@@ -135,7 +135,7 @@
   background-color: var(--accent);
   color: white;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-L);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;

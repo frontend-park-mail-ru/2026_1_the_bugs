@@ -15,7 +15,7 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
         onInput={(e: any) => onInput(e.target.value)}
       />
       <button className="search__filter" type="button" aria-label="Фильтр">
-        <img src="/svg/filter.svg" alt="" aria-hidden="true"  />
+        <img src="/svg/filter.svg" alt="" aria-hidden="true" />
       </button>
       <button
         className="search__go"
