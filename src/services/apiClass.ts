@@ -90,7 +90,7 @@ class ApiService {
     if (!response.ok) {
       const error = new Error(data.message || 'API error') as ErrorResponse;
       error.status = response.status;
-      error.message = data;
+      error.message = data.error;
       throw error;
     }
     
@@ -116,6 +116,7 @@ class ApiService {
   }
 }
 
-export const apiService = new ApiService("http://localhost:8000/api");
+export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+export const apiService = new ApiService(API_URL);
 
 export { ApiService };
