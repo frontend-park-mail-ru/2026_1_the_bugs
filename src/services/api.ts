@@ -1,138 +1,74 @@
-class ApiService {
-    baseURL: string | undefined
-    constructor(baseURL: string = '/api') {
-        this.baseURL = baseURL;
+import { apiService } from "./apiClass";
+import {type LoginResponse } from "./../types/api"
+
+
+class AuthService {
+    private refreshPromise: Promise<LoginResponse> | null = null;
+    private refreshTimeout: number | null = null;
+    
+    startRefreshTimer(exp: number) {
+        if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
+        
+        this.refreshTimeout = setTimeout(async () => {
+            const date = await this.refreshTokenSilently();
+            console.log(date.expire_at)
+            this.startRefreshTimer(date.expire_at);
+        }, exp * 1000);
     }
 
-  /**
-   * Выполнить GET запрос
-   */
-  async get(endpoint: string) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'GET',
-        headers: this.getHeaders(),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('GET request error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Выполнить POST запрос
-   */
-  async post(endpoint: string, data: any) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify(data),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('POST request error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Выполнить PUT запрос
-   */
-  async put(endpoint: string, data: any) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'PUT',
-        headers: this.getHeaders(),
-        body: JSON.stringify(data),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('PUT request error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Выполнить DELETE запрос
-   */
-  async delete(endpoint: string) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'DELETE',
-        headers: this.getHeaders(),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('DELETE request error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Получить заголовки запроса
-   */
-  getHeaders() {
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-
-    // Добавить токен авторизации если он есть
-    const token = this.getToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    async refreshTokenSilently(): Promise<LoginResponse> {
+        if (this.refreshPromise) {
+            return this.refreshPromise;
+        }
+        
+        this.refreshPromise = this.refreshToken();
+        try {
+            return await this.refreshPromise;
+        } finally {
+            this.refreshPromise = null;
+        }
     }
 
-    return headers;
-  }
-
-  /**
-   * Обработать ответ от сервера
-   */
-  async handleResponse(response) {
-    const data = await response.json();
-
-    if (!response.ok) {
-      const error = new Error(data.message || 'API error');
-      error.status = response.status;
-      error.data = data;
-      throw error;
+    async login(data: {email: string, password: string}) {
+        const params = new URLSearchParams(data);
+        
+        const cred: LoginResponse = await apiService.post(
+            "/auth/login",
+            params.toString(),
+            {"Content-Type": "application/x-www-form-urlencoded"}
+        );
+        apiService.setToken(cred.access_token);
+        this.startRefreshTimer(5);
     }
 
-    return data;
-  }
+    async register(data: {email: string, password: string}) {
+        const params = new URLSearchParams(data);
+        
+        await apiService.post(
+            "/auth/reg",
+            params.toString(),
+            {"Content-Type": "application/x-www-form-urlencoded"}
+        );
 
-  /**
-   * Получить токен авторизации из localStorage
-   */
-  getToken() {
-    return localStorage.getItem('authToken');
-  }
+        const cred: LoginResponse = await apiService.post(
+            "/auth/login",
+            params.toString(),
+            {"Content-Type": "application/x-www-form-urlencoded"}
+        );
+        apiService.setToken(cred.access_token)
 
-  /**
-   * Сохранить токен авторизации в localStorage
-   */
-  setToken(token) {
-    localStorage.setItem('authToken', token);
-  }
 
-  /**
-   * Удалить токен авторизации
-   */
-  removeToken() {
-    localStorage.removeItem('authToken');
-  }
+    }
 
-  /**
-   * Проверить есть ли токен авторизации
-   */
-  isAuthenticated() {
-    return !!this.getToken();
-  }
+    async refreshToken() {
+        const data = await apiService.post("/auth/refresh", 
+            '',
+            {"Content-Type": "text/plain; charset=utf-8"},
+            true
+        )
+        return data
+    }
+
 }
 
-// Создать глобальный экземпляр API сервиса
-export const apiService = new ApiService();
-
-export { ApiService };
+export const authService = new AuthService()

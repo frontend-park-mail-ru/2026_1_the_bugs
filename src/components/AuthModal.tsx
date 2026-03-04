@@ -1,6 +1,7 @@
 import { useState, useEffect } from '@my-react/hooks';
 
 import "../css/modal.css"
+import { authService } from '../services/api';
 
 interface AuthModalProps {
   onClose: () => void;
@@ -34,9 +35,12 @@ export function AuthModal({ onClose }: AuthModalProps) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      console.log('Login', { email: loginEmail, password: loginPassword });
-      alert('Успешный вход (демо)');
-      onClose();
+        await authService.login({
+            "email": loginEmail,
+            "password": loginPassword
+        });
+
+        onClose();
     } catch (error: any) {
       alert('Ошибка входа: ' + error.message);
     } finally {
@@ -52,8 +56,10 @@ export function AuthModal({ onClose }: AuthModalProps) {
     }
     setIsLoading(true);
     try {
-      console.log('Register', { email: regEmail, password: regPassword });
-      alert('Аккаунт создан (демо)');
+      await authService.register({
+            "email": regEmail,
+            "password": regPassword
+        });
       onClose();
     } catch (error: any) {
       alert('Ошибка регистрации: ' + error.message);

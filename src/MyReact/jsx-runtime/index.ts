@@ -40,12 +40,6 @@ function jsx<PropsType extends ComponentPropsType>(
                 }
             }
         )
-        console.log("element",{
-            type: "element",
-            tagName: type,
-            attributes: attributes,
-            children: normalizedChildren(props.children)
-        })
         return {
             type: "element",
             tagName: type,
@@ -57,13 +51,6 @@ function jsx<PropsType extends ComponentPropsType>(
         if (key === undefined){
             key = props.key
         }
-        console.log("component",{
-            type: "component",
-            key: key,
-            func: type,
-            props,
-            children: normalizedChildren(props.children)
-        })
         return {
             type: "component",
             key: key,
