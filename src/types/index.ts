@@ -9,8 +9,4 @@ export interface Apartment {
   imageUrl: string;
 }
 
-export interface ErrorResponse extends Error{
-    status: number;
-    message: string;
-}
 
