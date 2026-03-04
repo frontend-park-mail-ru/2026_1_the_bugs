@@ -288,7 +288,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             }
           
             const vNode = branch[branchIndex];
-            if (typeof vNode !== "string" && vNode?.type == undefined){
+            if (typeof vNode !== "string" && vNode?.type === undefined){
                 branchIndex++;
                 continue
             }
@@ -301,12 +301,12 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 if (domReprIndex >= domRepr.length) {
                     domRepr.push(compDom);
                 } else if (domRepr[domReprIndex] !== compDom) {
-                    domRepr.splice(domReprIndex, 1, compDom);
+                    domRepr.splice(domReprIndex, 0, compDom);
                 }
 
                 const currentNode = parentElement.childNodes[domReprIndex];
                 if (compDom.elem !== currentNode) {
-                    if (currentNode && currentNode.parentElement === parentElement) {
+                    if (currentNode) {
                         parentElement.insertBefore(compDom.elem, currentNode);
                     } else {
                         parentElement.appendChild(compDom.elem);
@@ -354,7 +354,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             {
                 domNode.node.textContent = vNode;
                 const refNode = parentElement.childNodes[domReprIndex];
-                if (refNode && refNode.parentElement === parentElement) {
+                if (refNode) {
                     parentElement.insertBefore(domNode.node, refNode);
                 } else {
                     parentElement.appendChild(domNode.node);
@@ -385,7 +385,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
                 patchAttributes(elemRepr , vNode.attributes)
                 const currentNode = parentElement.childNodes[domReprIndex];
                 if (elemRepr.elem !== currentNode) {
-                    if (currentNode && currentNode.parentElement === parentElement) {
+                    if (currentNode) {
                         parentElement.insertBefore(elemRepr.elem, currentNode);
                     } else {
                         parentElement.appendChild(elemRepr.elem);
