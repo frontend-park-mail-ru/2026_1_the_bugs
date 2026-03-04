@@ -11,7 +11,6 @@ export function Card({ apartment }: CardProps) {
     apartment.rating >= 4 ? 'card__rate--warn' : 'card__rate--bad';
 
   return (
-    <div>
     <article className="card" data-title={apartment.title}>
       <div className="card__image">                         
         <img src={apartment.imageUrl} alt="Интерьер" />
@@ -40,6 +39,5 @@ export function Card({ apartment }: CardProps) {
         </div>
       </div>
     </article>
-    </div>
   );
 }

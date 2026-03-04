@@ -8,12 +8,9 @@ interface HeroProps {
 
 export function Hero({ searchValue, onSearchInput, onSearch }: HeroProps) {
   return (
-    <div>
-        <section class="hero">
+    <section className="hero">
       <h1>КОМФОРТНОЕ ЖИЛЬЁ<br />БЕЗ ПЕРЕПЛАТЫ<br />ЗА ОДИНОЧЕСТВО</h1>
       <Search key="search" value={searchValue} onInput={onSearchInput} onSearch={onSearch} />
     </section>
-    </div>
-    
   );
 }

@@ -4,7 +4,6 @@ interface HeaderProps {
 
 export function Header({ onProfileClick }: HeaderProps) {
   return (
-    <div>
     <header className="header">
       <div className="logo">ДОМДЕЛИ</div>
       <div className="header__actions">
@@ -26,6 +25,5 @@ export function Header({ onProfileClick }: HeaderProps) {
           </button>
       </div>
     </header>
-    </div>
   );
 }

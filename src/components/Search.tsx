@@ -6,7 +6,6 @@ interface SearchProps {
 
 export function Search({ value, onInput, onSearch }: SearchProps) {
   return (
-    <div>
     <div className="search">
       <input
         className="search__input"
@@ -21,7 +20,7 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
         </svg>
       </button>
       <button
-        className="search__go"   
+        className="search__go"
         type="button"
         aria-label="Поиск"
         onClick={onSearch}
@@ -30,7 +29,6 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
           <path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L20 20" />
         </svg>
       </button>
-    </div>
     </div>
   );
 }

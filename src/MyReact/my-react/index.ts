@@ -258,9 +258,9 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             this.domElement = {
                 type: "element",
                 elem: document.createElement(this.vTree?.tagName),
-                attrs: this.vTree.attributes,
-                children: this.domElement?.children ?? [],
-                eventListeners: this.domElement?.eventListeners ?? [],
+                attrs: new Map<string, any>(),
+                children: [],
+                eventListeners: [],
             };
             
             if (parentElem!=null && prevChild!==undefined){

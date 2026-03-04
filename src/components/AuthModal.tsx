@@ -63,8 +63,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
   };
 
   return (
-    <div>
-        <div className="modal active" onClick={handleOverlayClick}>
+    <div className="modal active" onClick={handleOverlayClick}>
       <div className="modal-content">
         <button className="close-button" onClick={onClose}></button>
         <div>
@@ -157,7 +156,6 @@ export function AuthModal({ onClose }: AuthModalProps) {
           </button>
         </div>
       </div>
-    </div>
     </div>
     
   );

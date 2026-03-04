@@ -27,14 +27,11 @@ export function Modal({ isOpen, onClose, hisChildren}: ModalProps) {
   };
 
   return (
-    <div>
-        <div className={`modal ${isOpen ? 'active' : ''}`} onClick={handleOverlayClick}>
-        <div className="modal-content">
-            <button className="close-button" onClick={onClose}></button>
-            {hisChildren}
-        </div>
-        </div>
+    <div className={`modal ${isOpen ? 'active' : ''}`} onClick={handleOverlayClick}>
+      <div className="modal-content">
+          <button className="close-button" onClick={onClose}></button>
+          {hisChildren}
+      </div>
     </div>
-    
   );
 }
