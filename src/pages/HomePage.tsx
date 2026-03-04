@@ -27,8 +27,7 @@ export function HomePage() {
     }
 
   return (
-    <div>
-         <div className="page">
+    <div className="page">
       <Header key="header" onProfileClick={openAuthModal} />
       <main className="main">
         <Hero key="hero"
@@ -40,7 +39,5 @@ export function HomePage() {
       </main>
       {isAuthModalOpen && <AuthModal key="auth" onClose={closeAuthModal} />}
     </div>
-    </div>
-   
   );
 }
