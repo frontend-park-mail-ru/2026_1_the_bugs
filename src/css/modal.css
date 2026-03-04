@@ -1,3 +1,5 @@
+@import url('./style.css');
+
 /* Затемненный фон */
 .modal {
   display: none; /* Скрыто по умолчанию */
@@ -26,19 +28,17 @@
 /* Контент окна */
 .modal-content {
   border-radius: 12px;
-  background-color: #ffffff;
-  margin: 5% auto;
-  padding: 40px;
+  background-color: var(--bg);
+  padding: 40px 40px 20px 40px;
   border: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
   width: 90%;
   max-width: 450px;
   position: relative;
   animation: slideDown 0.3s ease-out;
   max-height: calc(100vh - 100px); /* Ограничиваем высоту */
   overflow-y: auto; /* Прокрутка внутри если контент большой */
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin: 50px auto;
 }
 
 @keyframes slideDown { /* Анимация появления окна */
@@ -106,39 +106,46 @@
 }
 
 .form-group input {
-  padding: 12px 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  background: var(--card);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  width: min(520px, 100%);
+  gap: 8px;
+  border: none;
+  padding: 10px 16px;
   font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  font-family: inherit;
+  outline: none;
+  color: var(--text);
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  box-shadow: var(--shadow-accent);
 }
 
 .form-group input::placeholder {
+  font-family: "Zen Kaku Gothic Antique", system-ui, sans-serif;
   color: #999;
 }
 
 .auth-btn {
   padding: 12px;
-  width: 100%;
-  background-color: #007bff;
+  width: 50%;
+  background-color: var(--accent);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
+  margin: 0 auto;
 }
 
 .auth-btn:hover {
-  background-color: #0056b3;
+  background-color: var(--accent-hover);
 }
 
 .auth-toggle-btn {
@@ -146,12 +153,14 @@
   background-color: #f0f0f0;
   color: #333;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
+  width: 50%;
+    display: block;
+  margin: 0 auto;
 }
 
 .auth-toggle-btn:hover {

@@ -101,7 +101,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
   return (
     <div className="modal active" onClick={handleOverlayClick}>
       <div className="modal-content">
-        <button className="close-button" onClick={onClose}></button>
+        <button className="close-button" onClick={onClose}>&times;</button>
         <div>
           {error && (
             <div 
@@ -130,6 +130,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             <div className="form-group">
               <label htmlFor="loginEmail">Email:</label>
               <input
+                className="font2"
                 type="email"
                 id="loginEmail"
                 name="email"
@@ -142,6 +143,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             <div className="form-group">
               <label htmlFor="loginPassword">Пароль:</label>
               <input
+                className="font2"
                 type="password"
                 id="loginPassword"
                 name="password"
@@ -165,6 +167,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             <div className="form-group">
               <label htmlFor="registerEmail">Email:</label>
               <input
+                className="font2"
                 type="email"
                 id="registerEmail"
                 name="email"
@@ -177,6 +180,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             <div className="form-group">
               <label htmlFor="registerPassword">Пароль:</label>
               <input
+                className="font2"
                 type="password"
                 id="registerPassword"
                 name="password"
@@ -189,6 +193,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             <div className="form-group">
               <label htmlFor="registerConfirmPassword">Повторите пароль:</label>
               <input
+                className="font2"
                 type="password"
                 id="registerConfirmPassword"
                 name="confirmPassword"

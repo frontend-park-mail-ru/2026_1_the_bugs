@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap');
+
 @font-face {
   font-family: "Aqum Two";
-  src: url("../../public/font/Aqum2classic.otf");
+  src: url("/font/Aqum2classic.otf");
   font-weight: 400;
   font-display: swap;
 }
@@ -11,9 +13,11 @@
   --text: #1a1a1a;
   --muted: #6f6f6f;
   --accent: #f08dcc;
+  --accent-hover: #e07bbd;
   --dark: #121212;
   --border: rgba(0, 0, 0, 0.06);
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 6px 30px #f08dcc66;
 }
 
 * {
@@ -27,6 +31,10 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+}
+
+.font2 {
+  font-family: "Zen Kaku Gothic Antique", system-ui, sans-serif;
 }
 
 a {

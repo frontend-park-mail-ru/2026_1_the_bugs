@@ -8,7 +8,7 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
   return (
     <div className="search">
       <input
-        className="search__input"
+        className="search__input font2"
         type="text"
         placeholder="Поиск по району или метро"
         value={value}
