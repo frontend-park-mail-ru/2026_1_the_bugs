@@ -1,4 +1,4 @@
-import styles from "./Errors.module.css"
+import error from "./Errors.module.css";
 
 interface ErrorProps {
   errorMessage: string;
@@ -8,13 +8,13 @@ interface ErrorProps {
 export function ErrorsAlert({ errorMessage, clearError }: ErrorProps){
     return (
         <div 
-            className={ styles.error }
+            className={error.banner}
             role="alert"
         >
-            <div className={styles.icon}>⚠️</div>
-            <div className="error-text">{errorMessage}</div>
+            <div className={error.icon}>⚠️</div>
+            <div className={error.text}>{errorMessage}</div>
             <button 
-                className="error-close"
+                className={error.close}
                 onClick={clearError}
                 aria-label="Закрыть уведомление"
             >

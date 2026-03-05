@@ -1,0 +1,38 @@
+.search {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px;
+  box-shadow: var(--shadow);
+  width: min(520px, 100%);
+  gap: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.search:focus-within {
+  box-shadow: var(--shadow-accent);
+}
+
+.input {
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  font-size: 14px;
+  outline: none;
+  color: var(--text);
+}
+
+.btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+}
+
+.accent {
+  background: var(--accent);
+}
+
+.dark {
+  background: var(--dark);
+}

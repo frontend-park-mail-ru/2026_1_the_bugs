@@ -1,7 +1,7 @@
 import { useState } from '@my-react/hooks';
-import { Header } from '../components/Header';
-import { Hero } from '../components/Here';
-import { CardList } from '../components/CardList';
+import { Header } from '../components/Header/Header';
+import { Hero } from '../components/Here/Here';
+import { CardList } from '../components/CardList/CardList';
 import { AuthModal } from '../components/AuthModal/AuthModal';
 import { apartments } from '../data/apartments';
 

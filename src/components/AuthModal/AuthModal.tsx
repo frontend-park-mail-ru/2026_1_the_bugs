@@ -1,7 +1,6 @@
 import { useState, useEffect } from '@my-react/hooks';
 
-import "./AuthModal.css"
-import "../../css/modal.css"
+import style from "./AuthModal.module.css"
 
 import { authService } from '../../services/api';
 import { type ErrorAlert } from '../../types';
@@ -103,23 +102,23 @@ export function AuthModal({ onClose }: AuthModalProps) {
   return (
     <div className="modal active" onClick={handleOverlayClick}>
       <div className="modal-content">
-        <button className="close-button" onClick={onClose}>&times;</button>
+        <button className={style.close} onClick={onClose}>&times;</button>
         <div>
           {error && (
             <ErrorsAlert key="error" errorMessage={error.message} clearError={clearError}></ErrorsAlert>
           )}
-          <h2 className="auth-title">{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
+          <h2 className={style.title}>{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
 
           <form
             id="loginForm"
-            className="auth-form"
+            className={style.form}
             style={{ display: isLoginMode ? 'block' : 'none' }}
             onSubmit={handleLogin}
           >
-            <div className="form-group">
+            <div className={style.group}>
               <label htmlFor="loginEmail">Email:</label>
               <input
-                className="font2"
+                className="input font2"
                 type="email"
                 id="loginEmail"
                 name="email"
@@ -129,10 +128,10 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 onInput={(e: any) => setLoginEmail(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className={style.group}>
               <label htmlFor="loginPassword">Пароль:</label>
               <input
-                className="font2"
+                className="input font2"
                 type="password"
                 id="loginPassword"
                 name="password"
@@ -142,21 +141,21 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 onInput={(e: any) => setLoginPassword(e.target.value)}
               />
             </div>
-            <button type="submit" className="auth-btn" disabled={isLoading}>
+            <button type="submit" className={style.primary} disabled={isLoading}>
               {isLoading ? 'Загрузка...' : 'Войти'}
             </button>
           </form>
 
           <form
             id="registerForm"
-            className="auth-form"
+            className={style.form}
             style={{ display: isLoginMode ? 'none' : 'block' }}
             onSubmit={handleRegister}
           >
-            <div className="form-group">
+            <div className={style.group}>
               <label htmlFor="registerEmail">Email:</label>
               <input
-                className="font2"
+                className="input font2"
                 type="email"
                 id="registerEmail"
                 name="email"
@@ -166,10 +165,10 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 onInput={(e: any) => setRegEmail(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className={style.group}>
               <label htmlFor="registerPassword">Пароль:</label>
               <input
-                className="font2"
+                className="input font2"
                 type="password"
                 id="registerPassword"
                 name="password"
@@ -179,10 +178,10 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 onInput={(e: any) => setRegPassword(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className={style.group}>
               <label htmlFor="registerConfirmPassword">Повторите пароль:</label>
               <input
-                className="font2"
+                className="input font2"
                 type="password"
                 id="registerConfirmPassword"
                 name="confirmPassword"
@@ -192,12 +191,12 @@ export function AuthModal({ onClose }: AuthModalProps) {
                 onInput={(e: any) => setRegConfirm(e.target.value)}
               />
             </div>
-            <button type="submit" className="auth-btn" disabled={isLoading}>
+            <button type="submit" className={style.primary} disabled={isLoading}>
               {isLoading ? 'Загрузка...' : 'Создать аккаунт'}
             </button>
           </form>
 
-          <button className="auth-toggle-btn" onClick={toggleMode} disabled={isLoading}>
+          <button className={style.secondary} onClick={toggleMode} disabled={isLoading}>
             {isLoginMode ? 'Создать аккаунт' : 'Вернуться к входу'}
           </button>
         </div>

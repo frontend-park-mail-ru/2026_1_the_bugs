@@ -1,3 +1,5 @@
+import style from './Search.module.css';
+
 interface SearchProps {
   value: string;
   onInput: (value: string) => void;
@@ -6,19 +8,19 @@ interface SearchProps {
 
 export function Search({ value, onInput, onSearch }: SearchProps) {
   return (
-    <div className="search">
+    <div className={style.search}>
       <input
-        className="search__input font2"
+        className={style.input}
         type="text"
         placeholder="Поиск по району или метро"
         value={value}
         onInput={(e: any) => onInput(e.target.value)}
       />
-      <button className="search__filter" type="button" aria-label="Фильтр">
+      <button className={`${style.btn} ${style.accent}`} type="button" aria-label="Фильтр">
         <img src="/svg/filter.svg" alt="" aria-hidden="true" />
       </button>
       <button
-        className="search__go"
+        className={`${style.btn} ${style.dark}`}
         type="button"
         aria-label="Поиск"
         onClick={onSearch}
