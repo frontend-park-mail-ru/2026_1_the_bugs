@@ -5,5 +5,5 @@ export interface LoginResponse{
 
 export interface ErrorResponse extends Error{
     status: number;
-    message: string;
+    data: any;
 }

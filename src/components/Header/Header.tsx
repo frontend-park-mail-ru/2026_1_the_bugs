@@ -4,9 +4,11 @@ import style from './Header.module.css';
 
 interface HeaderProps {
   onProfileClick: () => void;
+  onAuthorizeClick: ()=> void;
+  isAutenticated: boolean;
 }
 
-export function Header({ onProfileClick }: HeaderProps) {
+export function Header({ onProfileClick, onAuthorizeClick, isAutenticated }: HeaderProps) {
   return (
     <header className={style['header']}>
       <div className={style['logo']}>ДОМДЕЛИ</div>
@@ -18,12 +20,12 @@ export function Header({ onProfileClick }: HeaderProps) {
         <button className={style.btn} type="button" aria-label="Избранное">
           <img src="/svg/heart.svg" alt="" aria-hidden="true" />
         </button>
-        {apiService.isAuthenticated() ? (
-          <button className={style.btn} type="button" id="openAuth" aria-label="Профиль" onClick={apiService.removeToken}>
+        {isAutenticated ? (
+          <button className={style.btn} type="button" id="openAuth" aria-label="Профиль" onClick={onProfileClick}>
             <img src="/svg/profile.svg" alt="" aria-hidden="true" />
           </button>
         ) : (
-          <button className={style.secondary} type="button" id="openAuth" aria-label="Профиль" onClick={onProfileClick}>
+          <button className={style.secondary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
             Войти
           </button>
         )}

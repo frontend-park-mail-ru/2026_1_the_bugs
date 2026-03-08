@@ -1,72 +1,59 @@
 import { useState, useEffect } from '@my-react/hooks';
-
-import style from "./AuthModal.module.css"
-
+import style from "./AuthModal.module.css";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 
-
 interface AuthModalProps {
   onClose: () => void;
+  onSuccess: () => void;
 }
 
+type AuthMode = 'login' | 'register';
 type LoginField = 'email' | 'password';
 type RegisterField = 'email' | 'password' | 'confirmPassword';
+type AuthField = LoginField | RegisterField;
 
-const loginErrorFieldByStatus: Partial<Record<number, LoginField>> = {
-  400: 'email',
-  401: 'email',
-  409: 'password',
-  429: 'password'
-};
-
-const getErrorMessage = (status: number): string => {
-  const messages: Record<number, string> = {
-    400: 'Неверный email или пароль',
-    401: 'Пользователь не авторизован',
-    409: 'Пользователь c таким email уже существует',
-    404: 'Пользователь не найден',
-    429: 'Слишком много попыток. Попробуйте через минуту',
-    500: 'Ошибка сервера. Попробуйте позже'
-  };
-  return messages[status] || 'Что-то пошло не так';
+interface AuthFormState {
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
-const getHighlightStyle = (isHighlighted?: boolean) => {
-  if (!isHighlighted) {
-    return undefined;
-  }
+const ERROR_MESSAGES: Record<number, string> = {
+  400: 'Ошибка валидации поля',
+  401: 'Введен неверный email или пароль',
+  404: 'Пользователь не найден',
+  409: 'Пользователь с таким email уже существует',
+  429: 'Слишком много попыток. Попробуйте через минуту',
+  500: 'Ошибка сервера. Попробуйте позже'
+};
 
-  return {
+const LOGIN_ERROR_FIELDS: Partial<Record<number, LoginField[]>> = {
+  400: ['email'],
+  401: ['email', 'password'],
+  404: ['email'],
+  409: ['email'],
+  429: ['password']
+};
+
+const getErrorMessage = (status: number): string => 
+  ERROR_MESSAGES[status] || 'Что-то пошло не так';
+
+const getHighlightStyle = (isHighlighted?: boolean) => 
+  isHighlighted ? {
     border: '1px solid #ff4d4f',
     boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.25)'
-  };
-};
+  } : undefined;
 
-const errorWrapperStyle = {
-  height: '30px',
-  color: 'red',
-  textAlign: 'center' as const,
-  fontWeight: 'bold',
-  fontSize: '14px'
-};
-
-const errorTextStyle = {
-  fontFamily: 'Zen Kaku Gothic Antique, system-ui, sans-serif'
-};
-
-
-export function AuthModal({ onClose }: AuthModalProps) {
-  const [isLoginMode, setIsLoginMode] = useState(true);
+export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
+  const [mode, setMode] = useState<AuthMode>('login');
   const [isLoading, setIsLoading] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
-  const [regConfirm, setRegConfirm] = useState('');
-  const [loginFieldHighlights, setLoginFieldHighlights] = useState<Partial<Record<LoginField, boolean>>>({});
-  const [registerFieldHighlights, setRegisterFieldHighlights] = useState<Partial<Record<RegisterField, boolean>>>({});
-
+  const [formData, setFormData] = useState<AuthFormState>({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [fieldHighlights, setFieldHighlights] = useState<Partial<Record<AuthField, boolean>>>({});
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,19 +65,35 @@ export function AuthModal({ onClose }: AuthModalProps) {
 
   const clearFeedback = () => {
     setError(null);
-    setLoginFieldHighlights({});
-    setRegisterFieldHighlights({});
+    setFieldHighlights({});
   };
 
-  const clearLoginHighlight = (field: LoginField) => {
-    setLoginFieldHighlights({ ...loginFieldHighlights, [field]: undefined });
+  const clearFieldHighlight = (field: AuthField) => {
+    setFieldHighlights({
+      ...fieldHighlights,
+      [field]: false
+    });
   };
 
-  const clearRegisterHighlight = (field: RegisterField) => {
-    setRegisterFieldHighlights({ ...registerFieldHighlights, [field]: undefined });
+  const updateField = (field: keyof AuthFormState, value: string) => {
+    setFormData({
+      ...formData,
+      [field]: value
+    });
+    
+    if (fieldHighlights[field]) {
+      setFieldHighlights({
+        ...fieldHighlights,
+        [field]: false
+      });
+    }
+    
+    if (error) {
+      setError(null);
+    }
   };
 
-  const handleOverlayClick = (e: MouseEvent) => {
+  const handleOverlayClick = (e: any) => {
     if ((e.target as HTMLElement).classList.contains('modal')) {
       onClose();
     }
@@ -98,217 +101,183 @@ export function AuthModal({ onClose }: AuthModalProps) {
 
   const toggleMode = () => {
     clearFeedback();
-    setIsLoginMode(!isLoginMode);
+    setFormData({ email: '', password: '', confirmPassword: '' });
+    setMode(mode === 'login' ? 'register' : 'login');
   };
 
-  const handleLogin = async (e: Event) => {
+  const validateRegister = (): boolean => {
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают!');
+      setFieldHighlights({ 
+        password: true, 
+        confirmPassword: true 
+      });
+      return false;
+    }
+    if (formData.password.length < 8) {
+      setError('Пароль должен быть минимум 8 символов');
+      setFieldHighlights({ 
+        password: true, 
+        confirmPassword: true 
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleAuthError = (error: ErrorResponse, mode: AuthMode) => {
+    const message = getErrorMessage(error.status);
+    setError(message);
+
+    if (error.data?.field) {
+      setFieldHighlights({ [error.data.field]: true });
+      return;
+    }
+    const fields = LOGIN_ERROR_FIELDS[error.status];
+    if (fields) {
+      const highlights: Partial<Record<AuthField, boolean>> = {};
+      fields.forEach(f => { highlights[f] = true; });
+      setFieldHighlights(highlights);
+    }
+  };
+
+  const handleLogin = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    setLoginFieldHighlights({});
-    try {
-        await authService.login({
-            "email": loginEmail,
-            "password": loginPassword
-        });
+    setFieldHighlights({});
 
-        onClose();
+    try {
+      await authService.login({
+        email: formData.email,
+        password: formData.password
+      });
+      onSuccess();
+      onClose();
     } catch (error: any) {
-        const e = error as ErrorResponse
-        const msg = getErrorMessage(e.status)
-        const field = loginErrorFieldByStatus[e.status]
-        setError(msg)
-        if (field) {
-          setLoginFieldHighlights({ [field]: true });
-        }
+      handleAuthError(error as ErrorResponse, 'login');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegister = async (e: Event) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
     setError(null);
-    setRegisterFieldHighlights({});
-    if (regPassword !== regConfirm) {
-      setError("Пароли не совпадают!")
-      setRegisterFieldHighlights({ password: true, confirmPassword: true });
+    setFieldHighlights({});
+
+    if (!validateRegister()) {
       return;
     }
-    if (regPassword.length < 8){
-        setError("Пароль должен быть как минимум 8 символов")
-        setRegisterFieldHighlights({ password: true, confirmPassword: true });
-        return;
-    }
+
     setIsLoading(true);
     try {
       await authService.register({
-            "email": regEmail,
-            "password": regPassword
-        });
+        email: formData.email,
+        password: formData.password
+      });
+      onSuccess();
       onClose();
     } catch (error: any) {
-      const e = error as ErrorResponse
-      setError(getErrorMessage(e.status))
-      if (e.status === 409) {
-        setRegisterFieldHighlights({ email: true });
-      }
+      handleAuthError(error as ErrorResponse, 'register');
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isLogin = mode === 'login';
 
   return (
     <div className="modal active" onClick={handleOverlayClick}>
       <div className="modal-content">
         <button className={style.close} onClick={onClose}>&times;</button>
         <div>
-          <h2 className={style.title}>{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
+          <h2 className={style.title}>
+            {isLogin ? 'Авторизация' : 'Регистрация'}
+          </h2>
 
-          <form
-            id="loginForm"
-            className={style.form}
-            style={{ display: isLoginMode ? 'block' : 'none' }}
-            onSubmit={handleLogin}
+          <form 
+            className={style.form} 
+            onSubmit={isLogin ? handleLogin : handleRegister}
           >
-            <div className={style.group}>
-              <label htmlFor="loginEmail">Email:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(loginFieldHighlights.email)}
-                type="email"
-                id="loginEmail"
-                name="email"
-                placeholder="your@email.com"
-                required
-                value={loginEmail}
-                onInput={(e: any) => {
-                  setLoginEmail(e.target.value);
-                  if (loginFieldHighlights.email) {
-                    clearLoginHighlight('email');
-                  }
-                }}
-              />
-            </div>
-            <div className={style.group}>
-              <label htmlFor="loginPassword">Пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(loginFieldHighlights.password)}
-                type="password"
-                id="loginPassword"
-                name="password"
-                placeholder="Введите пароль"
-                required
-                value={loginPassword}
-                onInput={(e: any) => {
-                  setLoginPassword(e.target.value);
-                  if (loginFieldHighlights.password) {
-                    clearLoginHighlight('password');
-                  }
-                }}
-              />
-            </div>
+            <div className={style.formGroups}>
+  {/* Email поле */}
+  <div className={style.group}>
+    <label htmlFor="email">Email:</label>
+    <input
+      className="input font2"
+      style={getHighlightStyle(fieldHighlights.email)}
+      type="email"
+      id="email"
+      name="email"
+      placeholder="your@email.com"
+      required
+      value={formData.email}
+      onChange={(e: any) => updateField('email', e.target.value)}
+    />
+  </div>
 
-            <div style={errorWrapperStyle}>
-              {error && (
-                <span style={errorTextStyle}>{error}</span>
-              )}
-            </div>
+  {/* Password поле */}
+  <div className={style.group}>
+    <label htmlFor="password">Пароль:</label>
+    <input
+      className="input font2"
+      style={getHighlightStyle(fieldHighlights.password)}
+      type="password"
+      id="password"
+      name="password"
+      placeholder="Введите пароль"
+      required
+      value={formData.password}
+      onChange={(e: any) => updateField('password', e.target.value)}
+    />
+  </div>
 
-            <button type="submit" className={style.primary} disabled={isLoading}>
-              {isLoading ? 'Загрузка...' : 'Войти'}
-            </button>
+  {/* Confirm Password (только для register) */}
+  {!isLogin && (
+    <div className={style.group}>
+      <label htmlFor="confirmPassword">Повторите пароль:</label>
+      <input
+        className="input font2"
+        style={getHighlightStyle(fieldHighlights.confirmPassword)}
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+        placeholder="Повторите пароль"
+        required
+        value={formData.confirmPassword}
+        onChange={(e: any) => updateField('confirmPassword', e.target.value)}
+      />
+    </div>
+  )}
+
+  {/* Ошибка поверх последнего поля */}
+  
+    <div className={style.errorOverlay}>
+      {error && (<span>{error}</span>)}
+    </div>
+  
+</div>
+
+<button 
+  type="submit" 
+  className={style.primary} 
+  disabled={isLoading}
+>
+  {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
+</button>
+
           </form>
 
-          <form
-            id="registerForm"
-            className={style.form}
-            style={{ display: isLoginMode ? 'none' : 'block' }}
-            onSubmit={handleRegister}
+          <button 
+            className={style.secondary} 
+            onClick={toggleMode} 
+            disabled={isLoading}
           >
-            <div className={style.group}>
-              <label htmlFor="registerEmail">Email:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(registerFieldHighlights.email)}
-                type="email"
-                id="registerEmail"
-                name="email"
-                placeholder="your@email.com"
-                required
-                value={regEmail}
-                onInput={(e: any) => {
-                  setRegEmail(e.target.value);
-                  if (registerFieldHighlights.email) {
-                    clearRegisterHighlight('email');
-                  }
-                  if (error) {
-                    setError(null);
-                  }
-                }}
-              />
-            </div>
-            <div className={style.group}>
-              <label htmlFor="registerPassword">Пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(registerFieldHighlights.password)}
-                type="password"
-                id="registerPassword"
-                name="password"
-                placeholder="Введите пароль"
-                required
-                value={regPassword}
-                onInput={(e: any) => {
-                  setRegPassword(e.target.value);
-                  if (registerFieldHighlights.password) {
-                    clearRegisterHighlight('password');
-                  }
-                  if (error) {
-                    setError(null);
-                  }
-                }}
-              />
-            </div>
-            <div className={style.group}>
-              <label htmlFor="registerConfirmPassword">Повторите пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(registerFieldHighlights.confirmPassword)}
-                type="password"
-                id="registerConfirmPassword"
-                name="confirmPassword"
-                placeholder="Повторите пароль"
-                required
-                value={regConfirm}
-                onInput={(e: any) => {
-                  setRegConfirm(e.target.value);
-                  if (registerFieldHighlights.confirmPassword) {
-                    clearRegisterHighlight('confirmPassword');
-                  }
-                  if (error) {
-                    setError(null);
-                  }
-                }}
-              />
-            </div>
-              <div style={errorWrapperStyle}>
-              {error && (
-                <span style={errorTextStyle}>{error}</span>
-              )}
-            </div>
-            <button type="submit" className={style.primary} disabled={isLoading}>
-              {isLoading ? 'Загрузка...' : 'Создать аккаунт'}
-            </button>
-          </form>
-
-          <button className={style.secondary} onClick={toggleMode} disabled={isLoading}>
-            {isLoginMode ? 'Создать аккаунт' : 'Вернуться к входу'}
+            {isLogin ? 'Создать аккаунт' : 'Вернуться к входу'}
           </button>
         </div>
       </div>
     </div>
-    
   );
 }
