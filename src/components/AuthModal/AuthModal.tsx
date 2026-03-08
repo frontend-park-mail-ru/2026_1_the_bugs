@@ -2,7 +2,7 @@ import { useState, useEffect } from '@my-react/hooks';
 
 import style from "./AuthModal.module.css"
 
-import { authService } from '../../services/api';
+import { authService } from '../../services/auth';
 import { type ErrorAlert } from '../../types';
 import type { ErrorResponse } from 'src/types/api';
 import { ErrorsAlert } from '../Errors/Errors';
@@ -16,6 +16,7 @@ const getErrorMessage = (status: number): string => {
   const messages: Record<number, string> = {
     400: 'Неверный email или пароль',
     401: 'Пользователь не авторизован',
+    409: 'Пользователь c таким email уже существует',
     404: 'Пользователь не найден',
     429: 'Слишком много попыток. Попробуйте через минуту',
     500: 'Ошибка сервера. Попробуйте позже'

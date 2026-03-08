@@ -16,9 +16,9 @@ export const Button = (props: IButtonComponent) => {
 
     return(
         <button className={`
-        ${kind === 'ghost' && StyleSheet.buttonGhost}
+        ${kind === 'ghost'}
         `}>
-            {props.}
+            {props}
         </button>
     )
 }

@@ -182,13 +182,3 @@ input::placeholder {
   font-family: "Zen Kaku Gothic Antique", system-ui, sans-serif;
   color: #999;
 }
-
-@media (max-width: 768px) {
-  .page {
-    padding: 24px;
-  }
-
-  .cards {
-    grid-template-columns: repeat(2, minmax(180px, 1fr));
-  }
-}

@@ -12,7 +12,7 @@ export function Card({ apartment }: CardProps) {
     apartment.rating >= 4 ? 'warn' : 'bad';
 
   return (
-    <article className={style.card} data-title={apartment.title}>
+    <article className={style.card} data-title={apartment.metro}>
       <div className={style.image}>                         
         <img src={apartment.imageUrl} alt="Интерьер" />
       </div>
@@ -20,18 +20,23 @@ export function Card({ apartment }: CardProps) {
         <div className={style.meta}>                        
           <span className={style.location}>                 
             <img src="/svg/location.svg" alt="" aria-hidden="true" />
-            {apartment.location}
+            {apartment.address}
           </span>
           <span>{apartment.area.toString()} м²</span>
         </div>
-        <div className={style.footer}>                   
-          <span className={`${style.rate} ${style[ratingClass]}`}>
+        <div className={style.footer}>
+          {apartment?.rating && (
+             <span className={`${style.rate} ${style[ratingClass]}`}>
             {apartment.rating.toFixed(1)}
           </span>
-          <span className={style.beds}>                  
+          )}              
+         
+          {apartment?.beds && (
+              <span className={style.beds}>                  
             <img src="/svg/beds.svg" alt="" aria-hidden="true" />
             {apartment.beds.toString()}
           </span>
+          )}
           <strong>{apartment.price.toLocaleString()} ₽</strong>
         </div>
       </div>

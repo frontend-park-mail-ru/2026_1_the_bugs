@@ -6,11 +6,12 @@ class ApiService {
         this.baseURL = baseURL;
     }
 
-  async get(endpoint: string) {
+  async get(endpoint: string, params: Record<string, any>) {
     try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
+      const paramsURL = new URLSearchParams(params).toString();
+      const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
         method: 'GET',
-        headers: this.getHeaders(),
+        headers: this.getHeaders({"Accept": 'application/json'}),
       });
       return this.handleResponse(response);
     } catch (error) {
@@ -69,8 +70,8 @@ class ApiService {
    * Получить заголовки запроса
    */
   getHeaders(headers: any = {}) {
-    if (headers['Content-Type'] == undefined)
-        headers['Content-Type'] = 'application/json';
+    // if (headers['Content-Type'] == undefined)
+    //     headers['Content-Type'] = 'application/json';
     // const token = this.getToken();
     // if (token) {
     //   headers['Authorization'] = `Bearer ${token}`;

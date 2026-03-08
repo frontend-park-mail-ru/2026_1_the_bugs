@@ -9,6 +9,7 @@ interface CardListProps {
 
 export function CardList({ apartments }: CardListProps) {
   return (
+    
     <section className={style.cards}>
       {apartments.map(apt => (
         <Card key={apt.id.toString()} apartment={apt} />

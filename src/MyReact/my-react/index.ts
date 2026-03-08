@@ -181,7 +181,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType>{
             if (typeof ch === "string"){
                 return;
             }
-            if (ch === undefined){
+            if (ch === undefined || ch === null){
                 return;
             }
             if (ch.type == "element"){
