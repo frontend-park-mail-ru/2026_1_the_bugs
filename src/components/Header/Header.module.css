@@ -23,3 +23,10 @@
   height: 36px;
   border: none;
 }
+
+.secondary {
+  width: 80px;
+  height: 36px;
+  border: none;
+  background-color: var(--accent);
+}
