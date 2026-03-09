@@ -35,6 +35,25 @@
   display: flex;
   flex-direction: column;
 }
+/* Обертка для всех групп */
+.formGroups {
+  position: relative;
+  margin-bottom: 10px; /* Уменьшенный отступ до кнопки */
+}
+
+/* Ошибка поверх последнего поля */
+.errorOverlay {
+  height: 20px;
+  color: #ff4d4f;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Zen Kaku Gothic Antique', system-ui, sans-serif;
+}
+
+.group:nth-last-child(2) {
+  margin-bottom: 10px; 
+}
 
 .group label {
   margin-bottom: 8px;

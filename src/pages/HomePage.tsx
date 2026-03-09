@@ -5,13 +5,14 @@ import { CardList } from '../components/CardList/CardList';
 import { AuthModal } from '../components/AuthModal/AuthModal';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
+import { apiService } from '../services/apiClass';
 
 export function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated()); 
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
 
-  
 
   const handleSearch = () => {
     // const filtered = apartments.filter(apt =>
@@ -24,14 +25,13 @@ export function HomePage() {
     setFilteredApartments(postersResp.posters);
     
   }
-
   useEffect(
-    ()=>{
-      handelPostersList()
-    }, []
+    ()=>{handelPostersList()}, []
   )
-
-
+  const onProfileClick = () =>{
+    apiService.removeToken()
+    setIsAuthenticate(false)
+  }
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => {
         setIsAuthModalOpen(false)
@@ -40,7 +40,7 @@ export function HomePage() {
 
   return (
     <div className="page">
-      <Header key="header" onProfileClick={openAuthModal} />
+      <Header isAutenticated={isAuthenticate} key="header" onProfileClick={onProfileClick} onAuthorizeClick={openAuthModal} />
       <main className="main">
         <Hero key="hero"
           searchValue={searchQuery}
@@ -49,7 +49,7 @@ export function HomePage() {
         />
         { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
       </main>
-      {isAuthModalOpen && <AuthModal key="auth" onClose={closeAuthModal} />}
+      {isAuthModalOpen && <AuthModal key="auth" onSuccess={()=>setIsAuthenticate(true)}onClose={closeAuthModal} />}
     </div>
   );
 }
