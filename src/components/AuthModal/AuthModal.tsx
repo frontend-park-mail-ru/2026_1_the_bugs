@@ -45,7 +45,7 @@ const getHighlightStyle = (isHighlighted?: boolean) =>
     boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.25)'
   } : undefined;
 
-export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
+export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AuthFormState>({
@@ -55,6 +55,10 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
   });
   const [fieldHighlights, setFieldHighlights] = useState<Partial<Record<AuthField, boolean>>>({});
   const [error, setError] = useState<string | null>(null);
+  
+  // Состояния видимости паролей
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -68,9 +72,7 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
     setFieldHighlights({});
   };
 
-
   const updateField = (field: keyof AuthFormState, value: string) => {
-    console.log(formData, field, value)
     setFormData({
       ...formData,
       [field]: value
@@ -87,7 +89,6 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
       setError(null);
     }
   };
-
 
   const toggleMode = () => {
     clearFeedback();
@@ -230,52 +231,81 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
             onSubmit={isLogin ? handleLogin : handleRegister}
           >
             <div className={style.formGroups}>
-            {/* Email поле */}
-            <div className={style.group}>
-              <label htmlFor="email">Email:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(fieldHighlights.email)}
-                type="email"
-                id="email"
-                name="email"
-                placeholder="your@email.com"
-                required
-                value={formData.email}
-                onInput={(e: any) => updateField('email', e.target.value)}
-              />
-            </div>
+              {/* Email поле */}
+              <div className={style.group}>
+                <label htmlFor="email">Email:</label>
+                <input
+                  className="input font2"
+                  style={getHighlightStyle(fieldHighlights.email)}
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="your@email.com"
+                  required
+                  value={formData.email}
+                  onInput={(e: any) => updateField('email', e.target.value)}
+                />
+              </div>
 
-            <div className={style.group}>
-              <label htmlFor="password">Пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(fieldHighlights.password)}
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Введите пароль"
-                required
-                value={formData.password}
-                onInput={(e: any) => updateField('password', e.target.value)}
-              />
-            </div>
+              {/* Password поле */}
+              <div className={style.group}>
+                <label htmlFor="password">Пароль:</label>
+                <div className={style.passwordWrapper}>
+                  <input
+                    className="input font2"
+                    style={getHighlightStyle(fieldHighlights.password)}
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    placeholder="Введите пароль"
+                    required
+                    value={formData.password}
+                    onInput={(e: any) => updateField('password', e.target.value)}
+                  />
+                  <img
+                    src="/svg/eye.svg"
+                    alt="show password"
+                    className={style.eyeIcon}
+                    draggable="false"
+                    onMouseDown={(e: any) => {
+                      e.preventDefault();
+                      setShowPassword(true);
+                    }}
+                    onMouseUp={() => setShowPassword(false)}
+                    onMouseLeave={() => setShowPassword(false)}
+                  />
+                </div>
+              </div>
 
               {/* Confirm Password (только для register) */}
               {!isLogin && (
                 <div className={style.group}>
                   <label htmlFor="confirmPassword">Повторите пароль:</label>
-                  <input
-                    className="input font2"
-                    style={getHighlightStyle(fieldHighlights.confirmPassword)}
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    placeholder="Повторите пароль"
-                    required
-                    value={formData.confirmPassword}
-                    onInput={(e: any) => updateField('confirmPassword', e.target.value)}
-                  />
+                  <div className={style.passwordWrapper}>
+                    <input
+                      className="input font2"
+                      style={getHighlightStyle(fieldHighlights.confirmPassword)}
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      placeholder="Повторите пароль"
+                      required
+                      value={formData.confirmPassword}
+                      onInput={(e: any) => updateField('confirmPassword', e.target.value)}
+                    />
+                    <img
+                      src="/svg/eye.svg"
+                      alt="show password"
+                      className={style.eyeIcon}
+                      draggable="false"
+                      onMouseDown={(e: any) => {
+                        e.preventDefault();
+                        setShowConfirmPassword(true);
+                      }}
+                      onMouseUp={() => setShowConfirmPassword(false)}
+                      onMouseLeave={() => setShowConfirmPassword(false)}
+                    />
+                  </div>
                 </div>
               )}
               
