@@ -28,6 +28,10 @@ export function HomePage() {
   useEffect(
     ()=>{handelPostersList()}, []
   )
+  const onProfileClick = () =>{
+    apiService.removeToken()
+    setIsAuthenticate(false)
+  }
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => {
         setIsAuthModalOpen(false)
@@ -36,7 +40,7 @@ export function HomePage() {
 
   return (
     <div className="page">
-      <Header isAutenticated={isAuthenticate} key="header" onProfileClick={()=>{setIsAuthenticate(false)}} onAuthorizeClick={openAuthModal} />
+      <Header isAutenticated={isAuthenticate} key="header" onProfileClick={onProfileClick} onAuthorizeClick={openAuthModal} />
       <main className="main">
         <Hero key="hero"
           searchValue={searchQuery}
