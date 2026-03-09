@@ -91,7 +91,7 @@ class ApiService {
     if (!response.ok) {
       const error = new Error(data.message || 'API error') as ErrorResponse;
       error.status = response.status;
-      error.message = data.error;
+      error.data = data;
       throw error;
     }
     
