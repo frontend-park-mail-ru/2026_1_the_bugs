@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap');
+
+@font-face {
+  font-family: "Aqum Two";
+  src: url("/font/Aqum2classic.otf");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --bg: #f6f6f5;
   --card: #ffffff;
@@ -7,10 +16,169 @@
   --accent-hover: #e07bbd;
   --dark: #121212;
   --border: rgba(0, 0, 0, 0.06);
-  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  --shadow-accent: 0 6px 30px #f08dcc66;
+  --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 4px 16px #f08dcc66;
 
   --radius-S: 30px;
-  --radius-M: 0px;
   --radius-L: 999px;
+}
+
+/* БАЗОВЫЙ СТИЛЬ КНОПКИ - используется как основа */
+button {
+  border-radius: var(--radius-L);
+  background: var(--card);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Aqum Two", system-ui, sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+}
+
+button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+} 
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button svg,
+button img {
+  width: 18px;
+  height: 18px;
+  margin: auto;
+}
+/* ************************* */
+
+/* Затемненный фон */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out; 
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal.active {
+  display: block;
+}
+
+/* Контент окна */
+.modal-content {
+  border-radius: 20px;
+  background-color: var(--bg);
+  padding: 40px 40px 20px 40px;
+  border: none;
+  box-shadow: var(--shadow);
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  margin: 50px auto;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Aqum Two", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 32px 48px 64px;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: calc(4 * 250px + 3 * 18px);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.input {
+  background: var(--card);
+  border-radius: var(--radius-L);
+  box-shadow: var(--shadow);
+  width: 100%;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  outline: none;
+  color: var(--text);
+}
+
+.input:focus {
+  box-shadow: var(--shadow-accent);
+}
+
+input::placeholder {
+  font-family: "Zen Kaku Gothic Antique", system-ui, sans-serif;
+  color: #999;
 }

@@ -1,7 +1,7 @@
 export interface Apartment {
   id: number;
-  title: string;
-  location: string;
+  metro: string;
+  address: string;
   area: number;
   price: number;
   rating: number;

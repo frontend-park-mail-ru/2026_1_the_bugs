@@ -1,5 +1,5 @@
 import { apiService } from "./apiClass";
-import {type LoginResponse } from "./../types/api"
+import {type LoginResponse } from "../types/api"
 
 
 class AuthService {

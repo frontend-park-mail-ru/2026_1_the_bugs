@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: calc(4 * 250px + 3 * 18px);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.logo {
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 18px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+}
+
+.secondary {
+  width: 80px;
+  height: 36px;
+  border: none;
+  background-color: var(--accent);
+}

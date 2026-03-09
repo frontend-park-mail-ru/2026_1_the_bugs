@@ -1,0 +1,17 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 250px));
+  gap: 18px;
+  justify-content: center;
+}
+
+
+@media (max-width: 768px) {
+  .page {
+    padding: 24px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
