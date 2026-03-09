@@ -68,14 +68,9 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
     setFieldHighlights({});
   };
 
-  const clearFieldHighlight = (field: AuthField) => {
-    setFieldHighlights({
-      ...fieldHighlights,
-      [field]: false
-    });
-  };
 
   const updateField = (field: keyof AuthFormState, value: string) => {
+    console.log(formData, field, value)
     setFormData({
       ...formData,
       [field]: value
@@ -93,11 +88,6 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
     }
   };
 
-  const handleOverlayClick = (e: any) => {
-    if ((e.target as HTMLElement).classList.contains('modal')) {
-      onClose();
-    }
-  };
 
   const toggleMode = () => {
     clearFeedback();
@@ -125,7 +115,7 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
     return true;
   };
 
-  const handleAuthError = (error: ErrorResponse, mode: AuthMode) => {
+  const handleAuthError = (error: ErrorResponse) => {
     const message = getErrorMessage(error.status);
     setError(message);
 
@@ -155,7 +145,7 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
       onSuccess();
       onClose();
     } catch (error: any) {
-      handleAuthError(error as ErrorResponse, 'login');
+      handleAuthError(error as ErrorResponse);
     } finally {
       setIsLoading(false);
     }
@@ -179,7 +169,7 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
       onSuccess();
       onClose();
     } catch (error: any) {
-      handleAuthError(error as ErrorResponse, 'register');
+      handleAuthError(error as ErrorResponse);
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +178,7 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
   const isLogin = mode === 'login';
 
   return (
-    <div className="modal active" onClick={handleOverlayClick}>
+    <div className="modal active">
       <div className="modal-content">
         <button className={style.close} onClick={onClose}>&times;</button>
         <div>
@@ -201,71 +191,68 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
             onSubmit={isLogin ? handleLogin : handleRegister}
           >
             <div className={style.formGroups}>
-  {/* Email поле */}
-  <div className={style.group}>
-    <label htmlFor="email">Email:</label>
-    <input
-      className="input font2"
-      style={getHighlightStyle(fieldHighlights.email)}
-      type="email"
-      id="email"
-      name="email"
-      placeholder="your@email.com"
-      required
-      value={formData.email}
-      onChange={(e: any) => updateField('email', e.target.value)}
-    />
-  </div>
+            {/* Email поле */}
+            <div className={style.group}>
+              <label htmlFor="email">Email:</label>
+              <input
+                className="input font2"
+                style={getHighlightStyle(fieldHighlights.email)}
+                type="email"
+                id="email"
+                name="email"
+                placeholder="your@email.com"
+                required
+                value={formData.email}
+                onInput={(e: any) => updateField('email', e.target.value)}
+              />
+            </div>
 
-  {/* Password поле */}
-  <div className={style.group}>
-    <label htmlFor="password">Пароль:</label>
-    <input
-      className="input font2"
-      style={getHighlightStyle(fieldHighlights.password)}
-      type="password"
-      id="password"
-      name="password"
-      placeholder="Введите пароль"
-      required
-      value={formData.password}
-      onChange={(e: any) => updateField('password', e.target.value)}
-    />
-  </div>
+            <div className={style.group}>
+              <label htmlFor="password">Пароль:</label>
+              <input
+                className="input font2"
+                style={getHighlightStyle(fieldHighlights.password)}
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Введите пароль"
+                required
+                value={formData.password}
+                onInput={(e: any) => updateField('password', e.target.value)}
+              />
+            </div>
 
-  {/* Confirm Password (только для register) */}
-  {!isLogin && (
-    <div className={style.group}>
-      <label htmlFor="confirmPassword">Повторите пароль:</label>
-      <input
-        className="input font2"
-        style={getHighlightStyle(fieldHighlights.confirmPassword)}
-        type="password"
-        id="confirmPassword"
-        name="confirmPassword"
-        placeholder="Повторите пароль"
-        required
-        value={formData.confirmPassword}
-        onChange={(e: any) => updateField('confirmPassword', e.target.value)}
-      />
-    </div>
-  )}
+              {/* Confirm Password (только для register) */}
+              {!isLogin && (
+                <div className={style.group}>
+                  <label htmlFor="confirmPassword">Повторите пароль:</label>
+                  <input
+                    className="input font2"
+                    style={getHighlightStyle(fieldHighlights.confirmPassword)}
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Повторите пароль"
+                    required
+                    value={formData.confirmPassword}
+                    onInput={(e: any) => updateField('confirmPassword', e.target.value)}
+                  />
+                </div>
+              )}
+              
+              <div className={style.errorOverlay}>
+                {error && (<span>{error}</span>)}
+              </div>
+              
+            </div>
 
-  {/* Ошибка поверх последнего поля */}
-  
-    <div className={style.errorOverlay}>
-      {error && (<span>{error}</span>)}
-    </div>
-  
-</div>
-
-<button 
-  type="submit" 
-  className={style.primary} 
-  disabled={isLoading}
->
-  {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
-</button>
+            <button 
+              type="submit" 
+              className={style.primary} 
+              disabled={isLoading}
+            >
+              {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
+            </button>
 
           </form>
 
