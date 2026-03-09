@@ -1,0 +1,103 @@
+/* Используем глобальные .modal и .modal-content из index.css */
+/* Здесь только специфичные стили для AuthModal */
+
+/* Кнопка закрытия */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 40px !important;
+  color: #999;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  box-shadow: none !important;
+}
+
+/* Стили для форм авторизации */
+.title {
+  margin: 0 0 30px 0;
+  font-size: 28px;
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+/* Обертка для всех групп */
+.formGroups {
+  position: relative;
+  margin-bottom: 10px; /* Уменьшенный отступ до кнопки */
+}
+
+/* Ошибка поверх последнего поля */
+.errorOverlay {
+  height: 20px;
+  color: #ff4d4f;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Zen Kaku Gothic Antique', system-ui, sans-serif;
+}
+
+.group:nth-last-child(2) {
+  margin-bottom: 10px; 
+}
+
+.group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize;
+}
+
+/* МОДИФИКАТОРЫ - переопределяют только цвета и нужные свойства */
+.primary {
+  width: 60%;
+  border: none;
+  padding: 12px;
+  background-color: var(--accent);
+  color: white;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.secondary {
+  width: 60%;
+  padding: 12px;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: #e8e8e8;
+  border-color: #999;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+    padding: 30px 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    max-height: calc(100vh - 60px);
+  }
+}
