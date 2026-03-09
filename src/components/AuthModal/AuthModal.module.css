@@ -87,7 +87,12 @@
 }
 
 .eyeIcon:hover {
-  opacity: 1;
+  opacity: 0.8;
+}
+
+.eyeIconActive {
+  opacity: 1 !important;
+  filter: grayscale(0) !important;
 }
 
 /* МОДИФИКАТОРЫ - переопределяют только цвета и нужные свойства */

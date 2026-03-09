@@ -62,6 +62,8 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     return () => {
       document.body.style.overflow = '';
     };
@@ -93,6 +95,8 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const toggleMode = () => {
     clearFeedback();
     setFormData({ email: '', password: '', confirmPassword: '' });
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setMode(mode === 'login' ? 'register' : 'login');
   };
 
@@ -265,14 +269,14 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                   <img
                     src="/svg/eye.svg"
                     alt="show password"
-                    className={style.eyeIcon}
+                    className={`${style.eyeIcon} ${showPassword ? style.eyeIconActive : ''}`}
                     draggable="false"
-                    onMouseDown={(e: any) => {
+                    onMouseDown={(e: any) => e.preventDefault()}
+                    onClick={(e: any) => {
                       e.preventDefault();
-                      setShowPassword(true);
+                      e.stopPropagation();
+                      setShowPassword(!showPassword);
                     }}
-                    onMouseUp={() => setShowPassword(false)}
-                    onMouseLeave={() => setShowPassword(false)}
                   />
                 </div>
               </div>
@@ -296,14 +300,14 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                     <img
                       src="/svg/eye.svg"
                       alt="show password"
-                      className={style.eyeIcon}
+                      className={`${style.eyeIcon} ${showConfirmPassword ? style.eyeIconActive : ''}`}
                       draggable="false"
-                      onMouseDown={(e: any) => {
+                      onMouseDown={(e: any) => e.preventDefault()}
+                      onClick={(e: any) => {
                         e.preventDefault();
-                        setShowConfirmPassword(true);
+                        e.stopPropagation();
+                        setShowConfirmPassword(!showConfirmPassword);
                       }}
-                      onMouseUp={() => setShowConfirmPassword(false)}
-                      onMouseLeave={() => setShowConfirmPassword(false)}
                     />
                   </div>
                 </div>
