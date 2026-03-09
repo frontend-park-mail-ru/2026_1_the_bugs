@@ -95,25 +95,64 @@ export function AuthModal({ onClose,onSuccess }: AuthModalProps) {
     setMode(mode === 'login' ? 'register' : 'login');
   };
 
+  const MIN_PWD_LEN = 8;
+  const MAX_PWD_LEN = 72;
+  const pwdRegexPattern = `^[a-zA-Z\\d!@#$%^&*\\-]{${MIN_PWD_LEN},}$`;
+
   const validateRegister = (): boolean => {
     if (formData.password !== formData.confirmPassword) {
       setError('Пароли не совпадают!');
-      setFieldHighlights({ 
-        password: true, 
-        confirmPassword: true 
-      });
+      setFieldHighlights({ password: true, confirmPassword: true });
       return false;
     }
-    if (formData.password.length < 8) {
-      setError('Пароль должен быть минимум 8 символов');
-      setFieldHighlights({ 
-        password: true, 
-        confirmPassword: true 
-      });
+
+    const pwd = formData.password;
+
+    // Длина
+    if (pwd.length < MIN_PWD_LEN) {
+      setError(`Пароль должен быть минимум ${MIN_PWD_LEN} символов`);
+      setFieldHighlights({ password: true, confirmPassword: true });
       return false;
     }
+    if (pwd.length > MAX_PWD_LEN) {
+      setError(`Пароль слишком длинный (макс. ${MAX_PWD_LEN} символов)`);
+      setFieldHighlights({ password: true, confirmPassword: true });
+      return false;
+    }
+
+    const hasUpper = /[A-Z]/.test(pwd);
+    if (!hasUpper) {
+      setError('Пароль должен содержать заглавную букву (A-Z)');
+      setFieldHighlights({ password: true, confirmPassword: true });
+      return false;
+    }
+
+    const hasLower = /[a-z]/.test(pwd);
+    if (!hasLower) {
+      setError('Пароль должен содержать строчную букву (a-z)');
+      setFieldHighlights({ password: true, confirmPassword: true });
+      return false;
+    }
+
+    const hasDigit = /\d/.test(pwd);
+    if (!hasDigit) {
+      setError('Пароль должен содержать цифру (0-9)');
+      setFieldHighlights({ password: true, confirmPassword: true });
+      return false;
+    }
+
+    const matchesPattern = new RegExp(pwdRegexPattern).test(pwd);
+    if (!matchesPattern) {
+      setError('Допустимы только: a-z A-Z 0-9 !@#$%^&*-');
+      setFieldHighlights({ password: true, confirmPassword: true });
+      return false;
+    }
+
+    setError(''); 
+    setFieldHighlights({});
     return true;
   };
+
 
   const handleAuthError = (error: ErrorResponse) => {
     const message = getErrorMessage(error.status);
