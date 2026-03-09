@@ -13,14 +13,14 @@ export function Header({ onProfileClick }: HeaderProps) {
       <div className={style['actions']}>
 
         <button className={style.btn} type="button" aria-label="Сообщение">
-          <img src="/svg/message.svg" alt="" aria-hidden="true" />
+          <img src="/svg/message.svg" alt="" aria-hidden="true" draggable="false"/>
         </button>
         <button className={style.btn} type="button" aria-label="Избранное">
-          <img src="/svg/heart.svg" alt="" aria-hidden="true" />
+          <img src="/svg/heart.svg" alt="" aria-hidden="true" draggable="false"/>
         </button>
         {apiService.isAuthenticated() ? (
           <button className={style.btn} type="button" id="openAuth" aria-label="Профиль" onClick={apiService.removeToken}>
-            <img src="/svg/profile.svg" alt="" aria-hidden="true" />
+            <img src="/svg/profile.svg" alt="" aria-hidden="true" draggable="false"/>
           </button>
         ) : (
           <button className={style.secondary} type="button" id="openAuth" aria-label="Профиль" onClick={onProfileClick}>

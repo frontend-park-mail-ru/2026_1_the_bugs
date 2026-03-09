@@ -14,12 +14,12 @@ export function Card({ apartment }: CardProps) {
   return (
     <article className={style.card} data-title={apartment.metro}>
       <div className={style.image}>                         
-        <img src={apartment.imageUrl} alt="Интерьер" />
+        <img src={apartment.imageUrl} alt="Интерьер" draggable="false"/>
       </div>
       <div className={style.info}>                          
         <div className={style.meta}>                        
           <span className={style.location}>                 
-            <img src="/svg/location.svg" alt="" aria-hidden="true" />
+            <img src="/svg/location.svg" alt="" aria-hidden="true" draggable="false"/>
             {apartment.address}
           </span>
           <span>{apartment.area.toString()} м²</span>
@@ -33,7 +33,7 @@ export function Card({ apartment }: CardProps) {
          
           {apartment?.beds && (
               <span className={style.beds}>                  
-            <img src="/svg/beds.svg" alt="" aria-hidden="true" />
+            <img src="/svg/beds.svg" alt="" aria-hidden="true" draggable="false"/>
             {apartment.beds.toString()}
           </span>
           )}

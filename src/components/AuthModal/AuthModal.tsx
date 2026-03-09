@@ -68,6 +68,11 @@ export function AuthModal({ onClose }: AuthModalProps) {
   const [registerFieldHighlights, setRegisterFieldHighlights] = useState<Partial<Record<RegisterField, boolean>>>({});
 
   const [error, setError] = useState<string | null>(null);
+  
+  // Состояния видимости паролей
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirm, setShowRegConfirm] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -192,22 +197,36 @@ export function AuthModal({ onClose }: AuthModalProps) {
             </div>
             <div className={style.group}>
               <label htmlFor="loginPassword">Пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(loginFieldHighlights.password)}
-                type="password"
-                id="loginPassword"
-                name="password"
-                placeholder="Введите пароль"
-                required
-                value={loginPassword}
-                onInput={(e: any) => {
-                  setLoginPassword(e.target.value);
-                  if (loginFieldHighlights.password) {
-                    clearLoginHighlight('password');
-                  }
-                }}
-              />
+              <div className={style.passwordWrapper}>
+                <input
+                  className="input font2"
+                  style={getHighlightStyle(loginFieldHighlights.password)}
+                  type={showLoginPassword ? "text" : "password"}
+                  id="loginPassword"
+                  name="password"
+                  placeholder="Введите пароль"
+                  required
+                  value={loginPassword}
+                  onInput={(e: any) => {
+                    setLoginPassword(e.target.value);
+                    if (loginFieldHighlights.password) {
+                      clearLoginHighlight('password');
+                    }
+                  }}
+                />
+                <img
+                  src="/svg/eye.svg"
+                  alt="show password"
+                  className={style.eyeIcon}
+                  draggable="false"
+                  onMouseDown={(e: any) => {
+                    e.preventDefault();
+                    setShowLoginPassword(true);
+                  }}
+                  onMouseUp={() => setShowLoginPassword(false)}
+                  onMouseLeave={() => setShowLoginPassword(false)}
+                />
+              </div>
             </div>
 
             <div style={errorWrapperStyle}>
@@ -251,47 +270,75 @@ export function AuthModal({ onClose }: AuthModalProps) {
             </div>
             <div className={style.group}>
               <label htmlFor="registerPassword">Пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(registerFieldHighlights.password)}
-                type="password"
-                id="registerPassword"
-                name="password"
-                placeholder="Введите пароль"
-                required
-                value={regPassword}
-                onInput={(e: any) => {
-                  setRegPassword(e.target.value);
-                  if (registerFieldHighlights.password) {
-                    clearRegisterHighlight('password');
-                  }
-                  if (error) {
-                    setError(null);
-                  }
-                }}
-              />
+              <div className={style.passwordWrapper}>
+                <input
+                  className="input font2"
+                  style={getHighlightStyle(registerFieldHighlights.password)}
+                  type={showRegPassword ? "text" : "password"}
+                  id="registerPassword"
+                  name="password"
+                  placeholder="Введите пароль"
+                  required
+                  value={regPassword}
+                  onInput={(e: any) => {
+                    setRegPassword(e.target.value);
+                    if (registerFieldHighlights.password) {
+                      clearRegisterHighlight('password');
+                    }
+                    if (error) {
+                      setError(null);
+                    }
+                  }}
+                />
+                <img
+                  src="/svg/eye.svg"
+                  alt="show password"
+                  className={style.eyeIcon}
+                  draggable="false"
+                  onMouseDown={(e: any) => {
+                    e.preventDefault();
+                    setShowRegPassword(true);
+                  }}
+                  onMouseUp={() => setShowRegPassword(false)}
+                  onMouseLeave={() => setShowRegPassword(false)}
+                />
+              </div>
             </div>
             <div className={style.group}>
               <label htmlFor="registerConfirmPassword">Повторите пароль:</label>
-              <input
-                className="input font2"
-                style={getHighlightStyle(registerFieldHighlights.confirmPassword)}
-                type="password"
-                id="registerConfirmPassword"
-                name="confirmPassword"
-                placeholder="Повторите пароль"
-                required
-                value={regConfirm}
-                onInput={(e: any) => {
-                  setRegConfirm(e.target.value);
-                  if (registerFieldHighlights.confirmPassword) {
-                    clearRegisterHighlight('confirmPassword');
-                  }
-                  if (error) {
-                    setError(null);
-                  }
-                }}
-              />
+              <div className={style.passwordWrapper}>
+                <input
+                  className="input font2"
+                  style={getHighlightStyle(registerFieldHighlights.confirmPassword)}
+                  type={showRegConfirm ? "text" : "password"}
+                  id="registerConfirmPassword"
+                  name="confirmPassword"
+                  placeholder="Повторите пароль"
+                  required
+                  value={regConfirm}
+                  onInput={(e: any) => {
+                    setRegConfirm(e.target.value);
+                    if (registerFieldHighlights.confirmPassword) {
+                      clearRegisterHighlight('confirmPassword');
+                    }
+                    if (error) {
+                      setError(null);
+                    }
+                  }}
+                />
+                <img
+                  src="/svg/eye.svg"
+                  alt="show password"
+                  className={style.eyeIcon}
+                  draggable="false"
+                  onMouseDown={(e: any) => {
+                    e.preventDefault();
+                    setShowRegConfirm(true);
+                  }}
+                  onMouseUp={() => setShowRegConfirm(false)}
+                  onMouseLeave={() => setShowRegConfirm(false)}
+                />
+              </div>
             </div>
               <div style={errorWrapperStyle}>
               {error && (

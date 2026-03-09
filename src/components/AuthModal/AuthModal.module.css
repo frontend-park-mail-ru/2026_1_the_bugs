@@ -44,6 +44,33 @@
   text-transform: capitalize;
 }
 
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrapper input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.6;
+  object-fit: contain;
+}
+
+.eyeIcon:hover {
+  opacity: 1;
+}
+
 /* МОДИФИКАТОРЫ - переопределяют только цвета и нужные свойства */
 .primary {
   width: 60%;

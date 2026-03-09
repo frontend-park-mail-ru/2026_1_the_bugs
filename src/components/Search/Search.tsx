@@ -17,7 +17,7 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
         onInput={(e: any) => onInput(e.target.value)}
       />
       <button className={`${style.btn} ${style.accent}`} type="button" aria-label="Фильтр">
-        <img src="/svg/filter.svg" alt="" aria-hidden="true" />
+        <img src="/svg/filter.svg" alt="" aria-hidden="true" draggable="false"/>
       </button>
       <button
         className={`${style.btn} ${style.dark}`}
@@ -25,7 +25,7 @@ export function Search({ value, onInput, onSearch }: SearchProps) {
         aria-label="Поиск"
         onClick={onSearch}
       >
-        <img src="/svg/search.svg" alt="" aria-hidden="true" />
+        <img src="/svg/search.svg" alt="" aria-hidden="true" draggable="false"/>
       </button>
     </div>
   );
