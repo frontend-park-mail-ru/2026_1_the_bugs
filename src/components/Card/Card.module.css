@@ -1,0 +1,92 @@
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.image {
+  position: relative;
+  height: 170px;
+}
+
+.chip {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #222;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.info {
+  padding: 12px 14px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.footer strong {
+  font-size: 14px;
+  margin-left: auto;
+}
+
+.rate {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.good {
+  background: #dff7b6;
+}
+
+.mid {
+  background: #edf3b5;
+}
+
+.warn {
+  background: #f7d2b6;
+}
+
+.bad {
+  background: #f8b9b9;
+}
+
+.beds {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.location svg,
+.location img,
+.beds svg,
+.beds img {
+  width: 16px;
+  height: 16px;
+}
+
+.location {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

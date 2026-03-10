@@ -1,0 +1,64 @@
+.banner {
+    background: linear-gradient(90deg, #fee 0%, #fcc 100%);
+    border: 1px solid #f99;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.15);
+}
+
+.banner.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.text {
+    flex: 1;
+    font-weight: 500;
+    color: #c33;
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #c33;
+    width: 28px;
+    height: 28px;
+}
+
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff2;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.group input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
