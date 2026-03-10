@@ -95,9 +95,29 @@ class AuthService {
             "/auth/refresh", 
             '',
             { "Content-Type": "text/plain; charset=utf-8" },
-            true
         );
         return data;
+    }
+    
+    /** Выполняет выход пользователя, удаляя токен доступа и очищая таймер обновления. 
+     * При наличии действующего токена отправляет запрос на сервер для завершения сессии.
+     * @throws Ошибка API при неудачном выходе (например, если токен недействителен).
+     * При отсутствии токена просто очищает локальное состояние.
+    */
+    async logout() {
+        const token = apiService.getToken();
+        if (!token) return; 
+        apiService.removeToken();
+        await apiService.post(
+            "/auth/logout", 
+            null,
+            {'Authorization': `Bearer ${token}` , 'Accept': 'application/json'},
+        );
+        if (this.refreshTimeout) {
+            clearTimeout(this.refreshTimeout);
+            this.refreshTimeout = null;
+        }
+        return;
     }
 }
 

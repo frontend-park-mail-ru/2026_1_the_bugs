@@ -6,6 +6,7 @@ import { AuthModal } from '../components/AuthModal/AuthModal';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
 import { apiService } from '../services/apiClass';
+import { authService } from '../services/auth';
 
 
 /**
@@ -34,8 +35,8 @@ export function HomePage() {
     ()=>{handelPostersList()}, []
   )
   const onProfileClick = () =>{
-    apiService.removeToken()
     setIsAuthenticate(false)
+    authService.logout()
   }
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => {

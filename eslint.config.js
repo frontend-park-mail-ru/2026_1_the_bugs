@@ -1,4 +1,3 @@
-// eslint.config.js (БЕЗ import/order - работает гарантированно)
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
@@ -16,12 +15,9 @@ export default [
       }
     },
     rules: {
-      // Твой кастомный React
-      
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       
-      // Базовые правила
       '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_', 
         varsIgnorePattern: '^_' 
