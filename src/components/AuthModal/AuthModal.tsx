@@ -9,7 +9,8 @@ import {
   validateConfirmPassword,
   validateLoginForm,
   validateRegisterForm,
-  type ValidationResult
+  type ValidationResult,
+  baseValidatePassword
 } from './authValidation';
 import {
     LOGIN_ERROR_FIELDS,
@@ -168,6 +169,9 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             const confirmResult = validateConfirmPassword(value, formData.confirmPassword);
             applyValidationResult(confirmResult, setError, setFieldHighlights);
         }
+    }else{
+      const result = baseValidatePassword(value);
+      applyValidationResult(result, setError, setFieldHighlights);
     }
   };
 

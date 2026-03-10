@@ -55,6 +55,33 @@ export const validateEmail = (email: string): ValidationResult => {
   return { isValid: true, error: null, fieldsToHighlight: {} };
 };
 
+export const baseValidatePassword = (pwd: string): ValidationResult => {
+   if (pwd === '') {
+    return {
+      isValid: false,
+      error: 'Пароль не может быть пустым',
+      fieldsToHighlight: { password: true },
+    };
+  }
+
+  if (pwd.length < MIN_PWD_LEN) {
+    return {
+      isValid: false,
+      error: `Пароль должен быть минимум ${MIN_PWD_LEN} символов`,
+      fieldsToHighlight: { password: true },
+    };
+  }
+
+  if (pwd.length > MAX_PWD_LEN) {
+    return {
+      isValid: false,
+      error: `Пароль слишком длинный (макс. ${MAX_PWD_LEN} символов)`,
+      fieldsToHighlight: { password: true },
+    };
+  }
+  return { isValid: true, error: null, fieldsToHighlight: {} };
+}
+
 export const validatePassword = (pwd: string): ValidationResult => {
   if (pwd === '') {
     return {
@@ -144,7 +171,7 @@ export const validateLoginForm = (form: AuthFormState): ValidationResult => {
     return emailResult;
   }
 
-  const pwdResult = validatePassword(form.password);
+  const pwdResult = baseValidatePassword(form.password);
   if (!pwdResult.isValid) {
     return pwdResult;
   }
