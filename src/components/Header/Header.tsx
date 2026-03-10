@@ -1,5 +1,3 @@
-import { apiService } from '../../services/apiClass';
-import { Button } from '../Button/Button';
 import style from './Header.module.css';
 
 interface HeaderProps {

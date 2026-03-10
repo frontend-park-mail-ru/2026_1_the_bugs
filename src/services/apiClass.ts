@@ -1,119 +1,175 @@
 import type { ErrorResponse } from "src/types/api";
 
+/**
+ * Универсальный сервис API для HTTP-запросов к бэкенд-эндпоинтам.
+ * Поддерживает методы GET, POST, PUT, DELETE с автоматической обработкой ошибок,
+ * токенной аутентификацией и парсингом JSON-ответов.
+ */
 class ApiService {
-    baseURL: string | undefined
+    /** Базовый URL для всех API-запросов (например, '/api' или полный URL) */
+    baseURL: string | undefined;
+
+    /**
+     * Создает экземпляр ApiService.
+     * @param baseURL - Базовый URL для API-запросов. По умолчанию '/api'.
+     */
     constructor(baseURL: string = '/api') {
         this.baseURL = baseURL;
     }
 
-  async get(endpoint: string, params: Record<string, any>) {
-    try {
-      const paramsURL = new URLSearchParams(params).toString();
-      const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
-        method: 'GET',
-        headers: this.getHeaders({"Accept": 'application/json'}),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('GET request error:', error);
-      throw error;
+    /**
+     * Выполняет GET-запрос с параметрами запроса.
+     * @param endpoint - Путь к API-эндпоинту (например, '/users').
+     * @param params - Параметры запроса в формате ключ-значение.
+     * @returns Promise с распарсенными JSON-данными ответа.
+     * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
+     */
+    async get(endpoint: string, params: Record<string, any>) {
+        try {
+            const paramsURL = new URLSearchParams(params).toString();
+            const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
+                method: 'GET',
+                headers: this.getHeaders({"Accept": 'application/json'}),
+            });
+            return this.handleResponse(response);
+        } catch (error) {
+            console.error('GET request error:', error);
+            throw error;
+        }
     }
-  }
 
-  async post(endpoint: string, data: any, headers: any, cookie: boolean = true) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'POST',
-        headers: this.getHeaders(headers),
-        body: data,
-        credentials: cookie ? 'include': 'omit',
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('POST request error:', error);
-      throw error;
+    /**
+     * Выполняет POST-запрос с пользовательскими данными и заголовками.
+     * @param endpoint - Путь к API-эндпоинту (например, '/login').
+     * @param data - Данные тела запроса (FormData, JSON и т.д.).
+     * @param headers - Дополнительные заголовки для включения.
+     * @param cookie - Включать ли куки credentials. По умолчанию true.
+     * @returns Promise с распарсенными JSON-данными ответа.
+     * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
+     */
+    async post(endpoint: string, data: any, headers: any, cookie: boolean = true) {
+        try {
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
+                method: 'POST',
+                headers: this.getHeaders(headers),
+                body: data,
+                credentials: cookie ? 'include': 'omit',
+            });
+            return this.handleResponse(response);
+        } catch (error) {
+            console.error('POST request error:', error);
+            throw error;
+        }
     }
-  }
 
-
-  async put(endpoint: string, data: any) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'PUT',
-        headers: this.getHeaders(),
-        body: JSON.stringify(data),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('PUT request error:', error);
-      throw error;
+    /**
+     * Выполняет PUT-запрос с JSON-данными.
+     * @param endpoint - Путь к API-эндпоинту (например, '/users/1').
+     * @param data - JSON-данные для отправки в теле запроса.
+     * @returns Promise с распарсенными JSON-данными ответа.
+     * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
+     */
+    async put(endpoint: string, data: any) {
+        try {
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify(data),
+            });
+            return this.handleResponse(response);
+        } catch (error) {
+            console.error('PUT request error:', error);
+            throw error;
+        }
     }
-  }
 
-  /**
-   * Выполнить DELETE запрос
-   */
-  async delete(endpoint: string) {
-    try {
-      const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'DELETE',
-        headers: this.getHeaders(),
-      });
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('DELETE request error:', error);
-      throw error;
+    /**
+     * Выполняет DELETE-запрос для удаления ресурсов.
+     * @param endpoint - Путь к API-эндпоинту (например, '/users/1').
+     * @returns Promise с распарсенными JSON-данными ответа или null для 204.
+     * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
+     */
+    async delete(endpoint: string) {
+        try {
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
+                method: 'DELETE',
+                headers: this.getHeaders(),
+            });
+            return this.handleResponse(response);
+        } catch (error) {
+            console.error('DELETE request error:', error);
+            throw error;
+        }
     }
-  }
 
-  /**
-   * Получить заголовки запроса
-   */
-  getHeaders(headers: any = {}) {
-    // if (headers['Content-Type'] == undefined)
-    //     headers['Content-Type'] = 'application/json';
-    // const token = this.getToken();
-    // if (token) {
-    //   headers['Authorization'] = `Bearer ${token}`;
-    // }
-    return headers;
-  }
-
-
-  async handleResponse(response: Response) {
-    if (response.status == 204){
-      return null
+    /**
+     * Получить заголовки запроса.
+     * Формирует стандартные заголовки запроса с опциональным токеном аутентификации.
+     * @param headers - Дополнительные заголовки для объединения (опционально).
+     * @returns Объект заголовков готовый для fetch-запроса.
+     */
+    getHeaders(headers: any = {}) {
+        // if (headers['Content-Type'] == undefined)
+        //     headers['Content-Type'] = 'application/json';
+        // const token = this.getToken();
+        // if (token) {
+        //   headers['Authorization'] = `Bearer ${token}`;
+        // }
+        return headers;
     }
-    const data = await response.json();
-    
 
-    if (!response.ok) {
-      const error = new Error(data.message || 'API error') as ErrorResponse;
-      error.status = response.status;
-      error.data = data;
-      throw error;
+    /**
+     * Обработка HTTP-ответа с парсингом и преобразованием ошибок.
+     * @param response - Объект Fetch Response.
+     * @returns Распарсенные JSON-данные или null для 204 No Content.
+     * @throws ErrorResponse со статусом и данными ошибки для неудачных запросов.
+     */
+    async handleResponse(response: Response) {
+        if (response.status == 204) {
+            return null;
+        }
+        const data = await response.json();
+
+        if (!response.ok) {
+            const error = new Error(data.message || 'API error') as ErrorResponse;
+            error.status = response.status;
+            error.data = data;
+            throw error;
+        }
+
+        return data;
     }
-    
 
-    return data;
-  }
+    /**
+     * Получить токен аутентификации из localStorage.
+     * @returns Текущий токен аутентификации или null.
+     */
+    getToken() {
+        return localStorage.getItem('authToken');
+    }
 
-  getToken() {
-    return localStorage.getItem('authToken');
-  } 
+    /**
+     * Сохранить токен аутентификации в localStorage.
+     * @param token - JWT или токен аутентификации для сохранения.
+     */
+    setToken(token: string) {
+        localStorage.setItem('authToken', token);
+    }
 
-  setToken(token: string) {
-    localStorage.setItem('authToken', token);
-  }
+    /**
+     * Удалить токен аутентификации из localStorage.
+     */
+    removeToken() {
+        localStorage.removeItem('authToken');
+    }
 
-  
-  removeToken() {
-    localStorage.removeItem('authToken');
-  }
-
-  isAuthenticated() {
-    return !!this.getToken();
-  }
+    /**
+     * Проверяет аутентифицирован ли пользователь.
+     * @returns true если токен существует, false в противном случае.
+     */
+    isAuthenticated() {
+        return !!this.getToken();
+    }
 }
 
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";

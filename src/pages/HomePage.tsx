@@ -7,6 +7,11 @@ import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
 import { apiService } from '../services/apiClass';
 
+
+/**
+ * Главная страница приложения.
+ * Отображает шапку, герой-секцию, список квартир и модальное окно авторизации.
+ */
 export function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
