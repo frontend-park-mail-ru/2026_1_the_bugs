@@ -76,7 +76,6 @@ class ApiService {
     // if (token) {
     //   headers['Authorization'] = `Bearer ${token}`;
     // }
-    console.log(headers)
     return headers;
   }
 

@@ -11,7 +11,6 @@ class AuthService {
         
         this.refreshTimeout = setTimeout(async () => {
             const date = await this.refreshTokenSilently();
-            console.log(date.expire_at)
             this.startRefreshTimer(date.expire_at);
         }, exp * 1000);
     }

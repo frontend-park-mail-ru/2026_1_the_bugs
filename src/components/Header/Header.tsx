@@ -15,14 +15,14 @@ export function Header({ onProfileClick, onAuthorizeClick, isAutenticated }: Hea
       <div className={style['actions']}>
 
         <button className={style.btn} type="button" aria-label="Сообщение">
-          <img src="/svg/message.svg" alt="" aria-hidden="true" />
+          <img src="/svg/message.svg" alt="" aria-hidden="true" draggable="false"/>
         </button>
         <button className={style.btn} type="button" aria-label="Избранное">
-          <img src="/svg/heart.svg" alt="" aria-hidden="true" />
+          <img src="/svg/heart.svg" alt="" aria-hidden="true" draggable="false"/>
         </button>
         {isAutenticated ? (
           <button className={style.btn} type="button" id="openAuth" aria-label="Профиль" onClick={onProfileClick}>
-            <img src="/svg/profile.svg" alt="" aria-hidden="true" />
+            <img src="/svg/profile.svg" alt="" aria-hidden="true" draggable="false"/>
           </button>
         ) : (
           <button className={style.secondary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
