@@ -34,7 +34,7 @@ export function HomePage() {
   useEffect(
     ()=>{handelPostersList()}, []
   )
-  const onProfileClick = () =>{
+  const onLogoutClick = () =>{
     setIsAuthenticate(false)
     authService.logout()
   }
@@ -46,7 +46,7 @@ export function HomePage() {
 
   return (
     <div className="page">
-      <Header isAutenticated={isAuthenticate} key="header" onProfileClick={onProfileClick} onAuthorizeClick={openAuthModal} />
+      <Header isAutenticated={isAuthenticate} key="header" onLogoutClick={onLogoutClick} onAuthorizeClick={openAuthModal} />
       <main className="main">
         <Hero key="hero"
           searchValue={searchQuery}
