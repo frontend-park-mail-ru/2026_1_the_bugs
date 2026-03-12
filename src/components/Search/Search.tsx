@@ -6,6 +6,7 @@ interface SearchProps {
   onSearch: () => void;
 }
 
+/** Строка поиска по району или метро с кнопками фильтра и запуска поиска. */
 export function Search({ value, onInput, onSearch }: SearchProps) {
   return (
     <div className={style.search}>

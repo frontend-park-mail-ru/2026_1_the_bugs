@@ -16,8 +16,8 @@ const MAX_EMAIL_LENGTH = 254;
 const MIN_PWD_LEN = 8;
 const MAX_PWD_LEN = 64;
 
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
-const emailCharsRegex = /^[a-zA-Z0-9._%+-@\-]{1,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailCharsRegex = /^[a-zA-Z0-9._%+-@-]{1,}$/;
 const pwdRegex = new RegExp(`^[a-zA-Z\\d!@#$%^&*\\-]{${MIN_PWD_LEN},}$`);
 
 export const validateEmail = (email: string): ValidationResult => {

@@ -6,6 +6,7 @@ interface HeaderProps {
   isAutenticated: boolean;
 }
 
+/** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
 export function Header({ onLogoutClick, onAuthorizeClick, isAutenticated }: HeaderProps) {
   return (
     <header className={style['header']}>

@@ -45,6 +45,7 @@ const applyValidationResult = (
   return true;
 };
 
+/** Модальное окно аутентификации с формами входа и регистрации. */
 export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [isLoading, setIsLoading] = useState(false);

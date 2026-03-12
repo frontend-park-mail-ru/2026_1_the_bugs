@@ -5,6 +5,7 @@ interface ErrorProps {
   clearError: () => void;
 }
 
+/** Баннер-уведомление об ошибке с кнопкой закрытия. */
 export function ErrorsAlert({ errorMessage, clearError }: ErrorProps){
     return (
         <div 

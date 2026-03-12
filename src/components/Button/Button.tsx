@@ -8,6 +8,11 @@
 //     view: 'primary' | 'secondary' | 'negative'
 // }
 
+/**
+ * Кнопка с различными вариантами отображения и стилями.
+ * На будущее может поддерживать иконки, разные виды контента и стили оформления.
+ * Пока не используем.
+ */
 export const Button = () => {
 
     // const {text, icon, contentType, kind,view} = props

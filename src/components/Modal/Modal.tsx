@@ -6,6 +6,7 @@ interface ModalProps {
   hisChildren: any;
 }
 
+/** Универсальная модальная обёртка с затемнённым оверлеем; закрывается кликом по фону. */
 export function Modal({ isOpen, onClose, hisChildren}: ModalProps) {
   useEffect(() => {
     if (isOpen) {
