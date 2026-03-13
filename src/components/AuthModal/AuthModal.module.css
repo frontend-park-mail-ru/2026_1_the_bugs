@@ -43,7 +43,7 @@
 
 /* Ошибка поверх последнего поля */
 .errorOverlay {
-  height: 20px;
+  min-height: 20px;
   color: #ff4d4f;
   text-align: center;
   font-weight: bold;

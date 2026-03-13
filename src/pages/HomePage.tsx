@@ -6,7 +6,13 @@ import { AuthModal } from '../components/AuthModal/AuthModal';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
 import { apiService } from '../services/apiClass';
+import { authService } from '../services/auth';
 
+
+/**
+ * Главная страница приложения.
+ * Отображает шапку, герой-секцию, список квартир и модальное окно авторизации.
+ */
 export function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,9 +34,9 @@ export function HomePage() {
   useEffect(
     ()=>{handelPostersList()}, []
   )
-  const onProfileClick = () =>{
-    apiService.removeToken()
+  const onLogoutClick = () =>{
     setIsAuthenticate(false)
+    authService.logout()
   }
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => {
@@ -40,7 +46,7 @@ export function HomePage() {
 
   return (
     <div className="page">
-      <Header isAutenticated={isAuthenticate} key="header" onProfileClick={onProfileClick} onAuthorizeClick={openAuthModal} />
+      <Header isAutenticated={isAuthenticate} key="header" onLogoutClick={onLogoutClick} onAuthorizeClick={openAuthModal} />
       <main className="main">
         <Hero key="hero"
           searchValue={searchQuery}

@@ -7,6 +7,7 @@ interface HeroProps {
   onSearch: () => void;
 }
 
+/** Hero-секция главной страницы с заголовком и строкой поиска. */
 export function Hero({ searchValue, onSearchInput, onSearch }: HeroProps) {
   return (
     <section className={style['hero']}>

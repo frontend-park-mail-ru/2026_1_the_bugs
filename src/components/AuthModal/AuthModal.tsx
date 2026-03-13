@@ -2,6 +2,22 @@ import { useState, useEffect } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
+import {
+  type AuthFormState,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  validateLoginForm,
+  validateRegisterForm,
+  type ValidationResult,
+  baseValidatePassword
+} from './authValidation';
+import {
+    LOGIN_ERROR_FIELDS,
+    getErrorMessage,
+    getHighlightStyle,
+} from './authErrors'
+
 
 interface AuthModalProps {
   onClose: () => void;
@@ -11,40 +27,25 @@ interface AuthModalProps {
 type AuthMode = 'login' | 'register';
 type LoginField = 'email' | 'password';
 type RegisterField = 'email' | 'password' | 'confirmPassword';
-type AuthField = LoginField | RegisterField;
+export type AuthField = LoginField | RegisterField;
 
-interface AuthFormState {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
 
-const ERROR_MESSAGES: Record<number, string> = {
-  400: 'Ошибка валидации поля',
-  401: 'Введен неверный email или пароль',
-  404: 'Пользователь не найден',
-  409: 'Пользователь с таким email уже существует',
-  429: 'Слишком много попыток. Попробуйте через минуту',
-  500: 'Ошибка сервера. Попробуйте позже'
+const applyValidationResult = (
+  result: ValidationResult,
+  setError: (error: string | null) => void,
+  setFieldHighlights: (highlights: Partial<Record<AuthField, boolean>>) => void
+): boolean => {
+  if (!result.isValid) {
+    setError(result.error);
+    setFieldHighlights(result.fieldsToHighlight as Partial<Record<AuthField, boolean>>);
+    return false;
+  }
+  setError(null);
+  setFieldHighlights({});
+  return true;
 };
 
-const LOGIN_ERROR_FIELDS: Partial<Record<number, LoginField[]>> = {
-  400: ['email'],
-  401: ['email', 'password'],
-  404: ['email'],
-  409: ['email'],
-  429: ['password']
-};
-
-const getErrorMessage = (status: number): string => 
-  ERROR_MESSAGES[status] || 'Что-то пошло не так';
-
-const getHighlightStyle = (isHighlighted?: boolean) => 
-  isHighlighted ? {
-    border: '1px solid #ff4d4f',
-    boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.25)'
-  } : undefined;
-
+/** Модальное окно аутентификации с формами входа и регистрации. */
 export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +57,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [fieldHighlights, setFieldHighlights] = useState<Partial<Record<AuthField, boolean>>>({});
   const [error, setError] = useState<string | null>(null);
   
-  // Состояния видимости паролей
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -73,23 +73,11 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
     setError(null);
     setFieldHighlights({});
   };
-
   const updateField = (field: keyof AuthFormState, value: string) => {
     setFormData({
       ...formData,
       [field]: value
     });
-    
-    if (fieldHighlights[field]) {
-      setFieldHighlights({
-        ...fieldHighlights,
-        [field]: false
-      });
-    }
-    
-    if (error) {
-      setError(null);
-    }
   };
 
   const toggleMode = () => {
@@ -100,65 +88,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
     setMode(mode === 'login' ? 'register' : 'login');
   };
 
-  const MIN_PWD_LEN = 8;
-  const MAX_PWD_LEN = 72;
-  const pwdRegexPattern = `^[a-zA-Z\\d!@#$%^&*\\-]{${MIN_PWD_LEN},}$`;
-
-  const validateRegister = (): boolean => {
-    if (formData.password !== formData.confirmPassword) {
-      setError('Пароли не совпадают!');
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    const pwd = formData.password;
-
-    // Длина
-    if (pwd.length < MIN_PWD_LEN) {
-      setError(`Пароль должен быть минимум ${MIN_PWD_LEN} символов`);
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-    if (pwd.length > MAX_PWD_LEN) {
-      setError(`Пароль слишком длинный (макс. ${MAX_PWD_LEN} символов)`);
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    const hasUpper = /[A-Z]/.test(pwd);
-    if (!hasUpper) {
-      setError('Пароль должен содержать заглавную букву (A-Z)');
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    const hasLower = /[a-z]/.test(pwd);
-    if (!hasLower) {
-      setError('Пароль должен содержать строчную букву (a-z)');
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    const hasDigit = /\d/.test(pwd);
-    if (!hasDigit) {
-      setError('Пароль должен содержать цифру (0-9)');
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    const matchesPattern = new RegExp(pwdRegexPattern).test(pwd);
-    if (!matchesPattern) {
-      setError('Допустимы только: a-z A-Z 0-9 !@#$%^&*-');
-      setFieldHighlights({ password: true, confirmPassword: true });
-      return false;
-    }
-
-    setError(''); 
-    setFieldHighlights({});
-    return true;
-  };
-
-
   const handleAuthError = (error: ErrorResponse) => {
     const message = getErrorMessage(error.status);
     setError(message);
@@ -167,16 +96,20 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
       setFieldHighlights({ [error.data.field]: true });
       return;
     }
+    
     const fields = LOGIN_ERROR_FIELDS[error.status];
     if (fields) {
       const highlights: Partial<Record<AuthField, boolean>> = {};
-      fields.forEach(f => { highlights[f] = true; });
+      fields.forEach((f: AuthField) => { highlights[f] = true; });
       setFieldHighlights(highlights);
     }
   };
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
+    const result = validateLoginForm(formData);
+    if (!applyValidationResult(result, setError, setFieldHighlights)) return;
+
     setIsLoading(true);
     setError(null);
     setFieldHighlights({});
@@ -197,14 +130,13 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
+    const result = validateRegisterForm(formData);
+    if (!applyValidationResult(result, setError, setFieldHighlights)) return;
+
+    setIsLoading(true);
     setError(null);
     setFieldHighlights({});
 
-    if (!validateRegister()) {
-      return;
-    }
-
-    setIsLoading(true);
     try {
       await authService.register({
         email: formData.email,
@@ -221,10 +153,40 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
   const isLogin = mode === 'login';
 
+  const handleEmailInput = (e: any) => {
+    const value = e.target.value;
+    updateField('email', value);
+    const result = validateEmail(value);
+    applyValidationResult(result, setError, setFieldHighlights);
+  };
+
+  const handlePasswordInput = (e: any) => {
+    const value = e.target.value;
+    updateField('password', value);
+    if (!isLogin){
+        const result = validatePassword(value);
+        applyValidationResult(result, setError, setFieldHighlights);
+        if (formData.confirmPassword !== ''){
+            const confirmResult = validateConfirmPassword(value, formData.confirmPassword);
+            applyValidationResult(confirmResult, setError, setFieldHighlights);
+        }
+    }else{
+      const result = baseValidatePassword(value);
+      applyValidationResult(result, setError, setFieldHighlights);
+    }
+  };
+
+  const handleConfirmPasswordInput = (e: any) => {
+    const value = e.target.value;
+    updateField('confirmPassword', value);
+    const result = validateConfirmPassword(formData.password, value);
+    applyValidationResult(result, setError, setFieldHighlights);
+  };
+
   return (
     <div className="modal active">
       <div className="modal-content">
-        <button className={style.close} onClick={onClose}>&times;</button>
+        <button className={style.close} onClick={onClose}>×</button>
         <div>
           <h2 className={style.title}>
             {isLogin ? 'Авторизация' : 'Регистрация'}
@@ -235,7 +197,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             onSubmit={isLogin ? handleLogin : handleRegister}
           >
             <div className={style.formGroups}>
-              {/* Email поле */}
               <div className={style.group}>
                 <label htmlFor="email">Email:</label>
                 <input
@@ -247,11 +208,10 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                   placeholder="your@email.com"
                   required
                   value={formData.email}
-                  onInput={(e: any) => updateField('email', e.target.value)}
+                  onInput={handleEmailInput}
                 />
               </div>
 
-              {/* Password поле */}
               <div className={style.group}>
                 <label htmlFor="password">Пароль:</label>
                 <div className={style.passwordWrapper}>
@@ -264,7 +224,7 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                     placeholder="Введите пароль"
                     required
                     value={formData.password}
-                    onInput={(e: any) => updateField('password', e.target.value)}
+                    onInput={handlePasswordInput}
                   />
                   <img
                     src="/svg/eye.svg"
@@ -281,7 +241,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                 </div>
               </div>
 
-              {/* Confirm Password (только для register) */}
               {!isLogin && (
                 <div className={style.group}>
                   <label htmlFor="confirmPassword">Повторите пароль:</label>
@@ -295,7 +254,7 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                       placeholder="Повторите пароль"
                       required
                       value={formData.confirmPassword}
-                      onInput={(e: any) => updateField('confirmPassword', e.target.value)}
+                      onInput={handleConfirmPasswordInput}
                     />
                     <img
                       src="/svg/eye.svg"
@@ -316,7 +275,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
               <div className={style.errorOverlay}>
                 {error && (<span>{error}</span>)}
               </div>
-              
             </div>
 
             <button 
@@ -326,7 +284,6 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             >
               {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
             </button>
-
           </form>
 
           <button 

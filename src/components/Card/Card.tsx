@@ -5,6 +5,7 @@ interface CardProps {
   apartment: Apartment;
 }
 
+/** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
 export function Card({ apartment }: CardProps) {
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :

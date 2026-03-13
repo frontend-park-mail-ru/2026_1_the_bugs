@@ -1,24 +1,29 @@
-import type { JSXElement } from "@my-react/types/jsx"
+// import type { JSXElement } from "@my-react/types/jsx"
 
-interface IButtonComponent {
-    text: string
-    icon: JSXElement
-    contentType: 'Icon' | 'Left+Text' | 'Text+Right' | 'Text'
-    kind: 'contained' | 'outlined' | 'ghost'
-    view: 'primary' | 'secondary' | 'negative'
-}
+// interface IButtonComponent {
+//     text: string
+//     icon: JSXElement
+//     contentType: 'Icon' | 'Left+Text' | 'Text+Right' | 'Text'
+//     kind: 'contained' | 'outlined' | 'ghost'
+//     view: 'primary' | 'secondary' | 'negative'
+// }
 
-export const Button = (props: IButtonComponent) => {
+/**
+ * Кнопка с различными вариантами отображения и стилями.
+ * На будущее может поддерживать иконки, разные виды контента и стили оформления.
+ * Пока не используем.
+ */
+export const Button = () => {
 
-    const {text, icon, contentType, kind,view} = props
+    // const {text, icon, contentType, kind,view} = props
 
-    const s = 2
+    // const s = 2
 
-    return(
-        <button className={`
-        ${kind === 'ghost'}
-        `}>
-            {props}
-        </button>
-    )
+    // return(
+    //     <button className={`
+    //     ${kind === 'ghost'}
+    //     `}>
+    //         {props}
+    //     </button>
+    // )
 }

@@ -7,6 +7,7 @@ interface CardListProps {
   key: string
 }
 
+/** Отображает список карточек объявлений на основе переданного массива обьявлений. */
 export function CardList({ apartments }: CardListProps) {
   return (
     
