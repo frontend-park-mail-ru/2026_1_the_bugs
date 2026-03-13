@@ -14,13 +14,15 @@ import type {
  * @returns Нормализованный массив для reconciler'а.
  */
 const normalizedChildren = (children: ChildrenType): NormalizedChildrenType => {
-    if (children === undefined) {
-        return []
+   if (children === undefined || children === null) {
+        return [];
     }
     if (!Array.isArray(children)) {
-        return [children]
+        return [children];
     }
-    return children.flat()
+    return children.flat().filter(child => 
+        child !== null && child !== undefined
+    );
 }
 
 /**
