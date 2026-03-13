@@ -133,3 +133,50 @@
     max-height: calc(100vh - 60px);
   }
 }
+
+.oauthDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 20px;
+  position: relative;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.dividerText {
+  color: #8e8e93;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+.oauthContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+}
+
+.oauthContainer > div {
+  min-height: 56px;
+  min-width: 220px;
+}
+
+@media (max-width: 480px) {
+  .oauthDivider {
+    margin: 20px 0 16px;
+    gap: 8px;
+  }
+  
+  .dividerText {
+    font-size: 13px;
+    padding: 0 8px;
+  }
+}

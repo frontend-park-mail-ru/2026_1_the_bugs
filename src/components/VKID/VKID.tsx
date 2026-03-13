@@ -1,12 +1,9 @@
 import { useEffect } from '@my-react/hooks';
 import * as VKID from '@vkid/sdk';
 
-let isVKIDInitialized = false; // Глобальный флаг инициализации
 const OAuthVKButton = () => {
 
   useEffect(() => {
-    // Шаг 1: Инициализация Config (только один раз)
-    if (!isVKIDInitialized) {
       VKID.Config.init({
         app: 54479788,
         redirectUrl: 'https://dom-deli.ru/oauth/vk',
@@ -14,8 +11,6 @@ const OAuthVKButton = () => {
         source: VKID.ConfigSource.LOWCODE,
         scope: 'email',
       });
-      isVKIDInitialized = true;
-    }
 
     const renderWidget = () => {
       const container = document.getElementById('vk-button-container');
@@ -28,8 +23,9 @@ const OAuthVKButton = () => {
         container: container as HTMLElement,
         showAlternativeLogin: true,
         styles: {
-          borderRadius: 17,
-          width: 20
+          borderRadius: 16,  // Скругление как у вас
+          width: 240,
+          height: 48
         }
       })
       .on(VKID.WidgetEvents.ERROR, console.error)
@@ -54,7 +50,13 @@ const OAuthVKButton = () => {
     };
   }, []);
 
-  return <div id="vk-button-container" />;
+  return <div id="vk-button-container" style={{ 
+        width: '240px', 
+        height: '48px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}  />;
 };
 
 export default OAuthVKButton;

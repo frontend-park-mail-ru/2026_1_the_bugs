@@ -17,6 +17,7 @@ import {
     getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
+import OAuthVKButton from '../VKID/VKID';
 
 
 interface AuthModalProps {
@@ -45,7 +46,6 @@ const applyValidationResult = (
   return true;
 };
 
-/** Модальное окно аутентификации с формами входа и регистрации. */
 export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [isLoading, setIsLoading] = useState(false);
@@ -284,8 +284,9 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             >
               {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
             </button>
+            
+            
           </form>
-
           <button 
             className={style.secondary} 
             onClick={toggleMode} 
@@ -293,6 +294,15 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
           >
             {isLogin ? 'Создать аккаунт' : 'Вернуться к входу'}
           </button>
+         <div className={style.oauthDivider}>
+            <div className={style.dividerLine} />
+            <span className={style.dividerText}>ИЛИ</span>
+            <div className={style.dividerLine} />
+          </div>
+
+          <div className={style.oauthContainer}>
+            <OAuthVKButton key="vkid" />
+          </div>
         </div>
       </div>
     </div>
