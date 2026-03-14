@@ -8,7 +8,7 @@ const OAuthVKButton = () => {
   };
 
   useEffect(() => {
-      const initVKID = async () => {
+      const initVKID = () => {
         const verifier = generateCodeVerifier();
         localStorage.setItem("codeVerifier", verifier)
         
@@ -33,7 +33,7 @@ const OAuthVKButton = () => {
       }
 
       const oneTap = new VKID.OneTap();
-      VKID.Auth.login()
+      
       const widget = oneTap.render({
         container: container as HTMLElement,
         showAlternativeLogin: true,
@@ -57,7 +57,7 @@ const OAuthVKButton = () => {
     };
   }, []);
 
-  return <div id="vk-button-container" style={{ 
+  return <div id="vk-button-container" onClick={()=>{VKID.Auth.login()}} style={{ 
         width: '240px', 
         height: '48px',
         display: 'flex',
