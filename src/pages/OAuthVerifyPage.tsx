@@ -4,6 +4,7 @@ import { Hero } from '../components/Here/Here';
 
 import { authService } from '../services/auth';
 import type { IOAuthFlow } from 'src/types/api';
+import { useNavigate } from '@my-react/router-dom/hooks';
 
 
 /**
@@ -13,6 +14,7 @@ export function OAuthVerifyPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
+  const navigate = useNavigate()
 
 
   const handleSearch = async () => {
@@ -21,6 +23,7 @@ export function OAuthVerifyPage() {
     setIsError(false)
     try{
         await authService.loginFromVK(Object.fromEntries(params.entries()); as IOAuthFlow)
+        navigate('/')
     
     }catch(err){
         setIsError(true)

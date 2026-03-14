@@ -7,3 +7,10 @@ export interface ErrorResponse extends Error{
     status: number;
     data: any;
 }
+
+export interface IOAuthFlow{
+    codeVerifier: string,
+    code: string,
+    state: string,
+    deviceID: string
+}

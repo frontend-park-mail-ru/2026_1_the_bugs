@@ -1,5 +1,5 @@
 import { apiService } from "./apiClass";
-import { type LoginResponse } from "../types/api";
+import { type IOAuthFlow, type LoginResponse } from "../types/api";
 
 /**
  * Сервис аутентификации, управляющий жизненным циклом JWT-токена с автоматическим обновлением.
@@ -118,6 +118,14 @@ class AuthService {
             this.refreshTimeout = null;
         }
         return;
+    }
+    async loginFromVK(flow: IOAuthFlow){
+        const params = new URLSearchParams(Object.entries(flow))
+        await apiService.post(
+            `/auth/vkid?${params.toString()}`, 
+            null,
+            {'Accept': 'application/json'},
+        );
     }
 }
 
