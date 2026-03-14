@@ -13,11 +13,18 @@ export function OAuthVerifyPage() {
 
   const handleOAuthVerify = async () => {
     const params = new URLSearchParams(window.location.search);
+    const codeVerifier = localStorage.getItem("codeVerifier")
+    if (!codeVerifier){
+      setErrorMessage('Отсутствуют параметр codeVerifier');
+      setIsError(true);
+      setIsLoading(false);
+      return;
+    }
     const flow: IOAuthFlow = {
       code: params.get('code') || '',
       device_id: params.get('device_id') || '',
       state: params.get('state') || '',
-      code_verifier: params.get('code_verifier') || '',
+      code_verifier: codeVerifier as string,
     };
     
     console.log('OAuth flow:', flow);

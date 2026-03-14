@@ -1,5 +1,6 @@
 import { useEffect } from '@my-react/hooks';
 import * as VKID from '@vkid/sdk';
+import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce';
 
 const OAuthVKButton = () => {
   const generateState = () => {
@@ -7,14 +8,23 @@ const OAuthVKButton = () => {
   };
 
   useEffect(() => {
-      VKID.Config.init({
-        app: 54483363,
-        redirectUrl: 'https://dom-deli.ru/oauth/vk',
-        responseMode: VKID.ConfigResponseMode.Redirect,
-        source: VKID.ConfigSource.LOWCODE,
-        scope: 'email phone',
-        state: generateState()
-      });
+      const initVKID = async () => {
+        const verifier = generateCodeVerifier();
+        localStorage.setItem("codeVerifier", verifier)
+        
+        //setCodeVerifier(verifier); // Сохраняем локально
+
+        VKID.Config.init({
+          app: 54483363,
+          redirectUrl: 'https://dom-deli.ru/oauth/vk',
+          responseMode: VKID.ConfigResponseMode.Redirect,
+          source: VKID.ConfigSource.LOWCODE,
+          scope: 'email phone',
+          state: generateState(),
+          codeVerifier: verifier
+        });
+    };
+    initVKID();
 
     const renderWidget = () => {
       const container = document.getElementById('vk-button-container');
