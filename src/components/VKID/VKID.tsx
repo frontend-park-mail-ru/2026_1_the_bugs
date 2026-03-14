@@ -2,6 +2,9 @@ import { useEffect } from '@my-react/hooks';
 import * as VKID from '@vkid/sdk';
 
 const OAuthVKButton = () => {
+  const generateState = () => {
+    return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
+  };
 
   useEffect(() => {
       VKID.Config.init({
@@ -9,7 +12,8 @@ const OAuthVKButton = () => {
         redirectUrl: 'https://dom-deli.ru/oauth/vk',
         responseMode: VKID.ConfigResponseMode.Callback,
         source: VKID.ConfigSource.LOWCODE,
-        scope: 'email',
+        scope: 'email phone',
+        state: generateState()
       });
 
     const renderWidget = () => {
@@ -29,13 +33,7 @@ const OAuthVKButton = () => {
         }
       })
       .on(VKID.WidgetEvents.ERROR, console.error)
-      .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, ({ code, device_id }) => {
-        VKID.Auth.exchangeCode(code, device_id)
-          .then(data => {
-            console.log('Auth success:', data);
-            // Отправка на бэкенд
-          })
-          .catch(console.error);
+      .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, () => {
       });
 
       // Сохраняем для cleanup

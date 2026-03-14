@@ -119,14 +119,14 @@ class AuthService {
         }
         return;
     }
-    async loginFromVK(flow: IOAuthFlow){
-        const params = new URLSearchParams(Object.entries(flow))
-        await apiService.post(
-            `/auth/vkid?${params.toString()}`, 
-            null,
-            {'Accept': 'application/json'},
+    async loginFromVK(flow: IOAuthFlow) {
+        const res: LoginResponse =await apiService.post('/auth/vk', 
+            JSON.stringify(flow),
+            { 'Content-Type': 'application/json' },
         );
+        apiService.setToken(res.access_token);
     }
+  
 }
 
 export const authService = new AuthService();
