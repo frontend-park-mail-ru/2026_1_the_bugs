@@ -10,7 +10,7 @@ const OAuthVKButton = () => {
       VKID.Config.init({
         app: 54483363,
         redirectUrl: 'https://dom-deli.ru/oauth/vk',
-        responseMode: VKID.ConfigResponseMode.Callback,
+        responseMode: VKID.ConfigResponseMode.Redirect,
         source: VKID.ConfigSource.LOWCODE,
         scope: 'email phone',
         state: generateState()
@@ -23,6 +23,7 @@ const OAuthVKButton = () => {
       }
 
       const oneTap = new VKID.OneTap();
+      VKID.Auth.login()
       const widget = oneTap.render({
         container: container as HTMLElement,
         showAlternativeLogin: true,
@@ -32,9 +33,7 @@ const OAuthVKButton = () => {
           height: 48
         }
       })
-      .on(VKID.WidgetEvents.ERROR, console.error)
-      .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, () => {
-      });
+      .on(VKID.WidgetEvents.ERROR, console.error);
 
       // Сохраняем для cleanup
       (window as any).vkWidget = widget;

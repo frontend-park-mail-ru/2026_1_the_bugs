@@ -120,7 +120,7 @@ class AuthService {
         return;
     }
     async loginFromVK(flow: IOAuthFlow) {
-        const res: LoginResponse =await apiService.post('/auth/vk', 
+        const res: LoginResponse =await apiService.post('/auth/vkid', 
             JSON.stringify(flow),
             { 'Content-Type': 'application/json' },
         );
