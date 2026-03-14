@@ -15,14 +15,14 @@ export function OAuthVerifyPage() {
     const params = new URLSearchParams(window.location.search);
     const flow: IOAuthFlow = {
       code: params.get('code') || '',
-      deviceID: params.get('device_id') || '',
+      device_id: params.get('device_id') || '',
       state: params.get('state') || '',
-      codeVerifier: params.get('code_verifier') || '',
+      code_verifier: params.get('code_verifier') || '',
     };
     
     console.log('OAuth flow:', flow);
     
-    if (!flow.code || !flow.deviceID) {
+    if (!flow.code || !flow.device_id) {
       setErrorMessage('Отсутствуют параметры авторизации');
       setIsError(true);
       setIsLoading(false);

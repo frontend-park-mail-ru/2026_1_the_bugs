@@ -9,8 +9,8 @@ export interface ErrorResponse extends Error{
 }
 
 export interface IOAuthFlow{
-    codeVerifier: string,
+    code_verifier: string,
     code: string,
     state: string,
-    deviceID: string
+    device_id: string
 }
