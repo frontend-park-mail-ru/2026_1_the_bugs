@@ -19,7 +19,7 @@ const OAuthVKButton = () => {
           redirectUrl: 'https://dom-deli.ru/oauth/vk',
           responseMode: VKID.ConfigResponseMode.Redirect,
           source: VKID.ConfigSource.LOWCODE,
-          scope: 'email phone',
+          scope: 'vkid.personal_info email phone',
           state: generateState(),
           codeVerifier: verifier
         });
