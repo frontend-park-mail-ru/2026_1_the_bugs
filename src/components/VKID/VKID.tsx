@@ -8,7 +8,7 @@ const OAuthVKButton = () => {
 
   useEffect(() => {
       VKID.Config.init({
-        app: 54479788,
+        app: 54483363,
         redirectUrl: 'https://dom-deli.ru/oauth/vk',
         responseMode: VKID.ConfigResponseMode.Callback,
         source: VKID.ConfigSource.LOWCODE,
