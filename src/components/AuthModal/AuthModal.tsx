@@ -281,6 +281,7 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
               type="submit" 
               className={style.primary} 
               disabled={isLoading}
+              onClick={handleEmailInput}
             >
               {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Создать аккаунт')}
             </button>
