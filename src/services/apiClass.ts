@@ -1,3 +1,4 @@
+import { API_URL } from '../config';
 import type { ErrorResponse } from "src/types/api";
 
 /**
@@ -172,7 +173,7 @@ class ApiService {
     }
 }
 
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
 export const apiService = new ApiService(API_URL);
 
 export { ApiService };

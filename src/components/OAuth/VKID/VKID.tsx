@@ -1,6 +1,7 @@
 import { useEffect } from '@my-react/hooks';
 import * as VKID from '@vkid/sdk';
 import {generateCodeVerifier, generateState } from '../../../utils/pkce';
+import { VK_OAUTH_CLIENT_ID, VK_OAUTH_REDIRECT_URL, VK_SCOPE } from '../../../config';
 
 const OAuthVKButton = () => {
   
@@ -11,11 +12,11 @@ const OAuthVKButton = () => {
         localStorage.setItem("vk_code_verifier", verifier)
 
         VKID.Config.init({
-          app: 54483363,
-          redirectUrl: 'https://dom-deli.ru/oauth/vk',
+          app: VK_OAUTH_CLIENT_ID,
+          redirectUrl: VK_OAUTH_REDIRECT_URL,
           responseMode: VKID.ConfigResponseMode.Redirect,
           source: VKID.ConfigSource.LOWCODE,
-          scope: 'vkid.personal_info email phone',
+          scope: VK_SCOPE,
           state: generateState(),
           codeVerifier: verifier
         });

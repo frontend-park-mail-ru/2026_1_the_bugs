@@ -1,8 +1,8 @@
+import { YANDEX_OAUTH_AUTHORIZE_URL, YANDEX_OAUTH_CLIENT_ID, YANDEX_OAUTH_REDIRECT_URL, YANDEX_SCOPE } from '../../../config';
 import { generateCodeVerifier, generateCodeChallenge, generateState } from '../../../utils/pkce';
 import './YandexID.css';
 
-const CLIENT_ID = '8bcbe6284aee41e2944c4330e34a712e';
-const AUTHORIZE_URL = 'https://oauth.yandex.ru/authorize';
+
 
 const YandexAuthButton = () => {
   const handleClick = async (e: any) => {
@@ -13,15 +13,14 @@ const YandexAuthButton = () => {
 
     localStorage.setItem('yandex_code_verifier', codeVerifier);
 
-    const redirectUri = `${window.location.origin}/oauth/yandex`;
-
     const params: Record<string, string> = {
       response_type: 'code',
-      client_id: CLIENT_ID,
-      redirect_uri: redirectUri,
+      client_id: YANDEX_OAUTH_CLIENT_ID,
+      redirect_uri: YANDEX_OAUTH_REDIRECT_URL,
       state: generateState(),
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
+      scope: YANDEX_SCOPE,
     };
 
     const search = new URLSearchParams();
@@ -29,7 +28,7 @@ const YandexAuthButton = () => {
       if (v) search.set(k, v);
     });
 
-    window.location.href = `${AUTHORIZE_URL}?${search.toString()}`;
+    window.location.href = `${YANDEX_OAUTH_AUTHORIZE_URL}?${search.toString()}`;
   };
 
   return (
