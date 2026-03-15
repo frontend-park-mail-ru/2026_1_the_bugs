@@ -17,3 +17,8 @@ export const generateCodeChallenge = async (verifier: string) => {
     .replace(/\//g, '_')
     .replace(/=/g, '');
 };
+
+
+export const generateState = () => {
+    return Math.random().toString(36).slice(2);
+  };

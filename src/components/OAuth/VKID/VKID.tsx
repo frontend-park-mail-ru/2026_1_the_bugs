@@ -1,18 +1,14 @@
 import { useEffect } from '@my-react/hooks';
 import * as VKID from '@vkid/sdk';
-import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce';
+import {generateCodeVerifier, generateState } from '../../../utils/pkce';
 
 const OAuthVKButton = () => {
-  const generateState = () => {
-    return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
-  };
+  
 
   useEffect(() => {
       const initVKID = () => {
         const verifier = generateCodeVerifier();
-        localStorage.setItem("codeVerifier", verifier)
-        
-        //setCodeVerifier(verifier); // Сохраняем локально
+        localStorage.setItem("vk_code_verifier", verifier)
 
         VKID.Config.init({
           app: 54483363,
@@ -36,16 +32,14 @@ const OAuthVKButton = () => {
       
       const widget = oneTap.render({
         container: container as HTMLElement,
-        showAlternativeLogin: true,
+        fastAuthEnabled: false,
         styles: {
-          borderRadius: 16,  // Скругление как у вас
-          width: 240,
-          height: 48
+          borderRadius: 16,
+          width: 200,
         }
       })
       .on(VKID.WidgetEvents.ERROR, console.error);
 
-      // Сохраняем для cleanup
       (window as any).vkWidget = widget;
     };
 
@@ -57,13 +51,7 @@ const OAuthVKButton = () => {
     };
   }, []);
 
-  return <div id="vk-button-container" onClick={()=>{VKID.Auth.login()}} style={{ 
-        width: '240px', 
-        height: '48px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}  />;
+  return <div id="vk-button-container" onClick={()=>{VKID.Auth.login()}}  />;
 };
 
 export default OAuthVKButton;

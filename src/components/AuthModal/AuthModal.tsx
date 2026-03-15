@@ -17,7 +17,8 @@ import {
     getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
-import OAuthVKButton from '../VKID/VKID';
+import OAuthVKButton from '../OAuth/VKID/VKID';
+import OAuthYandexButton from '../OAuth/YandexID/YandexID';
 
 
 interface AuthModalProps {
@@ -301,7 +302,8 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
           </div>
 
           <div className={style.oauthContainer}>
-            <OAuthVKButton key="vkid" />
+              <OAuthVKButton key="vkid" />
+              <OAuthYandexButton key="yandex" />
           </div>
         </div>
       </div>

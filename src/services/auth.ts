@@ -126,7 +126,14 @@ class AuthService {
         );
         apiService.setToken(res.access_token);
     }
-  
+    async loginFromYandex(flow: IOAuthFlow) {
+        const res: LoginResponse =await apiService.post('/auth/yandex', 
+            JSON.stringify(flow),
+            { 'Content-Type': 'application/json' },
+        );
+        apiService.setToken(res.access_token);
+    }
+
 }
 
 export const authService = new AuthService();

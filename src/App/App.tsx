@@ -17,7 +17,10 @@ export function App() {
                 <HomePage  key='HomePage' />
             </Router>
             <Router  key='router2' currentPath={currentPath} path="/oauth/vk">
-                <OAuthVerifyPage key='OAuthVerifyPage' />
+                <OAuthVerifyPage provider="vk" key='OAuthVerifyPageVK' />
+            </Router>
+            <Router  key='router3' currentPath={currentPath} path="/oauth/yandex">
+                <OAuthVerifyPage provider="yandex" key='OAuthVerifyPageYandex' />
             </Router>
         </div>
     );

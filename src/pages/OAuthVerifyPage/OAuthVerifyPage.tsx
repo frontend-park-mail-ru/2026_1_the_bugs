@@ -4,52 +4,68 @@ import type { IOAuthFlow } from 'src/types/api';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import style from './OAuthVerifyPage.module.css';
 
-export function OAuthVerifyPage() {
+interface IOAuthVerifyProps {
+  provider: 'vk' | 'yandex';
+}
+
+export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // ✅ Новое состояние
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleOAuthVerify = async () => {
     const params = new URLSearchParams(window.location.search);
-    const codeVerifier = localStorage.getItem("codeVerifier")
-    if (!codeVerifier){
-      setErrorMessage('Отсутствуют параметр codeVerifier');
-      setIsError(true);
-      setIsLoading(false);
-      return;
-    }
-    const flow: IOAuthFlow = {
+    let flow = {
       code: params.get('code') || '',
       device_id: params.get('device_id') || '',
       state: params.get('state') || '',
-      code_verifier: codeVerifier as string,
-    };
-    
-    console.log('OAuth flow:', flow);
-    
-    if (!flow.code || !flow.device_id) {
-      setErrorMessage('Отсутствуют параметры авторизации');
-      setIsError(true);
+    } as IOAuthFlow;
+    if (!flow.code) {
+      setErrorMessage('Отсутствует код авторизации');
       setIsLoading(false);
       return;
     }
+    let codeVerifier: string | null = null;
+    switch (provider) {
+      case 'vk':
+        codeVerifier = localStorage.getItem("vk_code_verifier")
+        if (!codeVerifier){
+          setErrorMessage('Отсутствуют параметр codeVerifier');
+          setIsLoading(false);
+          return;
+        }
+        flow.code_verifier = codeVerifier;
+        console.log('OAuth flow:', flow);
+        break;
+      case 'yandex':
+        console.log('Yandex OAuth params:', Object.fromEntries(params.entries()));
 
-    setIsLoading(true);
-    setIsSuccess(false);
-    setIsError(false);
-    setErrorMessage(null);
-
+        codeVerifier = localStorage.getItem("yandex_code_verifier")
+        if (!codeVerifier){
+          setErrorMessage('Отсутствуют параметр codeVerifier');
+          setIsLoading(false);
+          return;
+        }
+        flow.code_verifier = codeVerifier;
+        break;
+    }
+    
     try {
-      await authService.loginFromVK(flow);
+      switch (provider) {
+        case 'vk':
+          await authService.loginFromVK(flow);
+          break;
+        case 'yandex':
+          await authService.loginFromYandex(flow);
+          break;
+      }
       setIsSuccess(true);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/'), 1200);
     } catch (err: any) {
-      console.error('OAuth VK error:', err);
+      console.error('OAuth error:', err);
       const errorMsg = err?.message || err?.response?.data?.message || 'Неизвестная ошибка авторизации';
       setErrorMessage(errorMsg);
-      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +81,7 @@ export function OAuthVerifyPage() {
         <div className={style.verifyContainer}>
           <div className={style.card}>
             <div className={style.spinner} />
-            <h2 className={style.title}>Проверяем авторизацию VK...</h2>
+            <h2 className={style.title}>Проверяем авторизацию...</h2>
             <p className={style.subtitle}>Подождите несколько секунд</p>
           </div>
         </div>

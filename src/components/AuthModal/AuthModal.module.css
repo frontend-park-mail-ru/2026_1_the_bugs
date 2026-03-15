@@ -153,25 +153,30 @@
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
-  padding: 0 12px;
+  padding: 0 6px;
 }
 
 .oauthContainer {
   display: flex;
+  gap: 12px;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  padding: 12px 0;
 }
 
-.oauthContainer > div {
-  min-height: 56px;
-  min-width: 220px;
+.oauthContainer > * {
+  max-width: 300px;
+  min-width: 200px;
+  height: 44px; 
+  border-radius: 8px;
 }
+
 
 @media (max-width: 480px) {
   .oauthDivider {
-    margin: 20px 0 16px;
+    gap: 8px;
+  }
+  .oauthContainer {
+    flex-direction: column;
     gap: 8px;
   }
   
