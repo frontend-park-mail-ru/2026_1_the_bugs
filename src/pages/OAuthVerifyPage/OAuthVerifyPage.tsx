@@ -30,6 +30,7 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
     switch (provider) {
       case 'vk':
         codeVerifier = localStorage.getItem("vk_code_verifier")
+        localStorage.removeItem("vk_code_verifier")
         if (!codeVerifier){
           setErrorMessage('Отсутствуют параметр codeVerifier');
           setIsLoading(false);
@@ -42,6 +43,7 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
         console.log('Yandex OAuth params:', Object.fromEntries(params.entries()));
 
         codeVerifier = localStorage.getItem("yandex_code_verifier")
+        localStorage.removeItem("yandex_code_verifier")
         if (!codeVerifier){
           setErrorMessage('Отсутствуют параметр codeVerifier');
           setIsLoading(false);
