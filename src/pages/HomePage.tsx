@@ -31,16 +31,16 @@ export function HomePage() {
 
 
   return (
-    <div>
-      <main className="main">
-        <Hero key="hero"
-          searchValue={searchQuery}
-          onSearchInput={setSearchQuery}
-          onSearch={handleSearch}
-        />
-        { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
-      </main>
-      
-    </div>
+    <main className="main">
+      <button type="button" onClick={() => window.location.href = '/utility'}>
+          Вернуться utility
+      </button>
+      <Hero key="hero"
+        searchValue={searchQuery}
+        onSearchInput={setSearchQuery}
+        onSearch={handleSearch}
+      />
+      { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
+    </main>
   );
 }
