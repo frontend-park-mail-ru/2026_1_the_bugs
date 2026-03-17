@@ -187,17 +187,13 @@ export const validateLoginForm = (form: LoginFormState): ValidationResult => {
 };
 
 export const validateRegisterForm = (form: AuthFormState): ValidationResult => {
-  const confirmResult = validateConfirmPassword(
-    form.password,
-    form.confirmPassword
-  );
-  if (!confirmResult.isValid) {
-    return confirmResult;
+  const emailResult = validateEmail(form.email);
+  if (!emailResult.isValid) {
+    return emailResult;
   }
 
   const pwdResult = validatePassword(form.password);
   if (!pwdResult.isValid) {
-    // дополнительно подсветим confirmPassword, если пароль не проходит
     return {
       ...pwdResult,
       fieldsToHighlight: {
@@ -206,15 +202,35 @@ export const validateRegisterForm = (form: AuthFormState): ValidationResult => {
       },
     };
   }
+  const confirmResult = validateConfirmPassword(
+    form.password,
+    form.confirmPassword
+  );
+  if (!confirmResult.isValid) {
+    return confirmResult;
+  }
 
-  const emailResult = validateEmail(form.email);
-  if (!emailResult.isValid) {
-    return emailResult;
+ 
+  return { isValid: true, error: null, fieldsToHighlight: {} };
+};
+
+export const validateProfileForm = (form: AuthFormState): ValidationResult => {
+  const firstnameResult = validateName(form.firstname, 'firstname');
+  if (!firstnameResult.isValid) {
+    return firstnameResult;
+  }
+
+  const lastnameResult = validateName(form.lastname, 'lastname');
+  if (!lastnameResult.isValid) {
+    return lastnameResult
+  }
+  const phoneResult = validatePhone(form.phone);
+  if (!phoneResult.isValid) {
+    return phoneResult;
   }
 
   return { isValid: true, error: null, fieldsToHighlight: {} };
 };
-
 export const validatePhone = (phone: string): ValidationResult => {
   const phoneRegex = /^(\+7|8)\s?[\s(]?\d{3}[\s)\-]?\s?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/;
   if (phone === '') {
@@ -234,7 +250,7 @@ export const validatePhone = (phone: string): ValidationResult => {
   if (!phoneRegex.test(phone)) {
     return {
       isValid: false,
-      error: 'Неверный формат номера (номер должен соответствовать данному формату: +7 (123) 456-78-90)',
+      error: 'Неверный формат номера телефона',
       fieldsToHighlight: { phone: true },
     };
   }

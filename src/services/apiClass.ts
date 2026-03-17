@@ -164,13 +164,6 @@ class ApiService {
         localStorage.removeItem('authToken');
     }
 
-    /**
-     * Проверяет аутентифицирован ли пользователь.
-     * @returns true если токен существует, false в противном случае.
-     */
-    isAuthenticated() {
-        return !!this.getToken();
-    }
 }
 
 

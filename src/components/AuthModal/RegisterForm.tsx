@@ -10,7 +10,8 @@ import {
   validateRegisterForm,
   type ValidationResult,
   validateName,
-  validatePhone
+  validatePhone,
+  validateProfileForm
 } from './authValidation';
 import {
     ERROR_FIELDS,
@@ -129,15 +130,12 @@ export default function RegisterForm({ onClose, onSuccess, onToggleMode }: Regis
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
-    const result = validateRegisterForm(formData);
+    let result = validateRegisterForm(formData);
     if (!applyValidationResult(result, setError, setFieldHighlights)) return;
 
-    const firstNameRes = validateName(formData.firstname, 'firstname');
-    if (!firstNameRes.isValid) { applyValidationResult(firstNameRes, setError, setFieldHighlights); return; }
-    const lastNameRes = validateName(formData.lastname, 'lastname');
-    if (!lastNameRes.isValid) { applyValidationResult(lastNameRes, setError, setFieldHighlights); return; }
-    const phoneRes = validatePhone(formData.phone);
-    // if (!phoneRes.isValid) { applyValidationResult(phoneRes, setError, setFieldHighlights); return; }
+    result = validateProfileForm(formData);
+    if (!applyValidationResult(result, setError, setFieldHighlights)) return;
+
 
     setIsLoading(true);
     setError(null);

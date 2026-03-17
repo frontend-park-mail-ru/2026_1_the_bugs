@@ -16,7 +16,7 @@ import AuthModal from '../components/AuthModal/AuthModal';
 export function HomePage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated()); 
+  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(authService.isAuthenticated()); 
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
 
 
