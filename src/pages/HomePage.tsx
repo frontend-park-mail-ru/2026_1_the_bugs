@@ -1,22 +1,16 @@
 import { useEffect, useState } from '@my-react/hooks';
-import { Header } from '../components/Header/Header';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
-import { AuthModal } from '../components/AuthModal/AuthModal';
 import { getPosters } from '../services/posters';
-import { type Apartment } from '../types';
-import { apiService } from '../services/apiClass';
-import { authService } from '../services/auth';
+import type { Apartment } from '../types';
 
 
 /**
  * Главная страница приложения.
- * Отображает шапку, герой-секцию, список квартир и модальное окно авторизации.
+ * Отображает шапку, герой-секцию и список квартир.
  */
 export function HomePage() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated()); 
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
 
 
@@ -34,19 +28,10 @@ export function HomePage() {
   useEffect(
     ()=>{handelPostersList()}, []
   )
-  const onLogoutClick = () =>{
-    setIsAuthenticate(false)
-    authService.logout()
-  }
-  const openAuthModal = () => setIsAuthModalOpen(true);
-  const closeAuthModal = () => {
-        setIsAuthModalOpen(false)
-        document.body.style.overflow = ''
-    }
+
 
   return (
-    <div className="page">
-      <Header isAutenticated={isAuthenticate} key="header" onLogoutClick={onLogoutClick} onAuthorizeClick={openAuthModal} />
+    <div>
       <main className="main">
         <Hero key="hero"
           searchValue={searchQuery}
@@ -55,7 +40,7 @@ export function HomePage() {
         />
         { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
       </main>
-      {isAuthModalOpen && <AuthModal key="auth" onSuccess={()=>setIsAuthenticate(true)}onClose={closeAuthModal} />}
+      
     </div>
   );
 }

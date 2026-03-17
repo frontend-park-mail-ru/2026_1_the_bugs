@@ -1,4 +1,4 @@
-import { useNavigate } from '@my-react/router-dom/hooks';
+// import { useNavigate } from '@my-react/router-dom/hooks';
 import style from './Header.module.css';
 
 interface HeaderProps {
