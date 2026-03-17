@@ -2,11 +2,11 @@ import { useEffect, useState } from '@my-react/hooks';
 import { Header } from '../components/Header/Header';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
-import { AuthModal } from '../components/AuthModal/AuthModal';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
 import { apiService } from '../services/apiClass';
 import { authService } from '../services/auth';
+import AuthModal from '../components/AuthModal/AuthModal';
 
 
 /**

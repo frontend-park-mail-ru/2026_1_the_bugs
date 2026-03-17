@@ -67,7 +67,7 @@ class AuthService {
      * @param data - Учетные данные для регистрации (email, пароль).
      * @throws Ошибка API при неудачной регистрации или входе.
      */
-    async register(data: { email: string; password: string }) {
+    async register(data: { email: string; password: string; firstname: string; lastname: string, phone: string }) {
         const params = new URLSearchParams(data);
         
         await apiService.post(

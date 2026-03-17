@@ -3,9 +3,9 @@ import * as VKID from '@vkid/sdk';
 import {generateCodeVerifier, generateState } from '../../../utils/pkce';
 import { VK_OAUTH_CLIENT_ID, VK_OAUTH_REDIRECT_URL, VK_SCOPE } from '../../../config';
 
-const OAuthVKButton = () => {
-  
+let isRender = false
 
+const OAuthVKButton = () => {
   useEffect(() => {
       const initVKID = () => {
         const verifier = generateCodeVerifier();
@@ -24,10 +24,16 @@ const OAuthVKButton = () => {
     initVKID();
 
     const renderWidget = () => {
+      
+      
       const container = document.getElementById('vk-button-container');
       if (!container) {
         return setTimeout(renderWidget, 100);
       }
+      if (isRender){
+        return
+      }
+      isRender = true
 
       const oneTap = new VKID.OneTap();
       
@@ -48,6 +54,7 @@ const OAuthVKButton = () => {
 
     return () => {
       const widget = (window as any).vkWidget;
+      isRender =false;
       if (widget?.unmount) widget.unmount();
     };
   }, []);
