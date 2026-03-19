@@ -14,6 +14,7 @@ import { authService } from '../services/auth';
  */
 export function App() {
     const [currentPath, setCurrentPath] = useState(window.location.pathname);
+    const utilityAlias = new URLSearchParams(window.location.search).get('alias') || '1';
     
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated()); 
@@ -42,7 +43,7 @@ export function App() {
                 <HomePage  key='HomePage' />
             </Router>
             <Router key='router2' currentPath={currentPath} path="/utility">
-                <UtilityComplex key='UtilityComplex' />
+                <UtilityComplex alias={utilityAlias} key='UtilityComplex' />
             </Router>
             {isAuthModalOpen && <AuthModal key="auth" onSuccess={()=>setIsAuthenticate(true)}onClose={closeAuthModal} />}
         </div>

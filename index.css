@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap');
+@font-face {
+  font-family: "Hero";
+  src: url("/font/Hero-Regular.ttf");
+  font-weight: 400;
+  font-display: swap;
+}
 
 @font-face {
   font-family: "Aqum Two";
@@ -35,6 +40,7 @@ button {
   display: block;
   margin: 0 auto;
   box-shadow: var(--shadow);
+  border: none;
 }
 
 button:hover {
@@ -83,6 +89,11 @@ button img {
   to {
     opacity: 1;
   }
+}
+
+.fontHero {
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.2px currentColor;
 }
 
 .modal.active {
@@ -179,6 +190,6 @@ img {
 }
 
 input::placeholder {
-  font-family: "Zen Kaku Gothic Antique", system-ui, sans-serif;
+  font-family: "Hero", system-ui, sans-serif;
   color: #999;
 }

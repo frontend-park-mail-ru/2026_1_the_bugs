@@ -3,7 +3,7 @@ import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import type { Apartment } from '../types';
-
+import { useNavigate } from '@my-react/router-dom/hooks';
 
 /**
  * Главная страница приложения.
@@ -30,9 +30,11 @@ export function HomePage() {
   )
 
 
+  const navigate = useNavigate();
+
   return (
     <main className="main">
-      <button type="button" onClick={() => window.location.href = '/utility'}>
+      <button type="button" onClick={() => navigate('/utility?alias=6')}>
           Вернуться utility
       </button>
       <Hero key="hero"

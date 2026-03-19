@@ -1,9 +1,14 @@
 import { useEffect, useState } from '@my-react/hooks';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
+import { UtilCard } from '../components/UtilCard/UtilCard';
 import type { Apartment } from '../types';
 
-export function UtilityComplex() {
+interface IUtilityComplex{
+	alias: string;
+}
+
+export function UtilityComplex({ alias }: IUtilityComplex) {
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 
 	const handelPostersList = async() => {
@@ -17,20 +22,12 @@ export function UtilityComplex() {
 
 	return (
 		<main className="main">
-            <button type="button" onClick={() => window.location.href = '/'}>
-                Вернуться на главную
-            </button>
+			<UtilCard key="utilCard" alias={alias} />
 			<section>
 				<div>
-					<h1>Жилой комплекс</h1>
-					<p>Страница комплекса с объявлениями, которые приходят с backend.</p>
+					<h2 className="fontHero">Другие объявления в ЖК {alias}</h2>
+					<br/>
 				</div>
-
-				<div>
-					<h2>Другие объявления в этом ЖК</h2>
-
-				</div>
-
 				{apartments && (
 					<CardList key="card_list_utility" apartments={apartments} />
 				)}
