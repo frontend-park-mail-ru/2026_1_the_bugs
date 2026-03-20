@@ -34,7 +34,7 @@ export function HomePage() {
 
   return (
     <main className="main">
-      <button type="button" onClick={() => navigate('/utility?alias=6')}>
+      <button type="button" onClick={() => navigate('/company/stroigroup')}>
           Вернуться utility
       </button>
       <Hero key="hero"
