@@ -146,7 +146,7 @@
   padding: 12px 14px 14px;
 }
 
-.sideCard:first-child {
+.companyCard {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -185,19 +185,29 @@
 }
 
 .sideCard li {
-  padding-left: 12px;
+  padding-left: 18px;
   position: relative;
 }
 
-.sideCard li::before {
+.infoAddress::before,
+.infoPhone::before {
   content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: #222;
+  width: 14px;
+  height: 14px;
   position: absolute;
   left: 0;
-  top: 7px;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.infoAddress::before {
+  background-image: url("/svg/location.svg");
+}
+
+.infoPhone::before {
+  background-image: url("/svg/phone.svg");
 }
 
 @media (max-width: 720px) {

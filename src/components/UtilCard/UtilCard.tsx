@@ -7,7 +7,7 @@ interface UtilCardProps {
     utilityCompany?: UtilityCompany;
 }
 
-export function UtilCard ({ alias, utilityCompany }: UtilCardProps) {
+export function UtilCard ({ utilityCompany }: UtilCardProps) {
     const images = utilityCompany?.photos
         ? [...utilityCompany.photos]
               .sort((a, b) => a.order - b.order)
@@ -15,11 +15,11 @@ export function UtilCard ({ alias, utilityCompany }: UtilCardProps) {
               .filter(Boolean)
         : [];
     const hasImages = images.length > 0;
-    const companyAlias = utilityCompany?.alias || alias;
-    const companyName = utilityCompany?.company_name || "Застройщик";
+    // const companyAlias = utilityCompany?.alias || alias;
+    const companyName = utilityCompany?.company_name;
     const companyAddress = utilityCompany?.address || "Адрес уточняется";
     const companyPhone = utilityCompany?.phone || "Телефон уточняется";
-    const companyGeo = utilityCompany?.geo;
+    // const companyGeo = utilityCompany?.geo;
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -48,7 +48,7 @@ export function UtilCard ({ alias, utilityCompany }: UtilCardProps) {
                             <figure className={style.imageCard} key={`utility-image-${index}`}>
                                 <img
                                     src={image}
-                                    alt={`ЖК ${companyAlias}: фото ${index + 1}`}
+                                    alt={`ЖК ${companyName}: фото ${index + 1}`}
                                     draggable="false"
                                 />
                             </figure>
@@ -80,22 +80,15 @@ export function UtilCard ({ alias, utilityCompany }: UtilCardProps) {
 
         <div className={style.content}>
             <article className={style.descriptionCard}>
-                <h1 className="fontHero">ЖК {companyAlias}</h1>
+                <h1 className="fontHero">ЖК "{companyName}"</h1>
                 <p className="fontHero">
-                    Адрес комплекса: {companyAddress}
+                    Здесь будет описание ЖК. В реальной ситуации это может быть текст, полученный из API, который описывает особенности комплекса, его инфраструктуру, расположение и другие важные детали для потенциальных жильцов.
                 </p>
-                <p className="fontHero">
-                    Контактный телефон: {companyPhone}
-                </p>
-                {companyGeo && (
-                    <p className="fontHero">
-                        Координаты: {companyGeo.lat}, {companyGeo.lon}
-                    </p>
-                )}
+
             </article>
 
             <aside className={style.sideInfo}>
-                <article className={style.sideCard}>
+                {/* <article className={`${style.sideCard} ${style.companyCard}`}>
                     <img
                         className={style.developerLogo}
                         src={utilityCompany?.avatar_url || "/svg/logo.svg"}
@@ -106,17 +99,13 @@ export function UtilCard ({ alias, utilityCompany }: UtilCardProps) {
                         <p className={`${style.sideTitle} fontHero`}>{companyName}</p>
                         <p className={`${style.sideSubtitle} fontHero`}>Застройщик</p>
                     </div>
-                </article>
+                </article> */}
 
                 <article className={style.sideCard}>
                     <h2 className="fontHero">Информация о ЖК</h2>
                     <ul>
-                        <li className="fontHero">Alias: {companyAlias}</li>
-                        <li className="fontHero">Адрес: {companyAddress}</li>
-                        <li className="fontHero">Телефон: {companyPhone}</li>
-                        {companyGeo && (
-                            <li className="fontHero">Geo: {companyGeo.lat}, {companyGeo.lon}</li>
-                        )}
+                        <li className={`${style.infoAddress} fontHero`}>{companyAddress}</li>
+                        <li className={`${style.infoPhone} fontHero`}>{companyPhone}</li>
                     </ul>
                 </article>
             </aside>
