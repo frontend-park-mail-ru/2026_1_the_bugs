@@ -4,7 +4,6 @@ import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
-import { apiService } from '../services/apiClass';
 import { authService } from '../services/auth';
 import AuthModal from '../components/AuthModal/AuthModal';
 

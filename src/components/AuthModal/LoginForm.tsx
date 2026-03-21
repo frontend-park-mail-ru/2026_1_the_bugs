@@ -4,7 +4,6 @@ import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 import {
   validateEmail,
-  validatePassword,
   validateLoginForm,
   type ValidationResult,
   baseValidatePassword
@@ -14,7 +13,6 @@ import {
     getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
-import OAuthVKButton from '../OAuth/VKID/VKID';
 import OAuthYandexButton from '../OAuth/YandexID/YandexID';
 
 export interface AuthFormState {
