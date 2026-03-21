@@ -45,7 +45,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
 				<div>
-					<h2 className="fontHero">Другие объявления в ЖК "{companyName}"</h2>
+					<h2 className="fontHero">Объявления в этом ЖК</h2>
 					<br/>
 				</div>
 				{apartments && (
