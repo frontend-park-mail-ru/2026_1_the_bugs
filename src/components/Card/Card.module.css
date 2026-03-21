@@ -3,6 +3,7 @@
   border-radius: 18px;
   box-shadow: var(--shadow);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .image {

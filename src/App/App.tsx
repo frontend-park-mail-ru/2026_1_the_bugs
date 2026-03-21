@@ -2,6 +2,7 @@ import { Router } from "@my-react/router-dom/Router";
 import {HomePage} from '../pages/HomePage'
 import { useEffect, useState } from "@my-react/hooks";
 import { CompanyPage } from "../pages/CompanyPage";
+import { PosterPage } from '../pages/PosterPage';
 
 
 export function App() {
@@ -16,8 +17,11 @@ export function App() {
             <Router key='router1' currentPath={currentPath} path="/">
                 <HomePage  key='HomePage' />
             </Router>
-            <Router  key='router4' currentPath={currentPath} path="/company/{alias}">
+            <Router key='router4' currentPath={currentPath} path="/company/{alias}">
                 <CompanyPage alias="{alias}" key='CompanyPage' />
+            </Router>
+            <Router key='routerPoster' currentPath={currentPath} path="/posters/{alias}">
+                <PosterPage alias="{alias}" key='PosterPage' />
             </Router>
         </div>
     );
