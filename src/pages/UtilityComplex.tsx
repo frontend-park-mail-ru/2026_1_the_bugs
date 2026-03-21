@@ -13,9 +13,10 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
 	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
+	const companyName = utilityCompany?.company_name;
 
 	const handelPostersList = async() => {
-		const postersResp = await getPosters({limit: 12, offset: 0});
+		const postersResp = await getPosters({limit: 12, offset: 0, utility_company: alias});
 		setApartments(postersResp.posters);
 	}
 
@@ -43,7 +44,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
 				<div>
-					<h2 className="fontHero">Другие объявления в ЖК {utilityCompany?.alias || alias}</h2>
+					<h2 className="fontHero">Другие объявления в ЖК "{companyName}"</h2>
 					<br/>
 				</div>
 				{apartments && (
