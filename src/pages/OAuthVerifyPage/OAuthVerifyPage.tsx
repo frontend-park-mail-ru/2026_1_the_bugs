@@ -16,7 +16,7 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
 
   const handleOAuthVerify = async () => {
     const params = new URLSearchParams(window.location.search);
-    let flow = {
+    const flow = {
       code: params.get('code') || '',
       device_id: params.get('device_id') || '',
       state: params.get('state') || '',
