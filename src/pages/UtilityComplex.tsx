@@ -25,6 +25,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 		try {
 			const utilityResp = await getUtilityCompanyByAlias({ alias });
 			setUtilityCompany(utilityResp);
+			console.log(utilityResp)
 		} catch (error) {
 			console.error('Failed to load utility complex by alias:', error);
 			setUtilityError('Не удалось загрузить данные ЖК');
@@ -35,12 +36,12 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 		()=>{
 			handelPostersList();
 			handleUtilityByAlias();
-		}, [alias]
+		}, []
 	)
 
 	return (
 		<main className="main">
-			<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany} />
+			{utilityCompany && (<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany as UtilityCompany} />)}
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
 				<div>

@@ -4,7 +4,7 @@ import style from "./UtilCard.module.css"
 
 interface UtilCardProps {
     alias: string;
-    utilityCompany?: UtilityCompany;
+    utilityCompany: UtilityCompany;
 }
 
 export function UtilCard ({ utilityCompany }: UtilCardProps) {
@@ -15,11 +15,6 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
               .filter(Boolean)
         : [];
     const hasImages = images.length > 0;
-    // const companyAlias = utilityCompany?.alias || alias;
-    const companyName = utilityCompany?.company_name;
-    const companyAddress = utilityCompany?.address || "Адрес уточняется";
-    const companyPhone = utilityCompany?.phone || "Телефон уточняется";
-    // const companyGeo = utilityCompany?.geo;
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -48,7 +43,7 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
                             <figure className={style.imageCard} key={`utility-image-${index}`}>
                                 <img
                                     src={image}
-                                    alt={`ЖК ${companyName}: фото ${index + 1}`}
+                                    alt={`ЖК ${utilityCompany.company_name}: фото ${index + 1}`}
                                     draggable="false"
                                 />
                             </figure>
@@ -80,32 +75,32 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
 
         <div className={style.content}>
             <article className={style.descriptionCard}>
-                <h1 className="fontHero">ЖК "{companyName}"</h1>
+                <h1 className="fontHero">ЖК "{utilityCompany.company_name}"</h1>
                 <p className="fontHero">
-                    Здесь будет описание ЖК. В реальной ситуации это может быть текст, полученный из API, который описывает особенности комплекса, его инфраструктуру, расположение и другие важные детали для потенциальных жильцов.
+                    {utilityCompany?.description}
                 </p>
 
             </article>
 
             <aside className={style.sideInfo}>
-                {/* <article className={`${style.sideCard} ${style.companyCard}`}>
+                <article className={`${style.sideCard} ${style.companyCard}`}>
                     <img
                         className={style.developerLogo}
-                        src={utilityCompany?.avatar_url || "/svg/logo.svg"}
-                        alt={`Логотип ${companyName}`}
+                        src={utilityCompany.developer?.avatar_url || "/svg/logo.svg"}
+                        alt={`Логотип ${utilityCompany.developer.developer_name}`}
                         draggable="false"
                     />
                     <div>
-                        <p className={`${style.sideTitle} fontHero`}>{companyName}</p>
+                        <p className={`${style.sideTitle} fontHero`}>{utilityCompany.developer.developer_name}</p>
                         <p className={`${style.sideSubtitle} fontHero`}>Застройщик</p>
                     </div>
-                </article> */}
+                </article>
 
                 <article className={style.sideCard}>
                     <h2 className="fontHero">Информация о ЖК</h2>
                     <ul>
-                        <li className={`${style.infoAddress} fontHero`}>{companyAddress}</li>
-                        <li className={`${style.infoPhone} fontHero`}>{companyPhone}</li>
+                        <li className={`${style.infoAddress} fontHero`}>{utilityCompany.address}</li>
+                        <li className={`${style.infoPhone} fontHero`}>{utilityCompany.phone}</li>
                     </ul>
                 </article>
             </aside>

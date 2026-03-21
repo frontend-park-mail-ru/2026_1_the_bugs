@@ -19,6 +19,11 @@ export interface UtilityCompanyGeo {
   lon: number;
 }
 
+export interface Developer{
+  developer_name: string;
+  avatar_url: string | null;
+}
+
 export interface UtilityCompany {
   id: number;
   phone: string;
@@ -28,6 +33,8 @@ export interface UtilityCompany {
   avatar_url: string | null;
   alias: string;
   photos: UtilityCompanyPhoto[];
+  developer: Developer;
+  description: string;
 }
 
 
