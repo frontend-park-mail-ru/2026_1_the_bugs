@@ -2,6 +2,8 @@ import { useState, useEffect } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
+import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
+
 import {
   type AuthFormState,
   validateEmail,
@@ -11,7 +13,8 @@ import {
   type ValidationResult,
   validateName,
   validatePhone,
-  validateProfileForm
+  validateProfileForm,
+  applyValidationResult
 } from './authValidation';
 import {
     ERROR_FIELDS,
@@ -19,30 +22,9 @@ import {
     getHighlightStyle,
 } from './authErrors'
 
-interface RegisterProps {
-  onClose: () => void;
-  onSuccess: () => void;
-  onToggleMode: () => void;
-}
-
 export type RegisterField = 'email' | 'password' | 'confirmPassword' | 'firstname' | 'lastname' | 'phone';
 
-const applyValidationResult = (
-  result: ValidationResult,
-  setError: (error: string | null) => void,
-  setFieldHighlights: (highlights: Partial<Record<RegisterField, boolean>>) => void
-): boolean => {
-  if (!result.isValid) {
-    setError(result.error);
-    setFieldHighlights(result.fieldsToHighlight as Partial<Record<RegisterField, boolean>>);
-    return false;
-  }
-  setError(null);
-  setFieldHighlights({});
-  return true;
-};
-
-export default function RegisterForm({ onClose, onSuccess, onToggleMode }: RegisterProps) {
+export default function RegisterForm({ onClose, onSuccess, onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AuthFormState>({
     email: '',
@@ -76,12 +58,12 @@ export default function RegisterForm({ onClose, onSuccess, onToggleMode }: Regis
     });
   };
 
-  const toggleMode = () => {
+  const toggleMode = (mode: ToggleModeType) => {
     clearFeedback();
     setFormData({ email: '', password: '', confirmPassword: '', firstname: '', lastname: '', phone: '' });
     setShowPassword(false);
     setShowConfirmPassword(false);
-    onToggleMode();
+    onToggleMode(mode);
   };
 
   const nextPage = (e: any) => {
@@ -358,7 +340,7 @@ export default function RegisterForm({ onClose, onSuccess, onToggleMode }: Regis
       </form>
       <button 
         className={style.secondary} 
-        onClick={isFirstPage ? toggleMode : prevPage} 
+        onClick={isFirstPage ? ()=>{toggleMode('login')} : prevPage} 
         disabled={isLoading}
       >
         Назад

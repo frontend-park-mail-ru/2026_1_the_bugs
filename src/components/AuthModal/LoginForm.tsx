@@ -1,12 +1,13 @@
 import { useState, useEffect } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
+import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 import {
   validateEmail,
   validateLoginForm,
-  type ValidationResult,
-  baseValidatePassword
+  baseValidatePassword,
+  applyValidationResult
 } from './authValidation';
 import {
     ERROR_FIELDS,
@@ -20,33 +21,10 @@ export interface AuthFormState {
   password: string;
 }
 
-
-
-interface AuthModalProps {
-  onClose: () => void;
-  onSuccess: () => void;
-  onToggleMode: () => void;
-}
-
 export type LoginField = 'email' | 'password';
 
 
-const applyValidationResult = (
-  result: ValidationResult,
-  setError: (error: string | null) => void,
-  setFieldHighlights: (highlights: Partial<Record<LoginField, boolean>>) => void
-): boolean => {
-  if (!result.isValid) {
-    setError(result.error);
-    setFieldHighlights(result.fieldsToHighlight as Partial<Record<LoginField, boolean>>);
-    return false;
-  }
-  setError(null);
-  setFieldHighlights({});
-  return true;
-};
-
-export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModalProps) {
+export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AuthFormState>({
     email: '',
@@ -72,11 +50,11 @@ export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModa
     });
   };
 
-  const toggleMode = () => {
+  const toggleMode = (mode: ToggleModeType) => {
     clearFeedback();
     setFormData({ email: '', password: ''});
     setShowPassword(false);
-    onToggleMode();
+    onToggleMode(mode);
   };
 
   const handleAuthError = (error: ErrorResponse) => {
@@ -90,8 +68,8 @@ export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModa
     
     const fields = ERROR_FIELDS[error.status];
     if (fields) {
-      const highlights: Partial<Record<LoginField, boolean>> = {};
-      fields.forEach((f: LoginField) => { highlights[f] = true; });
+      const highlights: Partial<Record<string, boolean>> = {};
+      fields.forEach((f: string) => { highlights[f] = true; });
       setFieldHighlights(highlights);
     }
   };
@@ -118,6 +96,7 @@ export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModa
       setIsLoading(false);
     }
   };
+
 
 
   const handleEmailInput = (e: any) => {
@@ -202,16 +181,34 @@ export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModa
             >
               {isLoading ? 'Загрузка...' :  'Войти' }
             </button>
-            
-            
+         
           </form>
           <button 
             className={style.secondary} 
-            onClick={toggleMode} 
+            onClick={()=>toggleMode('register')} 
             disabled={isLoading}
           >
             Создать аккаунт
           </button>
+
+           <div style={{ textAlign: 'center', margin: '10px 0' }}>
+                <a
+                  href="#"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    if (!isLoading) toggleMode('recover');
+                  }}
+                  style={{
+                    color: '#000',
+                    textDecoration: 'underline',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    pointerEvents: isLoading ? 'none' : 'auto',
+                    fontSize: '14px'
+                  }}
+                >
+                  ЗАБЫЛИ ПАРОЛЬ?
+                </a>
+            </div>
          <div className={style.oauthDivider}>
             <div className={style.dividerLine} />
             <span className={style.dividerText}>ИЛИ</span>

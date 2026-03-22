@@ -281,3 +281,19 @@ export const validateName = (name: string, field: 'firstname' | 'lastname'): Val
   }
   return { isValid: true, error: null, fieldsToHighlight: {} };
 }
+
+export function applyValidationResult<T extends string>(
+    result: ValidationResult,
+    setError: (error: string | null) => void,
+    setFieldHighlights: (highlights: Partial<Record<T, boolean>>) => void
+  ): boolean{
+    if (!result.isValid) {
+      setError(result.error);
+      setFieldHighlights(result.fieldsToHighlight as Partial<Record<T, boolean>>);
+      return false;
+    }
+    setError(null);
+    setFieldHighlights({});
+    return true;
+  };
+  

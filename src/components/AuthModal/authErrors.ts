@@ -10,7 +10,7 @@ export const ERROR_MESSAGES: Record<number, string> = {
 };
 
 
-export const ERROR_FIELDS: Partial<Record<number, LoginField[]>> = {
+export const ERROR_FIELDS: Partial<Record<number, string[]>> = {
   400: ['email', 'password'],
   401: ['email', 'password'],
   404: ['email'],
@@ -28,3 +28,5 @@ export const getHighlightStyle = (isHighlighted?: boolean) =>
     border: '1px solid #ff4d4f',
     boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.25)'
   } : undefined;
+
+
