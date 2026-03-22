@@ -9,9 +9,18 @@ interface HeaderProps {
 
 /** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
 export function Header({ onLogoutClick, onAuthorizeClick, isAutenticated }: HeaderProps) {
+  const navigate = useNavigate();
+
   return (
     <header className={style['header']}>
-      <div className={style['logo']}>ДОМДЕЛИ</div>
+      <button
+        className={style['logo']}
+        type="button"
+        aria-label="Перейти на главную"
+        onClick={() => navigate('/')}
+      >
+        ДОМДЕЛИ
+      </button>
         {isAutenticated ? (
           <div className={style['actions']}>
               <button className={style.btn} type="button" aria-label="Сообщение">

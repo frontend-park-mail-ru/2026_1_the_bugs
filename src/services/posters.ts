@@ -19,6 +19,8 @@ interface IPostersFilters {
     limit: number;
     /** Количество объявлений для пропуска (для пагинации) */
     offset: number;
+    /** Alias ЖК для фильтрации объявлений */
+    utility_company?: string;
 }
 
 /**
@@ -30,10 +32,14 @@ interface IPostersFilters {
  * @throws Ошибка API при неудачном запросе или не-2xx статусе.
  */
 export async function getPosters(filters: IPostersFilters): Promise<IPostersResponse> {
-    const resp: IPostersResponse = await apiService.get("/posters", {
+    const params: Record<string, any> = {
         "limit": filters.limit,
-        "offset": filters.offset
-    });
+        "offset": filters.offset,
+    };
+    if (filters.utility_company) {
+        params["utility_company"] = filters.utility_company;
+    }
+    const resp: IPostersResponse = await apiService.get("/posters", params);
     return resp;
 }
 

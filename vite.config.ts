@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+// @ts-ignore (у меня ругался VS CODE)
 import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({

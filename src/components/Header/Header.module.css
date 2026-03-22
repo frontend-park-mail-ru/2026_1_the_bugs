@@ -8,9 +8,23 @@
 }
 
 .logo {
+  all: unset;
   font-weight: 700;
   letter-spacing: 2px;
   font-size: 18px;
+  display: inline-block;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.logo:hover,
+.logo:active,
+.logo:active:not(:disabled),
+.logo:focus-visible {
+  transform: none;
+  box-shadow: none;
+  opacity: 1;
+
 }
 
 .actions {

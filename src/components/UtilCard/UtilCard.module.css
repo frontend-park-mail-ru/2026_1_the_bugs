@@ -1,0 +1,235 @@
+.wrapper {
+  display: grid;
+  gap: 18px;
+}
+
+
+.gallery {
+  position: relative;
+}
+
+.sliderViewport {
+  overflow: hidden;
+  border-radius: 22px;
+}
+
+.sliderTrack {
+  display: flex;
+  gap: 18px;
+  transition: transform 0.35s ease;
+}
+
+.imageCard {
+  background: var(--card);
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  height: 400px;
+  flex: 0 0 82%;
+}
+
+.imageCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.emptyPhotoMessage {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.navButtonWrap {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.navButton {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  color: #222;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.navButton:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.navButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.navButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.arrowIcon {
+  width: 8px;
+  height: 14px;
+  opacity: 0.82;
+}
+
+.arrowRight {
+  transform: scaleX(-1);
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 18px;
+}
+
+.descriptionCard {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 12px 14px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.descriptionCard h1 {
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.descriptionCard p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.sideInfo {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.sideCard {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 12px 14px 14px;
+}
+
+.companyCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.developerLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.sideTitle {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sideSubtitle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sideCard h2 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.sideCard ul {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sideCard li {
+  padding-left: 18px;
+  position: relative;
+}
+
+.infoAddress::before,
+.infoPhone::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.infoAddress::before {
+  background-image: url("/svg/location.svg");
+}
+
+.infoPhone::before {
+  background-image: url("/svg/phone.svg");
+}
+
+@media (max-width: 720px) {
+  .sliderViewport {
+    border-radius: 18px;
+  }
+
+  .imageCard {
+    min-height: 260px;
+    border-radius: 18px;
+    flex-basis: 92%;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .descriptionCard {
+    padding: 16px;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
