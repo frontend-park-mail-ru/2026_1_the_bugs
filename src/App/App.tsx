@@ -22,6 +22,7 @@ export function App() {
             </Router>
             <Router  key='router3' currentPath={currentPath} path="/oauth/yandex">
                 <OAuthVerifyPage provider="yandex" key='OAuthVerifyPageYandex' />
+            </Router>
             <Router  key='router4' currentPath={currentPath} path="/company/{alias}">
                 <CompanyPage alias="{alias}" key='CompanyPage' />
             </Router>
