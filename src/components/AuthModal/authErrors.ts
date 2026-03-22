@@ -1,4 +1,4 @@
-import type { AuthField } from "./AuthModal";
+import type { LoginField } from "./LoginForm";
 
 export const ERROR_MESSAGES: Record<number, string> = {
   400: 'Введен неверный email или пароль',
@@ -10,7 +10,7 @@ export const ERROR_MESSAGES: Record<number, string> = {
 };
 
 
-export const LOGIN_ERROR_FIELDS: Partial<Record<number, AuthField[]>> = {
+export const ERROR_FIELDS: Partial<Record<number, LoginField[]>> = {
   400: ['email', 'password'],
   401: ['email', 'password'],
   404: ['email'],

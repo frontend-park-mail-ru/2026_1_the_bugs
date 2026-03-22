@@ -1,5 +1,6 @@
 import { Router } from "@my-react/router-dom/Router";
 import {HomePage} from '../pages/HomePage'
+import {OAuthVerifyPage} from '../pages/OAuthVerifyPage/OAuthVerifyPage'
 import { useEffect, useState } from "@my-react/hooks";
 import { CompanyPage } from "../pages/CompanyPage";
 import { PosterPage } from '../pages/PosterPage';
@@ -17,7 +18,13 @@ export function App() {
             <Router key='router1' currentPath={currentPath} path="/">
                 <HomePage  key='HomePage' />
             </Router>
-            <Router key='router4' currentPath={currentPath} path="/company/{alias}">
+            <Router  key='router2' currentPath={currentPath} path="/oauth/vk">
+                <OAuthVerifyPage provider="vk" key='OAuthVerifyPageVK' />
+            </Router>
+            <Router  key='router3' currentPath={currentPath} path="/oauth/yandex">
+                <OAuthVerifyPage provider="yandex" key='OAuthVerifyPageYandex' />
+            </Router>
+            <Router  key='router4' currentPath={currentPath} path="/company/{alias}">
                 <CompanyPage alias="{alias}" key='CompanyPage' />
             </Router>
             <Router key='routerPoster' currentPath={currentPath} path="/posters/{alias}">
