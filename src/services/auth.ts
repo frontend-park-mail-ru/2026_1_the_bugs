@@ -154,6 +154,31 @@ class AuthService {
         
     }
 
+    async sendCode(data: {email: string}) {
+        await apiService.post(
+            "/auth/recover",
+            JSON.stringify({"email": data.email}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+    async verifyCode(code: string) {
+        await apiService.post(
+            "/auth/recover/verify",
+            JSON.stringify({"code": code}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+    async resetPwd(pwd: string){
+          await apiService.post(
+            "/auth/recover/reset",
+            JSON.stringify({"password": pwd}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+
     /**
      * Проверяет аутентифицирован ли пользователь.
      * @returns true если токен существует, false в противном случае.
