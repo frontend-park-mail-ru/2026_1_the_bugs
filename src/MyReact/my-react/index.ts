@@ -363,6 +363,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             if (typeof vNode !== "string" && vNode.type === "component") {
                 const compInstance = this.instanceMap.get(vNode.key) as ComponentInstance<any>;
                 const compDom = compInstance.domElement;
+                console.log("compInstance", compInstance)
                 if (!compDom) { 
                     branchIndex++;
                     continue

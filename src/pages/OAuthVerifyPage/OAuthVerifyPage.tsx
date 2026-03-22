@@ -79,7 +79,6 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
 
   if (isLoading) {
     return (
-      <div className="page">
         <div className={style.verifyContainer}>
           <div className={style.card}>
             <div className={style.spinner} />
@@ -87,13 +86,11 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
             <p className={style.subtitle}>Подождите несколько секунд</p>
           </div>
         </div>
-      </div>
     );
   }
 
   if (isSuccess) {
     return (
-      <div className="page">
         <div className={style.verifyContainer}>
           <div className={style.card}>
             <div className={style.successIcon}>✓</div>
@@ -101,12 +98,10 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
             <p className={style.subtitle}>Перенаправляем на главную...</p>
           </div>
         </div>
-      </div>
     );
   }
 
   return (
-    <div className="page">
       <div className={style.verifyContainer}>
         <div className={style.card}>
           <div className={style.errorIcon}>⚠️</div>
@@ -135,6 +130,5 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
           </div>
         </div>
       </div>
-    </div>
   );
 }

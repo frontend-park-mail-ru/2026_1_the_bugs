@@ -46,14 +46,34 @@ export function matchPath(pattern: string, path: string) {
 
 export function Router({path, children, currentPath}: IRouterProps){
     const { matches, params } = matchPath(path, currentPath)
-    console.log(`Router ${path}:`, { currentPath, matches, params })
+    console.log(`Router ${path}:`, { currentPath, matches, params, children })
 
-    if (!matches) return null
+    if (!matches && path != "*") return null
 
     if (children.type === 'component') {
         children.props = { ...children.props, ...params }
+        console.log(`render children ${path}`)
         return (<div>{children}</div>)
     }
 
     return (<div>{children}</div>)
+}
+
+interface ISwitchrProps{
+    children: any[]
+    currentPath: string
+}
+
+export function Switch({ currentPath, children }: ISwitchrProps) {
+  const childrenArray = Array.isArray(children) ? children : [children];
+  
+  for (const child of childrenArray) {
+    if (child && child.type === 'component' && child.props.path) {
+      const { matches } = matchPath(child.props.path, currentPath);
+      if (matches || child.props.path == "*") {
+        return <div>{child}</div>;
+      }
+    }
+  }
+  return null;
 }

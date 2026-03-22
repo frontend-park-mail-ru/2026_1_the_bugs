@@ -1,8 +1,8 @@
 import { useEffect, useState } from '@my-react/hooks';
+import { useNavigate } from '@my-react/router-dom/hooks';
 import { getPosterByAlias } from '../services/posters';
 import type { ApartmentDetails } from '../types';
-import { Header } from '../components/Header/Header';
-import { AuthModal } from '../components/AuthModal/AuthModal';
+
 import layout from '../components/PosterPage/PosterPageLayout.module.css';
 import { PosterGallery } from '../components/PosterPage/PosterGallery';
 import { PosterMainInfo } from '../components/PosterPage/PosterMainInfo';
@@ -12,11 +12,9 @@ import { PosterSummary } from '../components/PosterPage/PosterSummary';
 import { PosterMap } from '../components/PosterPage/PosterMap';
 import { PosterSeller } from '../components/PosterPage/PosterSeller';
 import { PosterCompany } from '../components/PosterPage/PosterCompany';
-import { apiService } from '../services/apiClass';
-import { authService } from '../services/auth';
 
 interface PosterPageProps {
-  alias: string; // прилетает из роутера как строка
+  alias?: string;
 }
 
 const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
@@ -41,22 +39,13 @@ function getMapEmbedUrl(lat: number, lon: number) {
  * @param alias - Уникальный alias объявления из параметров роутера.
  */
 export function PosterPage({ alias }: PosterPageProps) {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated());
+  if (alias === undefined){
+    return null
+  }
   const [poster, setPoster] = useState<ApartmentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const onLogoutClick = () => {
-    setIsAuthenticate(false);
-    authService.logout();
-  };
-
-  const openAuthModal = () => setIsAuthModalOpen(true);
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-    document.body.style.overflow = '';
-  };
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadPoster = async () => {
@@ -75,6 +64,10 @@ export function PosterPage({ alias }: PosterPageProps) {
 
     loadPoster();
   }, [alias]);
+
+  const handelCompanyClick=()=>{
+    navigate(`/company/${poster?.company.alias}`)
+  }
 
   let mainContent;
 
@@ -102,24 +95,15 @@ export function PosterPage({ alias }: PosterPageProps) {
           <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} />
           <PosterMap key="poster_map" mapUrl={mapUrl} address={poster.address} />
           <PosterSeller key="poster_seller" poster={poster} />
-          <PosterCompany key="poster_company" poster={poster} />
+          <button onClick={()=>{handelCompanyClick()}}><PosterCompany key="poster_company" poster={poster} /></button>
         </aside>
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <Header
-        key="header"
-        isAutenticated={isAuthenticate}
-        onLogoutClick={onLogoutClick}
-        onAuthorizeClick={openAuthModal}
-      />
-      <main className={`main ${layout.main}`}>
+      <div className={`main ${layout.main}`}>
         {mainContent}
-      </main>
-      {isAuthModalOpen && <AuthModal key="auth" onSuccess={() => setIsAuthenticate(true)} onClose={closeAuthModal} />}
-    </div>
+      </div>
   );
 }

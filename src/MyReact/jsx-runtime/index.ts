@@ -75,9 +75,13 @@ function jsx<PropsType extends ComponentPropsType>(
             children: normalizedChildren(props.children)
         } as JSXElement
     } else {
-        // Создаем компонент
         if (key === undefined) {
             key = props.key as string
+        }
+        if (!key || key === null) {
+            const propsForHash = { ...props };
+            delete propsForHash.children;
+            key = `${type.name}_${stableHash(propsForHash)}`;
         }
         return {
             type: "component",
@@ -88,9 +92,11 @@ function jsx<PropsType extends ComponentPropsType>(
         }
     }
 }
+function stableHash(obj: any): string {
+  return btoa(
+    JSON.stringify(obj, Object.keys(obj).sort())
+  ).slice(0, 8);
+}
 
-/** Экспорт JSX namespace для глобальной типизации */
 export type { JSX };
-
-/** Основная JSX функция и её алиас */
 export { jsx, jsx as jsxs };

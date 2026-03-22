@@ -3,7 +3,6 @@ import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
-import { authService } from '../services/auth';
 
 
 /**
@@ -11,8 +10,8 @@ import { authService } from '../services/auth';
  * Отображает шапку, герой-секцию и список квартир.
  */
 export function HomePage() {
+  console.log("HomePage")
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(authService.isAuthenticated()); 
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
 
 
@@ -31,20 +30,14 @@ export function HomePage() {
     ()=>{handelPostersList()}, []
   )
 
-
-  const navigate = useNavigate();
-
   return (
-    <main className="main">
-      <button type="button" onClick={() => navigate('/company/stroigroup')}>
-          Вернуться utility
-      </button>
+    <div>
       <Hero key="hero"
         searchValue={searchQuery}
         onSearchInput={setSearchQuery}
         onSearch={handleSearch}
       />
       { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
-    </main>
+    </div>
   );
 }

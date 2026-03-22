@@ -6,14 +6,16 @@ import { getUtilityCompanyByAlias } from '../services/complex';
 import type { Apartment, UtilityCompany } from '../types';
 
 interface IUtilityComplex{
-	alias: string;
+	alias?: string;
 }
 
 export function UtilityComplex({ alias }: IUtilityComplex) {
+	if (alias === undefined){
+		return null
+	}
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
 	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
-	const companyName = utilityCompany?.company_name;
 
 	const handelPostersList = async() => {
 		const postersResp = await getPosters({limit: 12, offset: 0, utility_company: alias});
@@ -40,18 +42,18 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	)
 
 	return (
-		<main className="main">
+		<div>
 			{utilityCompany && (<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany as UtilityCompany} />)}
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
 				<div>
-					<h2 className="fontHero">Объявления в этом ЖК</h2>
 					<br/>
+					<h2 className="fontHero">Объявления в этом ЖК</h2>
 				</div>
 				{apartments && (
 					<CardList key="card_list_utility" apartments={apartments} />
 				)}
 			</section>
-		</main>
+		</div>
 	);
 }

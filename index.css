@@ -28,7 +28,7 @@
   --radius-L: 999px;
 }
 
-/* БАЗОВЫЙ СТИЛЬ КНОПКИ - используется как основа */
+
 button {
   border-radius: var(--radius-L);
   background: var(--card);
@@ -64,9 +64,7 @@ button img {
   height: 18px;
   margin: auto;
 }
-/* ************************* */
 
-/* Затемненный фон */
 .modal {
   display: none;
   position: fixed;
@@ -156,7 +154,7 @@ img {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 32px 48px 64px;
+  padding: 2px 0px 64px;
   gap: 40px;
   max-width: 1400px;
   margin: 0 auto;

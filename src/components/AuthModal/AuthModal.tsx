@@ -21,8 +21,7 @@ export interface AuthModalChildProps {
 }
 
 
-export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
-  
+export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<ToggleModeType>('login');
 
   const toggleMode = (mode: ToggleModeType) => {

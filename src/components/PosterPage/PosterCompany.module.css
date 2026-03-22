@@ -1,17 +1,21 @@
 .companyBlock {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: inherit;
 }
 
 .companyTitle {
   color: var(--muted);
+  font-size: large;
+  margin: 0px;
 }
 
 .companyAvatar {
   width: 100%;
-  max-width: 140px;
+  max-width: 144px;
   height: 72px;
   border-radius: 12px;
+  margin: 0px;
 }
 
 .companyAvatar {
