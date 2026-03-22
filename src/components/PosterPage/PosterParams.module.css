@@ -1,23 +1,41 @@
+.card {
+  padding: 16px 18px;
+  gap: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
 .params {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 0;
 }
 
 .param {
-  background: #f6f6f5;
-  border-radius: 12px;
-  padding: 10px 12px;
-  display: grid;
-  gap: 4px;
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.param:last-child {
+  border-bottom: none;
 }
 
 .paramLabel {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .paramValue {
   font-size: 14px;
+  font-weight: 500;
+  text-align: right;
 }
 
