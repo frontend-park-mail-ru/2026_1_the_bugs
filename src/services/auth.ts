@@ -1,5 +1,5 @@
 import { apiService } from "./apiClass";
-import { type LoginResponse } from "../types/api";
+import { type ErrorResponse, type IOAuthFlow, type LoginResponse } from "../types/api";
 
 /**
  * Сервис аутентификации, управляющий жизненным циклом JWT-токена с автоматическим обновлением.
@@ -67,7 +67,7 @@ class AuthService {
      * @param data - Учетные данные для регистрации (email, пароль).
      * @throws Ошибка API при неудачной регистрации или входе.
      */
-    async register(data: { email: string; password: string }) {
+    async register(data: { email: string; password: string; firstname: string; lastname: string, phone: string }) {
         const params = new URLSearchParams(data);
         
         await apiService.post(
@@ -119,6 +119,84 @@ class AuthService {
         }
         return;
     }
+    async loginFromVK(flow: IOAuthFlow) {
+        const res: LoginResponse =await apiService.post('/auth/vkid', 
+            JSON.stringify(flow),
+            { 'Content-Type': 'application/json' },
+        );
+        apiService.setToken(res.access_token);
+    }
+    async loginFromYandex(flow: IOAuthFlow) {
+        const res: LoginResponse =await apiService.post('/auth/yandex', 
+            JSON.stringify(flow),
+            { 'Content-Type': 'application/json' },
+        );
+        apiService.setToken(res.access_token);
+    }
+    async getMe(token: string) {
+        try{
+            const data = await apiService.post(
+            "/user/me", 
+            null,
+            {'Authorization': `Bearer ${token}` , 'Accept': 'application/json'},
+            
+        );
+        return data
+        } catch (e: any){
+            const err = e as ErrorResponse
+            if (err.status != 500){
+                await this.refreshToken()
+                const data = await apiService.post("/user/me", null,
+                {'Authorization': `Bearer ${token}` , 'Accept': 'application/json'},)
+                return data
+            }
+        }
+        
+    }
+
+    async sendCode(data: {email: string}) {
+        await apiService.post(
+            "/auth/recover",
+            JSON.stringify({"email": data.email}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+    async verifyCode(code: string) {
+        await apiService.post(
+            "/auth/recover/verify",
+            JSON.stringify({"code": code}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+    async resetPwd(pwd: string){
+          await apiService.post(
+            "/auth/recover/reset",
+            JSON.stringify({"password": pwd}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
+
+    /**
+     * Проверяет аутентифицирован ли пользователь.
+     * @returns true если токен существует, false в противном случае.
+     */
+    isAuthenticated() {
+        const token = apiService.getToken();
+        // if (token){
+        //     await this.getMe(token)
+        // }
+        // try {
+        //     await this.refreshToken();
+        // }catch{
+        //     return false
+        // }
+        return !!token
+    }
 }
+
+
 
 export const authService = new AuthService();

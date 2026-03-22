@@ -1,0 +1,17 @@
+.summaryCard {
+  gap: 18px;
+}
+
+.price {
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.metaCompact {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+

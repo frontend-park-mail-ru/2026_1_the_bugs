@@ -6,6 +6,9 @@ import { Header } from "../components/Header/Header";
 import { AuthModal } from '../components/AuthModal/AuthModal';
 import { apiService } from '../services/apiClass';
 import { authService } from '../services/auth';
+import {OAuthVerifyPage} from '../pages/OAuthVerifyPage/OAuthVerifyPage'
+import { CompanyPage } from "../pages/CompanyPage";
+import { PosterPage } from '../pages/PosterPage';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -14,37 +17,30 @@ import { authService } from '../services/auth';
  */
 export function App() {
     const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated()); 
-
-
     useEffect(() => {
         const handler = () => setCurrentPath(window.location.pathname);
         window.addEventListener('popstate', handler);
         return () => window.removeEventListener('popstate', handler);
     }, []);
-
-    const onLogoutClick = () =>{
-        setIsAuthenticate(false)
-        authService.logout()
-    }
-    const openAuthModal = () => setIsAuthModalOpen(true);
-    const closeAuthModal = () => {
-        setIsAuthModalOpen(false)
-        document.body.style.overflow = ''
-    }
-
     return (
-        <div className="page">
-            <Header isAutenticated={isAuthenticate} key="header" onLogoutClick={onLogoutClick} onAuthorizeClick={openAuthModal} />
+        <div>
             <Router key='router1' currentPath={currentPath} path="/">
                 <HomePage  key='HomePage' />
             </Router>
-            <Router key='router2' currentPath={currentPath} path="/company/{alias}">
-                <UtilityComplex alias="{alias}" key='UtilityComplex' />
+            <Router  key='router2' currentPath={currentPath} path="/oauth/vk">
+                <OAuthVerifyPage provider="vk" key='OAuthVerifyPageVK' />
             </Router>
-            {isAuthModalOpen && <AuthModal key="auth" onSuccess={()=>setIsAuthenticate(true)}onClose={closeAuthModal} />}
+            <Router  key='router3' currentPath={currentPath} path="/oauth/yandex">
+                <OAuthVerifyPage provider="yandex" key='OAuthVerifyPageYandex' />
+            </Router>
+            <Router  key='router4' currentPath={currentPath} path="/company/{alias}">
+                <CompanyPage alias="{alias}" key='CompanyPage' />
+            </Router>
+            <Router key='routerPoster' currentPath={currentPath} path="/posters/{alias}">
+                <PosterPage alias="{alias}" key='PosterPage' />
+            </Router>
         </div>
     );
 }

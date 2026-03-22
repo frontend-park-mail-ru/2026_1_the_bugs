@@ -4,6 +4,13 @@ export interface AuthFormState {
   email: string;
   password: string;
   confirmPassword: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+}
+export interface LoginFormState {
+  email: string;
+  password: string;
 }
 
 export interface ValidationResult {
@@ -16,7 +23,7 @@ const MAX_EMAIL_LENGTH = 254;
 const MIN_PWD_LEN = 8;
 const MAX_PWD_LEN = 64;
 
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+[a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
 const emailCharsRegex = /^[a-zA-Z0-9._%+-@-]{1,}$/;
 const pwdRegex = new RegExp(`^[a-zA-Z\\d!@#$%^&*\\-]{${MIN_PWD_LEN},}$`);
 
@@ -165,7 +172,7 @@ export const validateConfirmPassword = (
   return { isValid: true, error: null, fieldsToHighlight: {} };
 };
 
-export const validateLoginForm = (form: AuthFormState): ValidationResult => {
+export const validateLoginForm = (form: LoginFormState): ValidationResult => {
   const emailResult = validateEmail(form.email);
   if (!emailResult.isValid) {
     return emailResult;
@@ -180,17 +187,13 @@ export const validateLoginForm = (form: AuthFormState): ValidationResult => {
 };
 
 export const validateRegisterForm = (form: AuthFormState): ValidationResult => {
-  const confirmResult = validateConfirmPassword(
-    form.password,
-    form.confirmPassword
-  );
-  if (!confirmResult.isValid) {
-    return confirmResult;
+  const emailResult = validateEmail(form.email);
+  if (!emailResult.isValid) {
+    return emailResult;
   }
 
   const pwdResult = validatePassword(form.password);
   if (!pwdResult.isValid) {
-    // дополнительно подсветим confirmPassword, если пароль не проходит
     return {
       ...pwdResult,
       fieldsToHighlight: {
@@ -199,11 +202,98 @@ export const validateRegisterForm = (form: AuthFormState): ValidationResult => {
       },
     };
   }
+  const confirmResult = validateConfirmPassword(
+    form.password,
+    form.confirmPassword
+  );
+  if (!confirmResult.isValid) {
+    return confirmResult;
+  }
 
-  const emailResult = validateEmail(form.email);
-  if (!emailResult.isValid) {
-    return emailResult;
+ 
+  return { isValid: true, error: null, fieldsToHighlight: {} };
+};
+
+export const validateProfileForm = (form: AuthFormState): ValidationResult => {
+  const firstnameResult = validateName(form.firstname, 'firstname');
+  if (!firstnameResult.isValid) {
+    return firstnameResult;
+  }
+
+  const lastnameResult = validateName(form.lastname, 'lastname');
+  if (!lastnameResult.isValid) {
+    return lastnameResult
+  }
+  const phoneResult = validatePhone(form.phone);
+  if (!phoneResult.isValid) {
+    return phoneResult;
   }
 
   return { isValid: true, error: null, fieldsToHighlight: {} };
 };
+export const validatePhone = (phone: string): ValidationResult => {
+  const phoneRegex = /^(\+7|8)\s?[\s(]?\d{3}[\s)\-]?\s?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/;
+  if (phone === '') {
+    return {
+      isValid: false,
+      error: 'Телефон не может быть пустым',
+      fieldsToHighlight: { phone: true },
+    };
+  }
+  if (!/^(\+7|8)/.test(phone)) {
+    return {
+      isValid: false,
+      error: 'Телефон должен начинаться с +7 или 8',
+      fieldsToHighlight: { phone: true },
+    };
+  }
+  if (!phoneRegex.test(phone)) {
+    return {
+      isValid: false,
+      error: 'Неверный формат номера телефона',
+      fieldsToHighlight: { phone: true },
+    };
+  }
+  return { isValid: true, error: null, fieldsToHighlight: {} };
+};
+
+export const validateName = (name: string, field: 'firstname' | 'lastname'): ValidationResult => {
+  if (name === '') {
+    return {
+      isValid: false,
+      error: `${field === 'firstname' ? 'Имя' : 'Фамилия'} не может быть пустым`,
+      fieldsToHighlight: { [field]: true },
+    };
+  }
+  if (!/^[a-zA-Zа-яА-ЯёЁ-]+$/.test(name)) {
+    return {
+      isValid: false,
+      error: `${field === 'firstname' ? 'Имя' : 'Фамилия'} может содержать только буквы и дефис`,
+      fieldsToHighlight: { [field]: true },
+    };
+  }
+  if (name.length > 40) {
+    return {
+      isValid: false,
+      error: `${field === 'firstname' ? 'Имя' : 'Фамилия'} слишком длинное (макс. 40 символов)`,
+      fieldsToHighlight: { [field]: true },
+    };
+  }
+  return { isValid: true, error: null, fieldsToHighlight: {} };
+}
+
+export function applyValidationResult<T extends string>(
+    result: ValidationResult,
+    setError: (error: string | null) => void,
+    setFieldHighlights: (highlights: Partial<Record<T, boolean>>) => void
+  ): boolean{
+    if (!result.isValid) {
+      setError(result.error);
+      setFieldHighlights(result.fieldsToHighlight as Partial<Record<T, boolean>>);
+      return false;
+    }
+    setError(null);
+    setFieldHighlights({});
+    return true;
+  };
+  

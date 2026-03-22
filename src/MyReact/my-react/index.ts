@@ -23,7 +23,6 @@ import {
  * @param newAttrs - Новые атрибуты из JSX-дерева.
  */
 const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>) => {
-    // Удаляем старые атрибуты, которых нет в новых
     repr.attrs.forEach((_, k) => {
         if (!newAttrs.has(k)) {
             repr.attrs.delete(k);
@@ -31,33 +30,26 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>) => {
         }
     })
 
-    // Обновляем измененные атрибуты
     repr.attrs.forEach((v, k) => {
         if (newAttrs.get(k) !== v) {
             repr.attrs.set(k, newAttrs.get(k))
             repr.elem.setAttribute(k, newAttrs.get(k));
         }
     })
-
-    // Очищаем старые обработчики событий
     repr.eventListeners.forEach((l) => {
         repr.elem.removeEventListener(l.type, l.callback)
     })
     repr.eventListeners = []
 
-    // Применяем новые атрибуты
     newAttrs.forEach((v, k) => {
         if (k.startsWith("on") && k[2] == k[2].toUpperCase()) {
-            // Обработчики событий (onClick, onChange)
             const typeEvent = k.slice("on".length).toLocaleLowerCase()
             repr.elem.addEventListener(typeEvent, v as () => void);
             repr.eventListeners.push({type: typeEvent, callback: v})
         } else if (k === "value" && repr.elem instanceof HTMLInputElement) {
-            // Специальная обработка value для input
             repr.elem.value = v;
             repr.attrs.set(k, v)
         } else if (k === "style" && typeof v === "object" && v !== null) {
-            // Обработка CSS стилей как объекта
             const oldStyle = repr.attrs.get("style") || {};
             for (const prop in oldStyle) {
                 if (!(prop in v)) {
@@ -474,7 +466,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             }
         }
 
-        // Удаляем лишние DOM-узлы
         while(domRepr.length > domReprIndex) {
             const r = domRepr[domReprIndex]
             if (r.type === "element") {

@@ -2,8 +2,9 @@ import { useEffect, useState } from '@my-react/hooks';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
-import type { Apartment } from '../types';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { type Apartment } from '../types';
+import { authService } from '../services/auth';
+
 
 /**
  * Главная страница приложения.
@@ -11,6 +12,7 @@ import { useNavigate } from '@my-react/router-dom/hooks';
  */
 export function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(authService.isAuthenticated()); 
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
 
 

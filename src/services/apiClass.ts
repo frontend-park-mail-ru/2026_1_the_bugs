@@ -1,3 +1,4 @@
+import { API_URL } from '../config';
 import type { ErrorResponse } from "src/types/api";
 
 /**
@@ -163,16 +164,9 @@ class ApiService {
         localStorage.removeItem('authToken');
     }
 
-    /**
-     * Проверяет аутентифицирован ли пользователь.
-     * @returns true если токен существует, false в противном случае.
-     */
-    isAuthenticated() {
-        return !!this.getToken();
-    }
 }
 
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
 export const apiService = new ApiService(API_URL);
 
 export { ApiService };
