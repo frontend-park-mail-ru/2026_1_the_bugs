@@ -1,7 +1,19 @@
 import { useEffect, useState } from '@my-react/hooks';
 import { getPosterByAlias } from '../services/posters';
 import type { ApartmentDetails } from '../types';
-import styles from './PosterPage.module.css';
+import { Header } from '../components/Header/Header';
+import { AuthModal } from '../components/AuthModal/AuthModal';
+import layout from '../components/PosterPage/PosterPageLayout.module.css';
+import { PosterGallery } from '../components/PosterPage/PosterGallery';
+import { PosterMainInfo } from '../components/PosterPage/PosterMainInfo';
+import { PosterDescription } from '../components/PosterPage/PosterDescription';
+import { PosterParams } from '../components/PosterPage/PosterParams';
+import { PosterSummary } from '../components/PosterPage/PosterSummary';
+import { PosterMap } from '../components/PosterPage/PosterMap';
+import { PosterSeller } from '../components/PosterPage/PosterSeller';
+import { PosterCompany } from '../components/PosterPage/PosterCompany';
+import { apiService } from '../services/apiClass';
+import { authService } from '../services/auth';
 
 interface PosterPageProps {
   alias: string; // прилетает из роутера как строка
@@ -29,9 +41,22 @@ function getMapEmbedUrl(lat: number, lon: number) {
  * @param alias - Уникальный alias объявления из параметров роутера.
  */
 export function PosterPage({ alias }: PosterPageProps) {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(apiService.isAuthenticated());
   const [poster, setPoster] = useState<ApartmentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const onLogoutClick = () => {
+    setIsAuthenticate(false);
+    authService.logout();
+  };
+
+  const openAuthModal = () => setIsAuthModalOpen(true);
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+    document.body.style.overflow = '';
+  };
 
   useEffect(() => {
     const loadPoster = async () => {
@@ -51,117 +76,50 @@ export function PosterPage({ alias }: PosterPageProps) {
     loadPoster();
   }, [alias]);
 
-  if (loading) return <div className="page"><main className={`main ${styles.main}`}><div className={styles.status}>Загрузка объявления...</div></main></div>;
-  if (error) return <div className="page"><main className={`main ${styles.main}`}><div className={styles.status}>Ошибка: {error}</div></main></div>;
-  if (!poster) return <div className="page"><main className={`main ${styles.main}`}><div className={styles.status}>Объявление не найдено</div></main></div>;
+  let mainContent;
 
-  const mainImage = poster.images[0]?.img_url;
-  const thumbs = poster.images.slice(1, 5);
-  const sellerName = `${poster.seller.first_name} ${poster.seller.last_name}`.trim();
-  const description = poster.description?.trim() || 'Описание отсутствует';
-  const { lat, lon } = poster.building_geo;
-  const mapUrl = getMapEmbedUrl(lat, lon);
+  if (loading) {
+    mainContent = <div className={layout.status}>Загрузка объявления...</div>;
+  } else if (error) {
+    mainContent = <div className={layout.status}>Ошибка: {error}</div>;
+  } else if (!poster) {
+    mainContent = <div className={layout.status}>Объявление не найдено</div>;
+  } else {
+    const description = poster.description?.trim() || 'Описание отсутствует';
+    const { lat, lon } = poster.building_geo;
+    const mapUrl = getMapEmbedUrl(lat, lon);
+
+    mainContent = (
+      <div className={layout.layout}>
+        <div className={layout.leftColumn}>
+          <PosterGallery key="poster_gallery" poster={poster} />
+          <PosterMainInfo key="poster_main_info" poster={poster} />
+          <PosterDescription key="poster_description" description={description} />
+          <PosterParams key="poster_params" poster={poster} />
+        </div>
+
+        <aside className={layout.rightColumn}>
+          <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} />
+          <PosterMap key="poster_map" mapUrl={mapUrl} address={poster.address} />
+          <PosterSeller key="poster_seller" poster={poster} />
+          <PosterCompany key="poster_company" poster={poster} />
+        </aside>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
-      <main className={`main ${styles.main}`}>
-        <div className={styles.layout}>
-          <div className={styles.leftColumn}>
-            <section className={styles.gallery}>
-              <div className={styles.mainImage}>
-                {mainImage ? (
-                  <img src={mainImage} alt={poster.address} />
-                ) : (
-                  <div className={styles.placeholder}>Нет фото</div>
-                )}
-              </div>
-
-              {thumbs.length > 0 && (
-                <div className={styles.thumbGrid}>
-                  {thumbs.map((image) => (
-                    <div className={styles.thumb} key={image.order.toString()}>
-                      <img src={image.img_url} alt={`${poster.address} - фото ${image.order.toString()}`} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <article className={styles.card}>
-              <h1 className={styles.address}>{poster.address}</h1>
-              <div className={styles.metaInline}>
-                <span>Метро: {poster.metro}</span>
-                <span>Район: {poster.district}</span>
-                <span>Город: {poster.city}</span>
-              </div>
-            </article>
-
-            <article className={styles.card}>
-              <p className={styles.description}>{description}</p>
-            </article>
-
-            <article className={styles.card}>
-              <h2>Характеристики</h2>
-              <div className={styles.params}>
-                <div className={styles.param}><span className={styles.paramLabel}>Площадь</span><span className={styles.paramValue}>{poster.area.toString()} м²</span></div>
-                <div className={styles.param}><span className={styles.paramLabel}>Этаж</span><span className={styles.paramValue}>{poster.flat.floor.toString()} из {poster.floor_count.toString()}</span></div>
-                <div className={styles.param}><span className={styles.paramLabel}>Тип жилья</span><span className={styles.paramValue}>{poster.category}</span></div>
-                <div className={styles.param}><span className={styles.paramLabel}>Категория</span><span className={styles.paramValue}>{poster.flat.flat_category}</span></div>
-                <div className={styles.param}><span className={styles.paramLabel}>Номер квартиры</span><span className={styles.paramValue}>{poster.flat.flat_number.toString()}</span></div>
-                <div className={styles.param}><span className={styles.paramLabel}>ID объявления</span><span className={styles.paramValue}>{poster.id.toString()}</span></div>
-              </div>
-            </article>
-
-          </div>
-
-          <aside className={styles.rightColumn}>
-            <section className={`${styles.card} ${styles.summaryCard}`}>
-              <strong className={styles.price}>{formatPrice(poster.price)}</strong>
-              <div className={styles.metaCompact}>
-                <span>{poster.area.toString()} м²</span>
-                <span>{poster.flat.floor.toString()} этаж</span>
-              </div>
-            </section>
-
-            <section className={`${styles.card} ${styles.mapCard}`}>
-              <iframe
-                className={styles.mapFrame}
-                src={mapUrl}
-                title={`Карта: ${poster.address}`}
-                loading="lazy"
-              />
-            </section>
-
-            <section className={`${styles.card} ${styles.seller}`}>
-              <h2>Продавец</h2>
-              <div className={styles.sellerHead}>
-                {poster.seller.avatar_url ? (
-                  <img className={styles.avatar} src={poster.seller.avatar_url} alt={sellerName || 'Продавец'} />
-                ) : (
-                  <div className={styles.avatarFallback}>Нет фото</div>
-                )}
-                <div>
-                  <div className={styles.sellerName}>{sellerName || 'Без имени'}</div>
-                </div>
-              </div>
-
-              <div className={styles.sellerInfo}>
-                <span>Телефон: {poster.seller.phone}</span>
-              </div>
-            </section>
-
-            <section className={`${styles.card} ${styles.companyBlock}`}>
-              <h2>Компания</h2>
-              <span className={styles.companyTitle}>{poster.company.company_name}</span>
-              {poster.company.avatar_url ? (
-                <img className={styles.companyAvatar} src={poster.company.avatar_url} alt={poster.company.company_name} />
-              ) : (
-                <div className={styles.companyAvatarFallback}>Логотип отсутствует</div>
-              )}
-            </section>
-          </aside>
-        </div>
+      <Header
+        key="header"
+        isAutenticated={isAuthenticate}
+        onLogoutClick={onLogoutClick}
+        onAuthorizeClick={openAuthModal}
+      />
+      <main className={`main ${layout.main}`}>
+        {mainContent}
       </main>
+      {isAuthModalOpen && <AuthModal key="auth" onSuccess={() => setIsAuthenticate(true)} onClose={closeAuthModal} />}
     </div>
   );
 }
