@@ -1,0 +1,37 @@
+.seller {
+  display: grid;
+  gap: 18px;
+}
+
+.sellerHead {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sellerText {
+  min-width: 0;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+
+.sellerName {
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.sellerInfo {
+  display: grid;
+  gap: 8px;
+}
+

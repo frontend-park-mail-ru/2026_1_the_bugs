@@ -1,0 +1,15 @@
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+  font-size: 14px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+}
+

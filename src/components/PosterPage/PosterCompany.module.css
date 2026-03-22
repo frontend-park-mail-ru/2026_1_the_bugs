@@ -1,0 +1,22 @@
+.companyBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.companyTitle {
+  color: var(--muted);
+}
+
+.companyAvatar {
+  width: 100%;
+  max-width: 140px;
+  height: 72px;
+  border-radius: 12px;
+}
+
+.companyAvatar {
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+

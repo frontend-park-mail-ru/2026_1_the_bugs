@@ -3,6 +3,7 @@ import {HomePage} from '../pages/HomePage'
 import {OAuthVerifyPage} from '../pages/OAuthVerifyPage/OAuthVerifyPage'
 import { useEffect, useState } from "@my-react/hooks";
 import { CompanyPage } from "../pages/CompanyPage";
+import { PosterPage } from '../pages/PosterPage';
 
 
 export function App() {
@@ -25,6 +26,9 @@ export function App() {
             </Router>
             <Router  key='router4' currentPath={currentPath} path="/company/{alias}">
                 <CompanyPage alias="{alias}" key='CompanyPage' />
+            </Router>
+            <Router key='routerPoster' currentPath={currentPath} path="/posters/{alias}">
+                <PosterPage alias="{alias}" key='PosterPage' />
             </Router>
         </div>
     );
