@@ -77,6 +77,7 @@ export default function RecoverEmail({ onToggleMode }: AuthModalChildProps) {
       await authService.sendCode({
         email: formData.email,
       });
+      sessionStorage.setItem("email", formData.email)
       toggleMode('code_verify');
     } catch (error: any) {
       handleAuthError(error as ErrorResponse);

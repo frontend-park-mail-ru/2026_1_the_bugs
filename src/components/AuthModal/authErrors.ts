@@ -1,5 +1,3 @@
-import type { LoginField } from "./LoginForm";
-
 export const ERROR_MESSAGES: Record<number, string> = {
   400: 'Введен неверный email или пароль',
   401: 'Введен неверный email или пароль',
@@ -15,7 +13,7 @@ export const ERROR_FIELDS: Partial<Record<number, string[]>> = {
   401: ['email', 'password'],
   404: ['email'],
   409: ['email'],
-  429: ['password']
+  429: ['email','password']
 };
 
 

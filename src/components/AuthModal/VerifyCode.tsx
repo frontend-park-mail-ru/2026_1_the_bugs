@@ -1,4 +1,4 @@
-import { useState } from '@my-react/hooks';
+import { useEffect, useState } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
@@ -22,11 +22,33 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
     code: '',
   });
   const [fieldHighlights, setFieldHighlights] = useState<Partial<Record<RecoverField, boolean>>>({});
+  const [tick, setTick] = useState<number>(60);
+  const [isSendActive, setIsSendActive] = useState<boolean>(false)
+  const [sendEmail, setSendEmail] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null);
-  
+
+  useEffect(() => {
+    let currentTick = 60;
+    
+    const interval = setInterval(() => {
+      currentTick -= 1;
+      setTick(currentTick);
+      
+      if (currentTick <= 0) {
+        clearInterval(interval);
+        setIsSendActive(true);
+      }
+    }, 1000);
+    
+    setIsSendActive(false);
+    
+    return () => clearInterval(interval);
+  }, [sendEmail]);
+
 
   const clearFeedback = () => {
     setError(null);
+    setIsLoading(false);
     setFieldHighlights({});
   };
 
@@ -37,7 +59,11 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
   };
 
   const handleError = (error: ErrorResponse) => {
-    setError("Неверный код");
+    if (error.status == 429){
+      setError(`Слишком много попыток попробуйте через ${tick} cек`);
+    }else{
+      setError("Неверный код");
+    }
     setFieldHighlights({ ['code']: true });
   };
 
@@ -49,6 +75,7 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
 
     try {
       await authService.verifyCode(formData.code);
+      sessionStorage.removeItem("email")
       toggleMode('update_pwd');
     } catch (error: any) {
       handleError(error as ErrorResponse);
@@ -56,6 +83,29 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
       setIsLoading(false);
     }
   };
+  const handleSendEmail = async (e: any) => {
+      e.preventDefault();
+      const email = sessionStorage.getItem("email")
+      if (email === null){
+        toggleMode('recover')
+        return
+      }
+  
+      setIsLoading(true);
+      setError(null);
+      setFieldHighlights({});
+  
+      try {
+        await authService.sendCode({
+          email: email,
+        });
+        setSendEmail(true)
+      } catch (error: any) {
+        handleError(error as ErrorResponse);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   return(<div>
             <h2 className={style.title}>
@@ -94,15 +144,35 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
             >
               {isLoading ? 'Загрузка...' :  'Подтвердить' }
             </button>
-            
           </form>
-          <button 
-            className={style.secondary} 
-            onClick={()=>toggleMode('recover')} 
-            disabled={isLoading}
-          >
-            Назад
-          </button>
+           <button 
+              type="submit" 
+              className={style.secondary} 
+              disabled={!isSendActive }
+              onClick={handleSendEmail}
+            >
+              {!isSendActive ? `Отправить ${tick} сек.` :  'Отправить еще раз' }
+            </button>
+
+          
+           <div style={{ textAlign: 'center', margin: '10px 0' }}>
+                <a
+                  href="#"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    if (!isLoading) toggleMode('recover');
+                  }}
+                  style={{
+                    color: '#000',
+                    textDecoration: 'underline',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    pointerEvents: isLoading ? 'none' : 'auto',
+                    fontSize: '14px'
+                  }}
+                >
+                  Изменить почту
+                </a>
+            </div>
         </div>
         );
 }
