@@ -1,7 +1,6 @@
 .card {
   padding: 16px 18px;
   gap: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
 .title {

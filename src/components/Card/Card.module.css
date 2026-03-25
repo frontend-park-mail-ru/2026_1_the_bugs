@@ -9,6 +9,26 @@
 .image {
   position: relative;
   height: 170px;
+  overflow: hidden;
+}
+
+.image img {
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.card:hover .image img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image img {
+    transition: none;
+  }
+
+  .card:hover .image img {
+    transform: none;
+  }
 }
 
 .chip {
