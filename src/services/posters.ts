@@ -1,4 +1,5 @@
 import type {Apartment, ApartmentDetails} from "src/types";
+import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 
 /**
@@ -59,4 +60,19 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
         {}
     );
     return resp.poster;
+}
+
+/**
+ * Создает новое объявление о квартире.
+ *
+ * @param payload - Данные нового объявления.
+ * @returns Ответ API с alias/id созданного объявления.
+ */
+export async function createPoster(payload: CreatePosterPayload): Promise<CreatePosterResponse> {
+    const resp: CreatePosterResponse = await apiService.post(
+        '/posters',
+        JSON.stringify(payload),
+        { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    );
+    return resp;
 }
