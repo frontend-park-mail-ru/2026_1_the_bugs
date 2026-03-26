@@ -1,6 +1,6 @@
-import { useState } from "@my-react/hooks";
 import type { UtilityCompany } from "src/types";
 import style from "./UtilCard.module.css"
+import { UtilGallery } from "./UtilGallery";
 
 interface UtilCardProps {
     alias: string;
@@ -8,70 +8,11 @@ interface UtilCardProps {
 }
 
 export function UtilCard ({ utilityCompany }: UtilCardProps) {
-    const images = utilityCompany?.photos
-        ? [...utilityCompany.photos]
-              .sort((a, b) => a.order - b.order)
-              .map((photo) => photo.img_url)
-              .filter(Boolean)
-        : [];
-    const hasImages = images.length > 0;
 
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    const goPrev = () => {
-        if (activeIndex > 0) {
-            setActiveIndex(activeIndex - 1);
-        }
-    };
-
-    const goNext = () => {
-        if (activeIndex < images.length - 1) {
-            setActiveIndex(activeIndex + 1);
-        }
-    };
 
     return(
         <div className={style.wrapper}>
-        <div className={style.gallery}>
-            <div className={style.sliderViewport}>
-                {hasImages ? (
-                    <div
-                        className={style.sliderTrack}
-                        style={{ transform: `translateX(calc(${activeIndex} * -1 * (82% + 18px)))` }}
-                    >
-                        {images.map((image, index) => (
-                            <figure className={style.imageCard} key={`utility-image-${index}`}>
-                                <img
-                                    src={image}
-                                    alt={`ЖК ${utilityCompany.company_name}: фото ${index + 1}`}
-                                    draggable="false"
-                                />
-                            </figure>
-                        ))}
-                    </div>
-                ) : (
-                    <figure className={style.imageCard}>
-                        <p className={`${style.emptyPhotoMessage} fontHero`}>Нет фото</p>
-                    </figure>
-                )}
-            </div>
-
-            {hasImages && activeIndex > 0 && (
-                <div className={`${style.navButtonWrap} ${style.prev}`}>
-                    <button className={style.navButton} type="button" aria-label="Предыдущее фото" onClick={goPrev}>
-                        <img className={style.arrowIcon} src="/svg/arrow.svg" alt="" aria-hidden="true" draggable="false" />
-                    </button>
-                </div>
-            )}
-
-            {hasImages && activeIndex < images.length - 1 && (
-                <div className={`${style.navButtonWrap} ${style.next}`}>
-                    <button className={style.navButton} type="button" aria-label="Следующее фото" onClick={goNext}>
-                        <img className={`${style.arrowIcon} ${style.arrowRight}`} src="/svg/arrow.svg" alt="" aria-hidden="true" draggable="false" />
-                    </button>
-                </div>
-            )}
-        </div>
+            <UtilGallery key="UtilGallery" utilityCompany={utilityCompany} />
 
         <div className={style.content}>
             <article className={style.descriptionCard}>
