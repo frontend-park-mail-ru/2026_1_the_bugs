@@ -5,7 +5,7 @@ import type { UtilityCompany } from "src/types";
 interface UtilPhotoProps {
     utilityCompany: UtilityCompany;
 }
-
+/** Модуль отображения фотографий ЖК*/
 export function UtilGallery ({ utilityCompany }: UtilPhotoProps) {
     const images = [...(utilityCompany.photos || [])].sort((a, b) => a.order - b.order);
     const posterKey = utilityCompany.id.toString();

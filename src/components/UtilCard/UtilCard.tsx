@@ -6,7 +6,7 @@ interface UtilCardProps {
     alias: string;
     utilityCompany: UtilityCompany;
 }
-
+/** СТарница отображения компонентов ЖК */
 export function UtilCard ({ utilityCompany }: UtilCardProps) {
 
 
