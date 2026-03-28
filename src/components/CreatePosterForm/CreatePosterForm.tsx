@@ -22,7 +22,7 @@ const STEP_TITLES = [
   'Особенности и цена'
 ];
 
-const HOUSING_OPTIONS = ['Квартира', 'Студия', 'Таунхаус', 'Апартаменты', 'Пентхаус', 'Лофт'];
+const HOUSING_OPTIONS = ['Квартира'];
 const ROOM_OPTIONS = ['1', '2', '3', '4', '5', '6+'];
 const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
@@ -54,20 +54,22 @@ function collectErrorsUpToStep(step: CreatePosterStep, data: CreatePosterFormDat
   return nextErrors;
 }
 
-async function mapToPayload(form: CreatePosterFormData): Promise<CreatePosterPayload> {
+function mapToPayload(
+  form: CreatePosterFormData,
+  coordinates: { latitude: number; longitude: number } | null
+): CreatePosterPayload {
   const roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
   const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
-  const imagePayload = await Promise.all(
-    form.images.map(async (image, index) => ({
-      img_url: await fileToDataUrl(image.file),
-      order: index + 1
-    }))
-  );
+  const imagePayload: CreatePosterPayload['images'] = form.images.map((image, index) => ({
+    file: image.file,
+    order: index + 1
+  }));
 
   return {
     title: `${form.housingType.trim()} ${form.address.trim()}`,
     category: form.housingType.trim(),
     address: form.address.trim(),
+    ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
     price: Number(form.price),
     area: Number(form.area),
     floor_count: Number(form.floorCount),
@@ -79,7 +81,6 @@ async function mapToPayload(form: CreatePosterFormData): Promise<CreatePosterPay
       floor: Number(form.floor),
       rooms: roomCountNumber
     },
-    company_alias: form.complexName.trim() || undefined,
     images: imagePayload
   };
 }
@@ -93,15 +94,6 @@ interface InputProps {
   showErrorText?: boolean;
   placeholder?: string;
   type?: 'text' | 'email';
-}
-
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ''));
-    reader.onerror = () => reject(new Error('Не удалось прочитать файл'));
-    reader.readAsDataURL(file);
-  });
 }
 
 function Field({ field, label, value, errors, onChange, showErrorText = true, placeholder, type = 'text' }: InputProps) {
@@ -137,6 +129,7 @@ export function CreatePosterForm() {
   const [errors, setErrors] = useState<Partial<Record<CreatePosterField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isPublished, setIsPublished] = useState(false);
   const [createdAlias, setCreatedAlias] = useState<string | null>(null);
   const [validatedUpToStep, setValidatedUpToStep] = useState(0);
@@ -296,9 +289,9 @@ export function CreatePosterForm() {
     setSubmitError(null);
 
     try {
-      const payload = await mapToPayload(formDraft);
+      const payload = mapToPayload(formDraft, coordinates);
       const response = await createPoster(payload);
-      const alias = response?.poster?.alias || response?.alias || '';
+      const alias = response.alias || '';
       setIsPublished(true);
       setCreatedAlias(alias || null);
     } catch (error: any) {
@@ -356,7 +349,12 @@ export function CreatePosterForm() {
             </div>
           </div>
           <div className={styles.fullWidth}>
-            <OpenStreetMapPicker key="osm-picker" address={form.address} onPickAddress={(address) => updateField('address', address)} />
+            <OpenStreetMapPicker
+              key="osm-picker"
+              address={form.address}
+              onPickAddress={(address) => updateField('address', address)}
+              onPickCoordinates={(latitude, longitude) => setCoordinates({ latitude, longitude })}
+            />
           </div>
           <div className={styles.fullWidth}>
             <Field
