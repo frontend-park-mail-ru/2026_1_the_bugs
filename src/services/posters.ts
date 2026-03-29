@@ -44,13 +44,12 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     return resp;
 }
 
-export async function getMyPosters(): Promise<ApartmentDetails[]> {
+export async function getMyPosters(): Promise<IPostersResponse> {
     const token = apiService.getToken();
-    const resp = await apiService.get('/posters/me', {}, {
-    'Authorization': `Bearer ${token}`,
-    'Accept': 'application/json'
+    return await apiService.get('/posters/me', {}, {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
     });
-    return resp;
 }
 
 /**

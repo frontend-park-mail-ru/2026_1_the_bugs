@@ -3,28 +3,35 @@ import { useEffect, useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import { getMyPosters } from '../../services/posters';
 import { apiService } from '../../services/apiClass';
-import type { ApartmentDetails } from '../../types';
+import type { Apartment } from '../../types';
 
 export function MyPosterList() {
     const navigate = useNavigate();
-    const [posters, setPosters] = useState<ApartmentDetails[]>([]);
+    const [posters, setPosters] = useState<Apartment[]>([]);
     const [menuOpen, setMenuOpen] = useState<number | null>(null);
+    const [loading, setIsLoading] = useState(false);
+    const [error, setMyPosterError] = useState<string | null>(null);
 
-    const fetchMyPosters = async () => {
-        const data = await getMyPosters();
-        setPosters(Array.isArray(data) ? data : (data ? [data] : []));
-
+    const handleGetMyPosters = async () => {
+        setIsLoading(true);
+        try {
+            const { posters } = await getMyPosters();
+            setPosters(Array.isArray(posters) ? posters : []);
+        } catch (error: any) {
+            setMyPosterError(error?.message || 'Ошибка загрузки объявлений');
+        } finally {
+            setIsLoading(false);
+        }
     };
-
     useEffect(() => {
-        fetchMyPosters();
+        handleGetMyPosters();
     }, []);
 
     const handleDelete = async (id: number) => {
         if (!window.confirm('Удалить объявление?')) return;
         try {
             await apiService.delete(`/posters/${id}`);
-            fetchMyPosters();
+            handleGetMyPosters();
         } catch (e: any) {
             alert(e?.message || 'Ошибка удаления');
         }
@@ -34,8 +41,8 @@ export function MyPosterList() {
         navigate(`/posters/edit/${encodeURIComponent(alias)}`);
     };
 
-    // if (loading) return <div style={{textAlign: 'center', marginTop: 40}}>Загрузка…</div>;
-    // if (error) return <div style={{textAlign: 'center', color: '#e00', marginTop: 40}}>{error}</div>;
+    if (loading) return <div style={{textAlign: 'center', marginTop: 40}}>Загрузка…</div>;
+    if (error) return <div style={{textAlign: 'center', color: '#e00', marginTop: 40}}>{error}</div>;
 
     return (
         <div>
