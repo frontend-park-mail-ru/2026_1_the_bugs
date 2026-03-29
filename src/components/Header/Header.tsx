@@ -23,6 +23,14 @@ export function Header({ onLogoutClick, onAuthorizeClick, isAutenticated }: Head
       </button>
         {isAutenticated ? (
           <div className={style['actions']}>
+              <button
+                className={`${style.secondary} ${style.createBtn}`}
+                type="button"
+                aria-label="Создать объявление"
+                onClick={() => navigate('/posters/create')}
+              >
+                Создать
+              </button>
               <button className={style.btn} type="button" aria-label="Сообщение">
                 <img src="/svg/message.svg" alt="" aria-hidden="true" draggable="false"/>
               </button>
