@@ -31,7 +31,7 @@ export function Header({ onLogoutClick, onAuthorizeClick, isAutenticated }: Head
               >
                 Создать
               </button>
-              <button className={style.btn} type="button" aria-label="Сообщение">
+              <button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
                 <img src="/svg/message.svg" alt="" aria-hidden="true" draggable="false"/>
               </button>
               <button className={style.btn} type="button" aria-label="Избранное">

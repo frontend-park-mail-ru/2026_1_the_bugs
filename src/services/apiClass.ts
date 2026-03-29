@@ -25,12 +25,12 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async get(endpoint: string, params: Record<string, any>) {
+    async get(endpoint: string, params: Record<string, any>, headers: any = {}) {
         try {
             const paramsURL = new URLSearchParams(params).toString();
             const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
                 method: 'GET',
-                headers: this.getHeaders({"Accept": 'application/json'}),
+                headers: this.getHeaders(headers),
             });
             return this.handleResponse(response);
         } catch (error) {

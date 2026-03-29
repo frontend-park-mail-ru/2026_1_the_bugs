@@ -44,6 +44,15 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     return resp;
 }
 
+export async function getMyPosters(): Promise<ApartmentDetails[]> {
+    const token = apiService.getToken();
+    const resp = await apiService.get('/posters/me', {}, {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/json'
+    });
+    return resp;
+}
+
 /**
  * Получает детальную информацию об объявлении по его alias.
  * Выполняет URL-кодирование alias и обращается к эндпоинту детали объявления.
