@@ -40,7 +40,7 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     if (filters.utility_company) {
         params["utility_company"] = filters.utility_company;
     }
-    const resp: IPostersResponse = await apiService.get("/posters", params);
+    const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;
 }
 

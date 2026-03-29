@@ -334,7 +334,7 @@ export function CreatePosterForm() {
                     className={`${styles.roomCountButton} ${isActive ? styles.roomCountButtonActive : ''}`}
                     onClick={() => updateField('roomCount', option)}
                   >
-                    {option}
+                    {option === '0' ? 'Студия' : option}
                   </button>
                 );
               })}

@@ -7,6 +7,7 @@ export interface Apartment {
   price: number;
   rating: number;
   beds: number;
+  flat_category: string;
   imageUrl: string;
 }
 

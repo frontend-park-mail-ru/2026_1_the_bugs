@@ -67,7 +67,7 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
   }
 
   if (step === 3) {
-    const allowedRooms = ['1', '2', '3', '4', '5', '6+'];
+    const allowedRooms = ['0','1', '2', '3', '4', '5', '6+'];
     const roomsError = required(data.roomCount, 'Укажите количество комнат');
     if (roomsError) errors.roomCount = roomsError;
     if (!roomsError && !allowedRooms.includes(data.roomCount)) {

@@ -14,7 +14,7 @@ export const STEP_TITLES = [
 ];
 
 export const HOUSING_OPTIONS = ['Квартира'];
-export const ROOM_OPTIONS = ['Студия', '1', '2', '3', '4', '5', '6+'];
+export const ROOM_OPTIONS = ['0', '1', '2', '3', '4', '5', '6+'];
 export const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
   { value: 'parking', label: 'Парковка' },
