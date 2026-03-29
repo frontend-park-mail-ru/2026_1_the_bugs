@@ -91,12 +91,34 @@ class AuthService {
      * @throws Ошибка API при неудачном обновлении.
      */
     async refreshToken() {
-        const data = await apiService.post(
+        const data: LoginResponse = await apiService.post(
             "/auth/refresh", 
             '',
             { "Content-Type": "text/plain; charset=utf-8" },
         );
         return data;
+    }
+
+    /**
+     * Wrapper that retries the provided request function after attempting
+     * a token refresh when the failure is not a server error (500).
+     */
+    private async withRefresh<T>(fn: () => Promise<T>): Promise<T> {
+        try {
+            return await fn();
+        } catch (e: any) {
+            const err = e as ErrorResponse;
+            if (err.status !== 500) {
+                const cred = await this.refreshTokenSilently();
+                apiService.setToken(cred.access_token);
+                if (this.refreshTimeout) {
+                    clearTimeout(this.refreshTimeout);
+                }
+                this.startRefreshTimer(cred.expire_at);
+                return await fn();
+            }
+            throw e;
+        }
     }
     
     /** Выполняет выход пользователя, удаляя токен доступа и очищая таймер обновления. 
@@ -133,25 +155,16 @@ class AuthService {
         );
         apiService.setToken(res.access_token);
     }
-    async getMe(token: string) {
-        try{
-            const data = await apiService.post(
-            "/user/me", 
-            null,
-            {'Authorization': `Bearer ${token}` , 'Accept': 'application/json'},
-            
-        );
-        return data
-        } catch (e: any){
-            const err = e as ErrorResponse
-            if (err.status != 500){
-                await this.refreshToken()
-                const data = await apiService.post("/user/me", null,
-                {'Authorization': `Bearer ${token}` , 'Accept': 'application/json'},)
-                return data
-            }
-        }
-        
+    async getMe(token?: string) {
+        return await this.withRefresh(async () => {
+            const t = token ?? apiService.getToken();
+            const data = await apiService.get(
+                "/user/me",
+                {},
+                { 'Authorization': `Bearer ${t}`, 'Accept': 'application/json' }
+            );
+            return data;
+        });
     }
 
     async sendCode(data: {email: string}) {
@@ -183,16 +196,25 @@ class AuthService {
      * Проверяет аутентифицирован ли пользователь.
      * @returns true если токен существует, false в противном случае.
      */
-    isAuthenticated() {
-        const token = apiService.getToken();
-        // if (token){
-        //     await this.getMe(token)
-        // }
-        // try {
-        //     await this.refreshToken();
-        // }catch{
-        //     return false
-        // }
+    async isAuthenticated() {
+        let token = apiService.getToken();
+        if (token){
+            await this.getMe(token)
+            return true
+        }
+        try {
+            const cred = await this.refreshToken();
+
+            token = cred.access_token;
+            apiService.setToken(token);
+
+            if (this.refreshTimeout) {
+                clearTimeout(this.refreshTimeout);
+            }
+            this.startRefreshTimer(cred.expire_at);
+        }catch{
+            return false
+        }
         return !!token
     }
 }

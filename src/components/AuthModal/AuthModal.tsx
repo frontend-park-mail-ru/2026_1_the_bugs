@@ -15,7 +15,6 @@ export type ToggleModeType = 'login' | 'register'| 'recover' | 'code_verify' | '
 
 
 export interface AuthModalChildProps {
-  onClose: () => void;
   onSuccess: () => void;
   onToggleMode: (mode: ToggleModeType) => void;
 }
@@ -41,19 +40,19 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
         <button className={style.close} onClick={onClose}>×</button>
         <div>
           {mode === 'login' && (
-            <LoginForm key="login" onClose={onClose} onSuccess={onSuccess} onToggleMode={toggleMode} />
+            <LoginForm key="login" onSuccess={onSuccess} onToggleMode={toggleMode} />
           )}
           {mode === 'register' && (
-             <RegisterForm key="register" onClose={onClose} onSuccess={onSuccess} onToggleMode={toggleMode} />
+             <RegisterForm key="register" onSuccess={onSuccess} onToggleMode={toggleMode} />
           )}
           {mode === 'recover' && (
-             <ResetCode key="reset_code" onClose={onClose} onSuccess={onSuccess} onToggleMode={toggleMode} />
+             <ResetCode key="reset_code" onSuccess={onSuccess} onToggleMode={toggleMode} />
           )}
            {mode === 'code_verify' && (
-             <VerifyCode key="verify_code" onClose={onClose} onSuccess={onSuccess} onToggleMode={toggleMode} />
+             <VerifyCode key="verify_code" onSuccess={onSuccess} onToggleMode={toggleMode} />
           )}
           {mode === 'update_pwd' && (
-             <UpdatePwd key="update_pwd" onClose={onClose} onSuccess={onSuccess} onToggleMode={toggleMode} />
+             <UpdatePwd key="update_pwd" onSuccess={onSuccess} onToggleMode={toggleMode} />
           )}
         </div>
       </div>

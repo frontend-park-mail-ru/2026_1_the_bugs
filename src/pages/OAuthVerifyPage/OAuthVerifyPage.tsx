@@ -6,9 +6,10 @@ import style from './OAuthVerifyPage.module.css';
 
 interface IOAuthVerifyProps {
   provider: 'vk' | 'yandex';
+  setIsAuthenticate: (isAuth: boolean) => void;
 }
 
-export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
+export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,6 +64,7 @@ export function OAuthVerifyPage({ provider }: IOAuthVerifyProps) {
           break;
       }
       setIsSuccess(true);
+      setIsAuthenticate(true);
       setTimeout(() => navigate('/'), 1200);
     } catch (err: any) {
       console.error('OAuth error:', err);
