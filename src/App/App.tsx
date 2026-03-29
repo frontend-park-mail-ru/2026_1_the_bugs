@@ -6,6 +6,7 @@ import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';
 import { PosterPage } from '../pages/PosterPage';
 import { CreatePosterPage } from '../pages/CreatePosterPage/CreatePosterPage';
 import { Layout } from '../components/Layout/Layout';
+import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -43,6 +44,9 @@ export function App() {
                 </Router>
                 <Router currentPath={currentPath} path="/posters/create">
                   <CreatePosterPage key="CreatePosterPage" />
+                </Router>
+                <Router currentPath={currentPath} path="/posters/{alias}/edit">
+                  <EditPosterPage alias="{alias}" key="EditPosterPage" />
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}">
                   <PosterPage alias="{alias}" key="PosterPage" />

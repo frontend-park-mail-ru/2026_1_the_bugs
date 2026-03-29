@@ -116,6 +116,7 @@ interface OpenStreetMapPickerProps {
   address: string;
   onPickAddress: (address: string) => void;
   onPickCoordinates: (latitude: number, longitude: number) => void;
+  initialCoordinates?: { lat: number; lon: number } | null;
 }
 
 export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates }: OpenStreetMapPickerProps) {
@@ -142,6 +143,14 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates 
           L
         };
         setMapController(localController);
+
+        // If initial coordinates provided via props, set marker + view
+        try {
+          const initCoords = (window as any).__INITIAL_OSM_COORDS__;
+          // prefer prop-driven initialCoordinates if provided; otherwise none
+        } catch (err) {
+          // noop
+        }
 
         map.on('click', async (e: any) => {
           const lat = e.latlng.lat;
@@ -177,6 +186,32 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates 
       setMapController(null);
     };
   }, []);
+
+  // Handle initialCoordinates after map is ready
+  useEffect(() => {
+    if (!mapController) return;
+    // read initial coordinates from global placeholder if set by parent
+    const raw: any = (window as any).__INITIAL_OSM_COORDS__;
+    if (!raw || typeof raw.lat !== 'number' || typeof raw.lon !== 'number') return;
+
+    const lat = raw.lat;
+    const lon = raw.lon;
+    if (!mapController.marker) {
+      mapController.marker = mapController.L.marker([lat, lon]).addTo(mapController.map);
+    } else {
+      mapController.marker.setLatLng([lat, lon]);
+    }
+    mapController.map.setView([lat, lon], 16);
+    (async () => {
+      try {
+        const address = await reverseGeocode(lat, lon);
+        onPickAddress(address);
+        onPickCoordinates(lat, lon);
+      } catch (err) {
+        // ignore
+      }
+    })();
+  }, [mapController]);
 
   useEffect(() => {
     if (!mapController) return;

@@ -3,7 +3,8 @@ import type { ApartmentDetails } from './index';
 export interface UploadedImage {
   name: string;
   previewUrl: string;
-  file: File;
+  // file can be null for images that already exist on the server
+  file: File | null;
 }
 
 export interface CreatePosterFormData {
