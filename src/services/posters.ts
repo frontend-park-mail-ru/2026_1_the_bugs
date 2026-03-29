@@ -1,4 +1,4 @@
-import type {Apartment, ApartmentDetails} from "src/types";
+import type {Apartment, ApartmentDetails, MyPoster} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 
@@ -11,6 +11,14 @@ interface IPostersResponse {
     /** Массив объектов объявлений о квартирах */
     posters: Apartment[];
 }
+
+interface IMyPostersResponse {
+    /** Общее количество доступных объявлений */
+    len: number;
+    /** Массив объектов объявлений о квартирах */
+    posters: MyPoster[];
+}
+
 
 /**
  * Параметры запроса для пагинированного получения объявлений.
@@ -44,7 +52,7 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     return resp;
 }
 
-export async function getMyPosters(): Promise<IPostersResponse> {
+export async function getMyPosters(): Promise<IMyPostersResponse> {
     const token = apiService.getToken();
     return await apiService.get('/posters/me', {}, {
       'Authorization': `Bearer ${token}`,

@@ -3,11 +3,11 @@ import { useEffect, useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import { getMyPosters } from '../../services/posters';
 import { apiService } from '../../services/apiClass';
-import type { Apartment } from '../../types';
+import type { MyPoster } from '../../types';
 
 export function MyPosterList() {
     const navigate = useNavigate();
-    const [posters, setPosters] = useState<Apartment[]>([]);
+    const [posters, setPosters] = useState<MyPoster[]>([]);
     const [menuOpen, setMenuOpen] = useState<number | null>(null);
     const [loading, setIsLoading] = useState(false);
     const [error, setMyPosterError] = useState<string | null>(null);
@@ -61,7 +61,6 @@ export function MyPosterList() {
                     {posters.map((apt) => (
                         <div key={apt.id} style={{position: 'relative', border: '1px solid #eee', borderRadius: 12, padding: 16, background: '#fff'}}>
                             <div style={{marginBottom: 8, fontWeight: 600}}>{apt.address}</div>
-                            <div style={{color: '#888', marginBottom: 8}}>{apt.metro}</div>
                             <div style={{fontWeight: 700, marginBottom: 8}}>{apt.price?.toLocaleString()} ₽</div>
                             <button
                                 style={{
