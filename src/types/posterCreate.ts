@@ -1,3 +1,5 @@
+import type { ApartmentDetails } from './index';
+
 export interface UploadedImage {
   name: string;
   previewUrl: string;
@@ -23,6 +25,8 @@ export interface CreatePosterPayload {
   title: string;
   category: string;
   address: string;
+  lat?: number;
+  lon?: number;
   price: number;
   area: number;
   floor_count: number;
@@ -34,20 +38,13 @@ export interface CreatePosterPayload {
     floor: number;
     rooms: number;
   };
-  company_alias?: string;
   images: Array<{
-    img_url: string;
+    file: File;
     order: number;
   }>;
 }
 
-export interface CreatePosterResponse {
-  alias?: string;
-  poster?: {
-    alias?: string;
-    id?: number;
-  };
-}
+export type CreatePosterResponse = ApartmentDetails;
 
 export type CreatePosterStep = 1 | 2 | 3 | 4 | 5;
 

@@ -5,9 +5,11 @@
   border-radius: 999px;
   padding: 8px;
   box-shadow: var(--shadow);
-  width: min(520px, 100%);
+  width: 100%;
+  max-width: 520px;
   gap: 8px;
   transition: box-shadow 0.3s ease;
+  min-width: 0;
 }
 
 .search:focus-within {
@@ -21,6 +23,9 @@
   font-size: 14px;
   outline: none;
   color: var(--text);
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .btn {

@@ -7,12 +7,22 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .page {
     padding: 24px;
   }
 
   .cards {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .page {
+    padding: 24px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(1, minmax(180px, 1fr));
   }
 }

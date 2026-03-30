@@ -1,6 +1,7 @@
 import type {Apartment, ApartmentDetails, MyPoster} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
+import { authService } from "./auth";
 
 /**
  * Структура ответа для пагинированного списка объявлений о квартирах.
@@ -53,10 +54,12 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
 }
 
 export async function getMyPosters(): Promise<IMyPostersResponse> {
-    const token = apiService.getToken();
-    return await apiService.get('/posters/me', {}, {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json'
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get('/posters/me', {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
     });
 }
 
@@ -85,10 +88,38 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
  * @returns Ответ API с alias/id созданного объявления.
  */
 export async function createPoster(payload: CreatePosterPayload): Promise<CreatePosterResponse> {
+    const formData = new FormData();
+
+    formData.append('title', payload.title);
+    formData.append('category', payload.category);
+    formData.append('address', payload.address);
+    formData.append('price', payload.price.toString());
+    formData.append('area', payload.area.toString());
+    formData.append('floor_count', payload.floor_count.toString());
+    formData.append('description', payload.description);
+
+    if (typeof payload.lat === 'number') {
+        formData.append('lat', payload.lat.toString());
+    }
+    if (typeof payload.lon === 'number') {
+        formData.append('lon', payload.lon.toString());
+    }
+
+    payload.features.forEach((feature) => {
+        formData.append('features', feature);
+    });
+
+    formData.append('flat', JSON.stringify(payload.flat));
+
+    payload.images.forEach((image) => {
+        formData.append('images', image.file);
+        formData.append('image_orders', image.order.toString());
+    });
+
     const resp: CreatePosterResponse = await apiService.post(
-        '/posters',
-        JSON.stringify(payload),
-        { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+        '/posters/flat',
+        formData,
+        { 'Accept': 'application/json' }
     );
     return resp;
 }

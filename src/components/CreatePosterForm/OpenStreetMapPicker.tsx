@@ -46,6 +46,30 @@ function loadLeaflet() {
   return leafletLoader;
 }
 
+function formatShortAddress(rawData: any) {
+  if (!rawData) return '';
+  const address = rawData.address || rawData;
+
+  const city = address?.city || address?.town || address?.village || address?.hamlet || address?.county;
+  const district = address?.suburb || address?.district || address?.county;
+  const street = address?.road || address?.pedestrian || address?.neighbourhood;
+  const house = address?.house_number;
+  const building = address?.building;
+
+  const parts: string[] = [];
+  if (city) parts.push(city);
+  if (district && district !== city) parts.push(district);
+  if (street) parts.push(street);
+  if (house) parts.push(house);
+  if (building) parts.push(building);
+
+  if (parts.length === 0) {
+    return rawData?.display_name || '';
+  }
+
+  return parts.join(', ');
+}
+
 async function reverseGeocode(lat: number, lon: number) {
   const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=ru&lat=${lat.toString()}&lon=${lon.toString()}`;
   const response = await fetch(url, {
@@ -57,7 +81,7 @@ async function reverseGeocode(lat: number, lon: number) {
     throw new Error('Не удалось получить адрес по точке');
   }
   const data = await response.json();
-  return data.display_name as string;
+  return formatShortAddress(data);
 }
 
 async function geocodeAddress(query: string) {
@@ -91,9 +115,10 @@ interface MapController {
 interface OpenStreetMapPickerProps {
   address: string;
   onPickAddress: (address: string) => void;
+  onPickCoordinates: (latitude: number, longitude: number) => void;
 }
 
-export function OpenStreetMapPicker({ address, onPickAddress }: OpenStreetMapPickerProps) {
+export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates }: OpenStreetMapPickerProps) {
   const [mapController, setMapController] = useState<MapController | null>(null);
 
   useEffect(() => {
@@ -121,6 +146,7 @@ export function OpenStreetMapPicker({ address, onPickAddress }: OpenStreetMapPic
         map.on('click', async (e: any) => {
           const lat = e.latlng.lat;
           const lon = e.latlng.lng;
+          onPickCoordinates(lat, lon);
 
           if (!localController) return;
 
@@ -170,6 +196,7 @@ export function OpenStreetMapPicker({ address, onPickAddress }: OpenStreetMapPic
           mapController.marker.setLatLng([lat, lon]);
         }
         mapController.map.setView([lat, lon], 16);
+        onPickCoordinates(lat, lon);
       } catch (error) {
         console.warn('Address geocode failed', error);
       }
@@ -187,7 +214,4 @@ export function OpenStreetMapPicker({ address, onPickAddress }: OpenStreetMapPic
     </div>
   );
 }
-
-
-
 
