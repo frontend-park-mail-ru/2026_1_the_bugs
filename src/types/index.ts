@@ -10,6 +10,15 @@ export interface Apartment {
   imageUrl: string;
 }
 
+export interface MyPoster {
+  id: number;
+  alias: string;
+  address: string;
+  area: number;
+  price: number;
+  avatar_url: string;
+}
+
 export interface UtilityCompanyPhoto {
   img_url: string;
   order: number;

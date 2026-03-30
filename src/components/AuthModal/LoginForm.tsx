@@ -24,7 +24,7 @@ export interface AuthFormState {
 export type LoginField = 'email' | 'password';
 
 
-export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModalChildProps) {
+export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AuthFormState>({
     email: '',
@@ -89,7 +89,6 @@ export default function LoginForm({ onClose, onSuccess, onToggleMode }: AuthModa
         password: formData.password
       });
       onSuccess();
-      onClose();
     } catch (error: any) {
       handleAuthError(error as ErrorResponse);
     } finally {

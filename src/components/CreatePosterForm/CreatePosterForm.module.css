@@ -1,0 +1,571 @@
+.container {
+  background: var(--card);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.progressStep {
+  border: 1px solid #e7e7e7;
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--muted);
+  background: #fafafa;
+}
+
+.progressStepActive {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.progressStepDone {
+  color: #177a35;
+  border-color: #bce8c8;
+  background: #eaf9ef;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.stepTwoRow {
+  grid-template-columns: 150px 170px 220px 260px;
+  justify-content: start;
+  align-items: end;
+}
+
+.stepTwoRow .input {
+  width: 100%;
+  max-width: none;
+}
+
+.stepThreeRow {
+  grid-template-columns: max-content 220px;
+  justify-content: start;
+  align-items: end;
+}
+
+.stepThreeRow .input,
+.stepThreeRow .select {
+  width: 100%;
+  max-width: none;
+}
+
+.stepThreeRow .roomCountGroup {
+  flex-wrap: nowrap;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stepSection + .stepSection {
+  margin-top: 40px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 13px;
+  color: #474747;
+}
+
+.input,
+.select {
+  width: min(100%, 360px);
+  max-width: 360px;
+  border-radius: 16px;
+  border: none;
+  padding: 11px 14px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.addressInput {
+  width: 100%;
+  max-width: none;
+}
+
+.textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: none;
+  padding: 11px 14px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.inputError,
+.textareaError,
+.selectError {
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.descTextarea {
+  resize: none;
+  overflow-y: hidden;
+}
+
+.error {
+  color: #d9363e;
+  font-size: 12px;
+}
+
+.choiceGroupError {
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+}
+
+.stepTitle {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.stepDescription {
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.nav {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nextButtonWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errorHintWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.errorHintIcon {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 999px;
+  background: rgba(255, 77, 79, 0.12);
+  color: #ff4d4f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: default;
+  box-shadow: 0 0 18px -6px rgba(0, 0, 0, 0.35);
+}
+
+.errorHintPopup {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  z-index: 5;
+  min-width: 220px;
+  max-width: 280px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  color: #d9363e;
+  box-shadow: 0 0 20px -8px rgba(0, 0, 0, 0.35);
+  border: 1px solid #ffd4d4;
+  font-size: 12px;
+  line-height: 1.35;
+  display: none;
+}
+
+.errorHintWrap:hover .errorHintPopup {
+  display: block;
+}
+
+.button {
+  margin: 0;
+  padding: 11px 20px;
+  min-width: 140px;
+  border: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.buttonSecondary {
+  background: #f1f1f1;
+}
+
+.buttonPrimary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.housingTypeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.housingTypeButton {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.housingTypeButton:hover {
+  transform: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.housingTypeButtonActive {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.housingTypeButtonActive:hover {
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.roomCountGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.roomCountButton {
+  margin: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.roomCountButton:hover {
+  transform: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.roomCountButtonActive {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.roomCountButtonActive:hover {
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.featureGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.uploadBox {
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.uploadBoxDragActive {
+  background: #fff4fb;
+  border-color: var(--accent);
+}
+
+.uploadControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: fit-content;
+  margin: 0 auto;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #ffe7f6;
+  color: #9b4e7f;
+  cursor: pointer;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+}
+
+.uploadHint {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.photoThumbGrid {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.photoThumb {
+  width: 128px;
+  height: 128px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #f5f5f5;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+}
+
+.photoThumb:active {
+  cursor: grabbing;
+}
+
+.photoThumbDragging {
+  opacity: 0.65;
+}
+
+.photoOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  text-align: center;
+  padding: 10px;
+}
+
+.photoThumb:hover .photoOverlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.photoOverlayText {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.photoRemoveButton {
+  margin: 0;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: #111;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.photoRemoveButton:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.mainPhotoBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #fff;
+  background: #ff4da6;
+  box-shadow: 0 0 12px -4px rgba(0, 0, 0, 0.35);
+}
+
+.photoThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featureChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e4e4e4;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.featureChip input {
+  width: 16px;
+  height: 16px;
+}
+
+.featureChipActive {
+  border-color: var(--accent);
+  background: #fff2fa;
+}
+
+.preview {
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed #e6e6e6;
+  padding-bottom: 8px;
+}
+
+.previewRow:last-child {
+  border-bottom: none;
+}
+
+.previewKey {
+  color: var(--muted);
+}
+
+.submitError {
+  margin-top: 12px;
+  color: #d9363e;
+}
+
+.priceFieldWrap {
+  width: 220px;
+}
+
+.success {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+  padding: 24px 8px;
+}
+
+.successTitle {
+  font-size: 28px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 20px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stepTwoRow {
+    grid-template-columns: 1fr;
+  }
+
+  .stepThreeRow {
+    grid-template-columns: max-content 220px;
+  }
+
+  .progress {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .priceFieldWrap {
+    width: 100%;
+  }
+}
+

@@ -5,19 +5,22 @@ import { authService } from '../../services/auth';
 
 interface LayoutProps {
   children: any;
+  isAuthenticate: boolean;
+  setIsAuthenticate: (isAuth: boolean) => void;
 }
 
-export function Layout({ children }: LayoutProps) {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(authService.isAuthenticated()); 
+export function Layout({ children, isAuthenticate, setIsAuthenticate }: LayoutProps) {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
 
   const onLogoutClick = () => {
     setIsAuthenticate(false);
     authService.logout();
+    // window.location.href = '/';
   };
 
   const onSuccess = () => {
     setIsAuthenticate(true);
+    closeAuthModal();
   };
 
   const openAuthModal = () => setIsAuthModalOpen(true);

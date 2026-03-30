@@ -10,7 +10,6 @@ import {
   validatePassword,
   validateConfirmPassword,
   validateRegisterForm,
-  type ValidationResult,
   validateName,
   validatePhone,
   validateProfileForm,
@@ -24,7 +23,7 @@ import {
 
 export type RegisterField = 'email' | 'password' | 'confirmPassword' | 'firstname' | 'lastname' | 'phone';
 
-export default function RegisterForm({ onClose, onSuccess, onToggleMode }: AuthModalChildProps) {
+export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AuthFormState>({
     email: '',
@@ -132,7 +131,6 @@ export default function RegisterForm({ onClose, onSuccess, onToggleMode }: AuthM
         phone: formData.phone
       });
       onSuccess();
-      onClose();
     } catch (error: any) {
       handleAuthError(error as ErrorResponse);
     } finally {

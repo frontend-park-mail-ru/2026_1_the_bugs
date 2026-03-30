@@ -1,5 +1,7 @@
-import type {Apartment, ApartmentDetails} from "src/types";
+import type {Apartment, ApartmentDetails, MyPoster} from "src/types";
+import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
+import { authService } from "./auth";
 
 /**
  * Структура ответа для пагинированного списка объявлений о квартирах.
@@ -10,6 +12,14 @@ interface IPostersResponse {
     /** Массив объектов объявлений о квартирах */
     posters: Apartment[];
 }
+
+interface IMyPostersResponse {
+    /** Общее количество доступных объявлений */
+    len: number;
+    /** Массив объектов объявлений о квартирах */
+    posters: MyPoster[];
+}
+
 
 /**
  * Параметры запроса для пагинированного получения объявлений.
@@ -39,8 +49,18 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     if (filters.utility_company) {
         params["utility_company"] = filters.utility_company;
     }
-    const resp: IPostersResponse = await apiService.get("/posters", params);
+    const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;
+}
+
+export async function getMyPosters(): Promise<IMyPostersResponse> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get('/posters/me', {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
+    });
 }
 
 /**
@@ -59,4 +79,47 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
         {}
     );
     return resp.poster;
+}
+
+/**
+ * Создает новое объявление о квартире.
+ *
+ * @param payload - Данные нового объявления.
+ * @returns Ответ API с alias/id созданного объявления.
+ */
+export async function createPoster(payload: CreatePosterPayload): Promise<CreatePosterResponse> {
+    const formData = new FormData();
+
+    formData.append('title', payload.title);
+    formData.append('category', payload.category);
+    formData.append('address', payload.address);
+    formData.append('price', payload.price.toString());
+    formData.append('area', payload.area.toString());
+    formData.append('floor_count', payload.floor_count.toString());
+    formData.append('description', payload.description);
+
+    if (typeof payload.lat === 'number') {
+        formData.append('lat', payload.lat.toString());
+    }
+    if (typeof payload.lon === 'number') {
+        formData.append('lon', payload.lon.toString());
+    }
+
+    payload.features.forEach((feature) => {
+        formData.append('features', feature);
+    });
+
+    formData.append('flat', JSON.stringify(payload.flat));
+
+    payload.images.forEach((image) => {
+        formData.append('images', image.file);
+        formData.append('image_orders', image.order.toString());
+    });
+
+    const resp: CreatePosterResponse = await apiService.post(
+        '/posters/flat',
+        formData,
+        { 'Accept': 'application/json' }
+    );
+    return resp;
 }
