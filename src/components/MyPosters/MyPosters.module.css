@@ -59,11 +59,11 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.menuBtn:hover,
-.menuBtnActive {
+
+.menuBtn:hover {
     transform: scale(1.04);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-    background: rgba(255, 255, 255, 0.9);
+    background: #eaeaea;
 }
 
 .menuBtn:active:not(:disabled) {
@@ -75,10 +75,11 @@
     cursor: not-allowed;
 }
 
-.menuBtn:hover,
-.menuBtnActive {
+/* Активная кнопка меню (когда открыто) */
+.menuBtn.menuBtnActive {
     background: #eaeaea;
     box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    transform: scale(1.04);
 }
 
 .menuDotsCircle {

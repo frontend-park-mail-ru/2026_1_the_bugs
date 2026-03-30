@@ -44,8 +44,8 @@ export function MyPosterList() {
         navigate(`/posters/edit/${encodeURIComponent(alias)}`); // потом поменять на норм роут
     };
 
-    // if (loading) return <div className={style.center}>Загрузка…</div>;
-    // if (error) return <div className={style.error}>{error}</div>;
+    if (loading) return <div className={style.center}>Загрузка…</div>;
+    if (error) return <div className={style.error}>{error}</div>;
 
     // Demo card for style preview
 
@@ -61,7 +61,14 @@ export function MyPosterList() {
             ) : (
                 <section className={style.cardsGrid}>
                     {posters.map((apt) => {
-                            return <article key={apt.id} className={cardStyle.card + ' ' + style.myCard} data-title={apt.address}>
+                        const isMenuOpen = menuOpen === apt.id;
+                        return (
+                            <article
+                                key={apt.id}
+                                className={cardStyle.card + ' ' + style.myCard}
+                                data-title={apt.address}
+                                onClick={() => navigate(`/posters/${encodeURIComponent(apt.alias)}`)}
+                            >
                                 <div className={cardStyle.image}>
                                     <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
                                 </div>
@@ -78,32 +85,43 @@ export function MyPosterList() {
                                     </div>
                                 </div>
                                 <button
-                                    className={style.menuBtn + (menuOpen === apt.id ? ' ' + style.menuBtnActive : '')}
+                                    className={style.menuBtn + (isMenuOpen ? ' ' + style.menuBtnActive : '')}
                                     aria-label="Меню"
-                                    onClick={() => setMenuOpen(menuOpen === apt.id ? null : apt.id)}
+                                    onClick={(e:MouseEvent) => {
+                                        e.stopPropagation();
+                                        setMenuOpen(isMenuOpen ? null : apt.id);
+                                    }}
                                 >
                                     <span className={style.menuDots}>
                                         <img src="/svg/options.svg" alt="" aria-hidden="true" draggable="false" />
                                     </span>
                                 </button>
-                                {menuOpen === apt.id && (
+                                {isMenuOpen && (
                                     <div className={style.menuPopup}>
                                         <button
                                             className={style.menuItem}
-                                            onClick={() => { setMenuOpen(null); handleEdit(apt.alias); }}
+                                            onClick={(e:MouseEvent) => {
+                                                e.stopPropagation();
+                                                setMenuOpen(null);
+                                                handleEdit(apt.alias);
+                                            }}
                                         >
                                             Изменить
                                         </button>
                                         <div className={style.menuSeparator} />
                                         <button
                                             className={style.menuItem + ' ' + style.menuDelete}
-                                            onClick={() => { setMenuOpen(null); handleDelete(apt.id); }}
+                                            onClick={() => {
+                                                setMenuOpen(null);
+                                                handleDelete(apt.id);
+                                            }}
                                         >
                                             Удалить
                                         </button>
                                     </div>
                                 )}
                             </article>
+                        );
                     })}
                 </section>
             )}
