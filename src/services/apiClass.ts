@@ -25,12 +25,12 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async get(endpoint: string, params: Record<string, any>) {
+    async get(endpoint: string,  params: Record<string, any> = {}, headers: Record<string, any> = {}) {
         try {
             const paramsURL = new URLSearchParams(params).toString();
             const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
                 method: 'GET',
-                headers: this.getHeaders({"Accept": 'application/json'}),
+                headers: {...headers, "Accept": 'application/json'},
             });
             return this.handleResponse(response);
         } catch (error) {
@@ -52,7 +52,7 @@ class ApiService {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'POST',
-                headers: this.getHeaders(headers),
+                headers: headers,
                 body: data,
                 credentials: cookie ? 'include': 'omit',
             });
@@ -70,11 +70,11 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async put(endpoint: string, data: any) {
+    async put(endpoint: string, headers: Record<string, any>, data: any) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
-                headers: this.getHeaders(),
+               headers:headers,
                 body: JSON.stringify(data),
             });
             return this.handleResponse(response);
@@ -90,11 +90,11 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа или null для 204.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async delete(endpoint: string) {
+    async delete(endpoint: string, headers: Record<string, any>) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'DELETE',
-                headers: this.getHeaders(),
+                headers:headers,
             });
             return this.handleResponse(response);
         } catch (error) {
@@ -104,27 +104,12 @@ class ApiService {
     }
 
     /**
-     * Получить заголовки запроса.
-     * Формирует стандартные заголовки запроса с опциональным токеном аутентификации.
-     * @param headers - Дополнительные заголовки для объединения (опционально).
-     * @returns Объект заголовков готовый для fetch-запроса.
-     */
-    getHeaders(headers: any = {}) {
-        // if (headers['Content-Type'] == undefined)
-        //     headers['Content-Type'] = 'application/json';
-        // const token = this.getToken();
-        // if (token) {
-        //   headers['Authorization'] = `Bearer ${token}`;
-        // }
-        return headers;
-    }
-
-    /**
      * Обработка HTTP-ответа с парсингом и преобразованием ошибок.
      * @param response - Объект Fetch Response.
      * @returns Распарсенные JSON-данные или null для 204 No Content.
      * @throws ErrorResponse со статусом и данными ошибки для неудачных запросов.
      */
+
     async handleResponse(response: Response) {
         if (response.status == 204) {
             return null;

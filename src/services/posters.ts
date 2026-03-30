@@ -70,6 +70,7 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
  * @returns Ответ API с alias/id созданного объявления.
  */
 export async function createPoster(payload: CreatePosterPayload): Promise<CreatePosterResponse> {
+    
     const formData = new FormData();
 
     formData.append('price', payload.price.toString());
@@ -107,15 +108,18 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
         formData.append(`photos.${index}.order`, image.order.toString());
     });
 
-    const token = apiService.getToken();
+   
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
 
-    const resp: CreatePosterResponse = await apiService.post(
-        '/posters/flat',
-        formData,
-        {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-        },
-    );
-    return resp;
+        const resp: CreatePosterResponse = await apiService.post(
+            '/posters/flat',
+            formData,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    });
 }
