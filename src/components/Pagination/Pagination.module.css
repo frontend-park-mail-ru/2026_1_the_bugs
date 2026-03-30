@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  gap: 16px;
+  min-width: fit-content;
+  max-width: 100%;
+  margin: 16px auto;
+}
+.pages {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-S);
+  background: var(--card);
+  color: var(--text);
+}
+.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(255,77,166,0.18);
+}
+.ellipsis {
+  padding: 8px 6px;
+  color: var(--text);
+}
+.prevNext {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-S);
+  background: var(--card);
+  color: var(--text);
+}
