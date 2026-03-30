@@ -7,7 +7,6 @@ import {
   INITIAL_CREATE_POSTER_FORM,
   TOTAL_CREATE_POSTER_STEPS,
   type CreatePosterFormData,
-  type CreatePosterPayload,
   type CreatePosterStep,
   type UploadedImage
 } from '../../../types/posterCreate';
@@ -17,44 +16,9 @@ import {
 } from '../../../types';
 import styles from '../PosterForm.module.css';
 import { OpenStreetMapPicker } from '../OpenStreetMapPicker/OpenStreetMapPicker';
-import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_OPTIONS, STEP_ERROR_FIELDS } from '../common';
+import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_COUNT_TO_ROOM_LABEL, ROOM_OPTIONS, STEP_ERROR_FIELDS } from '../common';
+import { Field } from '../Field/Field';
 
-
-interface InputProps {
-  field: Exclude<CreatePosterField, 'features' | 'images'>;
-  label: string;
-  value: string;
-  errors: Partial<Record<CreatePosterField, string>>;
-  onChange: (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => void;
-  showErrorText?: boolean;
-  placeholder?: string;
-  type?: 'text' | 'email';
-}
-
-function Field({ field, label, value, errors, onChange, showErrorText = true, placeholder, type = 'text' }: InputProps) {
-  const error = errors[field];
-  const isAddressField = field === 'address';
-  const className = [
-    styles.input,
-    isAddressField ? styles.addressInput : '',
-    error ? styles.inputError : ''
-  ].filter(Boolean).join(' ');
-
-  return (
-    <div className={styles.group}>
-      <label className={styles.label} htmlFor={field}>{label}</label>
-      <input
-        id={field}
-        className={className}
-        type={type}
-        value={value}
-        placeholder={placeholder ?? ''}
-        onInput={(e: any) => onChange(field, e.target.value)}
-      />
-      {showErrorText && error && <span className={styles.error}>{error}</span>}
-    </div>
-  );
-}
 interface EditPosterFormProps {
     poster: ApartmentDetails
 }
@@ -75,8 +39,8 @@ function ApartmentDetailsToInitialPosterForm(poster: ApartmentDetails): CreatePo
     floor: poster.flat.floor.toString(),
     floorCount: poster.floor_count.toString(),
     flatNumber: poster.flat.flat_number.toString(),
-    complexName: poster.company.company_name,
-    roomCount: poster.flat.room_count.toString(),
+    complexName: poster.company?.company_name || '',
+    roomCount: ROOM_COUNT_TO_ROOM_LABEL[poster.flat.flat_category.toString()] || '',
     area: poster.area.toString(),
     images,
     features,

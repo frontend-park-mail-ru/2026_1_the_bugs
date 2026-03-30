@@ -88,10 +88,10 @@ export interface ApartmentDetails {
     flat_category: string;
     flat_number: number;
     floor: number;
-    room_count: number;
+    //room_count: number;
   };
 
-  company: {
+  company?: {
     id: number;
     company_name: string;
     avatar_url: string | null;

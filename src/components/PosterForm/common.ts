@@ -14,7 +14,28 @@ export const STEP_TITLES = [
 ];
 
 export const HOUSING_OPTIONS = ['Квартира'];
+const HOUSING_TYPE_TO_CATEGORY_ID: Record<string, number> = {
+  'Квартира': 1,
+};
 export const ROOM_OPTIONS = ['0', '1', '2', '3', '4', '5', '6+'];
+const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
+  '0': 1,
+  '1': 2,
+  '2': 3,
+  '3': 4,
+  '4': 5,
+  '5': 6,
+  '6+': 7,
+};
+export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
+  'Студия': 'Студия',
+  '1-комн.': '1',
+  '2-комн.': '2',
+  '3-комн.': '3',
+  '4-комн.': '4',
+  '5-комн.': '5',
+  '6+ комн.': '6+',
+};
 export const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
   { value: 'parking', label: 'Парковка' },
@@ -60,8 +81,7 @@ export function mapToPayload(
     .map(({ image, index }) => ({ file: image.file as File, order: index + 1 }));
 
   return {
-    title: `${form.housingType.trim()} ${form.address.trim()}`,
-    category: form.housingType.trim(),
+    category_id: HOUSING_TYPE_TO_CATEGORY_ID[form.housingType.trim()] || 1,
     address: form.address.trim(),
     ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
     price: Number(form.price),
@@ -69,12 +89,11 @@ export function mapToPayload(
     floor_count: Number(form.floorCount),
     description: form.description.trim(),
     features: form.features,
-    flat: {
-      flat_category: `${form.roomCount.trim()}-комнатная`,
-      flat_number: flatNumber,
-      floor: Number(form.floor),
-      rooms: roomCountNumber
-    },
-    images: imagePayload
+    flat_category_id: ROOM_COUNT_TO_FLAT_CATEGORY_ID[form.roomCount.trim()] || 1,
+    flat_number: flatNumber,
+    flat_floor: Number(form.floor),
+    images: imagePayload,
+    city_id: 1, // TODO: выбрать город
   };
 }
+

@@ -22,7 +22,7 @@ export function HomePage() {
     // setFilteredApartments(filtered);
   };
   const handelPostersList = async() =>{
-    const postersResp = await getPosters({limit: 12, offset: 0})
+    const postersResp = await getPosters({limit: 20, offset: 0})
     setFilteredApartments(postersResp.posters);
     
   }

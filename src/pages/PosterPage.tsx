@@ -66,7 +66,7 @@ export function PosterPage({ alias }: PosterPageProps) {
   }, [alias]);
 
   const handelCompanyClick=()=>{
-    navigate(`/company/${poster?.company.alias}`)
+    navigate(`/company/${poster?.company?.alias}`)
   }
 
   let mainContent;
@@ -95,7 +95,11 @@ export function PosterPage({ alias }: PosterPageProps) {
           <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} />
           <PosterMap key="poster_map" mapUrl={mapUrl} address={poster.address} />
           <PosterSeller key="poster_seller" poster={poster} />
-          <button onClick={()=>{handelCompanyClick()}}><PosterCompany key="poster_company" poster={poster} /></button>
+          {poster.company && (
+            <button onClick={()=>{handelCompanyClick()}}>
+              <PosterCompany key="poster_company" poster={poster} />
+            </button>
+          )}
         </aside>
       </div>
     );

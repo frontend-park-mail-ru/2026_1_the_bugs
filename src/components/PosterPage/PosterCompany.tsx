@@ -10,10 +10,10 @@ export function PosterCompany({ poster }: PosterCompanyProps) {
   return (
     <section className={`${shared.card}`}>
       <div  className={styles.companyBlock}>
-        {poster.company.avatar_url && (
-          <img className={styles.companyAvatar} src={poster.company.avatar_url} alt={poster.company.company_name} />
+        {poster?.company?.avatar_url && (
+          <img className={styles.companyAvatar} src={poster.company?.avatar_url} alt={poster.company?.company_name} />
         )}
-        <span className={styles.companyTitle}>{poster.company.company_name}</span>
+        <span className={styles.companyTitle}>{poster.company?.company_name}</span>
       </div>
     </section>
   );
