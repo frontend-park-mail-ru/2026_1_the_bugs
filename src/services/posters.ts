@@ -86,6 +86,13 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
         formData.append('lon', payload.lon.toString());
     }
 
+    if (typeof payload.developer_id === 'number') {
+        formData.append('developer_id', payload.developer_id.toString());
+    }
+    if (typeof payload.utility_company_id === 'number') {
+        formData.append('utility_company_id', payload.utility_company_id.toString());
+    }
+
     payload.features.forEach((feature) => {
         formData.append('features', feature);
     });

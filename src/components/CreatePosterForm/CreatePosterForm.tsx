@@ -1,4 +1,6 @@
-import { useState } from '@my-react/hooks';
+import { useState, useEffect } from '@my-react/hooks';
+import type * as React from 'react';
+import { getDevelopers, getComplexesByDeveloper } from '../../services/complex';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import { createPoster } from '../../services/posters';
 import type { CreatePosterField, StepValidationResult } from './validation';
@@ -56,7 +58,8 @@ function collectErrorsUpToStep(step: CreatePosterStep, data: CreatePosterFormDat
 
 function mapToPayload(
   form: CreatePosterFormData,
-  coordinates: { latitude: number; longitude: number } | null
+  coordinates: { latitude: number; longitude: number } | null,
+  developerId: number | null
 ): CreatePosterPayload {
   const roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
   const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
@@ -81,7 +84,9 @@ function mapToPayload(
       floor: Number(form.floor),
       rooms: roomCountNumber
     },
-    images: imagePayload
+    images: imagePayload,
+    developer_id: developerId ?? undefined,
+    utility_company_id: form.complex ? Number(form.complex) : undefined
   };
 }
 
@@ -122,6 +127,45 @@ function Field({ field, label, value, errors, onChange, showErrorText = true, pl
 }
 
 export function CreatePosterForm() {
+  const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
+  const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
+  const [complexesError, setComplexesError] = useState<string | null>(null);
+  const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
+
+  // Загрузка ЖК при выборе застройщика
+  useEffect(() => {
+    if (selectedDeveloperId == null) {
+      setComplexes([]);
+      setComplexesError(null);
+      return;
+    }
+    setIsLoadingComplexes(true);
+    getComplexesByDeveloper(selectedDeveloperId)
+      .then((data) => {
+        setComplexes(data.utility_companies || []);
+        setComplexesError(null);
+      })
+      .catch(() => {
+        setComplexesError('Ошибка загрузки списка ЖК');
+      })
+      .finally(() => setIsLoadingComplexes(false));
+  }, [selectedDeveloperId]);
+      const [developers, setDevelopers] = useState<{ developer_id: number; developer_name: string }[]>([]);
+      const [isLoadingDevelopers, setIsLoadingDevelopers] = useState(false);
+      const [developersError, setDevelopersError] = useState<string | null>(null);
+
+      useEffect(() => {
+        setIsLoadingDevelopers(true);
+        getDevelopers()
+          .then((data) => {
+            setDevelopers(data.developers || []);
+            setDevelopersError(null);
+          })
+          .catch(() => {
+            setDevelopersError('Ошибка загрузки списка ЖК');
+          })
+          .finally(() => setIsLoadingDevelopers(false));
+      }, []);
   const navigate = useNavigate();
   const [visibleSteps, setVisibleSteps] = useState<CreatePosterStep>(1);
   const [form, setForm] = useState<CreatePosterFormData>(INITIAL_CREATE_POSTER_FORM);
@@ -289,7 +333,7 @@ export function CreatePosterForm() {
     setSubmitError(null);
 
     try {
-      const payload = mapToPayload(formDraft, coordinates);
+      const payload = mapToPayload(formDraft, coordinates, selectedDeveloperId);
       const response = await createPoster(payload);
       const alias = response.alias || '';
       setIsPublished(true);
@@ -379,7 +423,48 @@ export function CreatePosterForm() {
           <Field key="field-floor" field="floor" label="Этаж квартиры" value={form.floor} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-floor-count" field="floorCount" label="Этажей в доме" value={form.floorCount} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-flat-number" field="flatNumber" label="Номер квартиры" value={form.flatNumber} errors={errors} onChange={updateField} showErrorText={false} />
-          <Field key="field-complex-name" field="complexName" label="Название ЖК" value={form.complexName} errors={errors} onChange={updateField} showErrorText={false} />
+          <div className={styles.group} style={{ minWidth: 0 }}>
+             <label className={styles.label} htmlFor="complexName">Застройщик</label>
+             <select
+               id="complexName"
+               className={errors.complexName ? styles.inputError : styles.input}
+               value={selectedDeveloperId ?? ''}
+               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                 const devId = e.target.value ? Number(e.target.value) : null;
+                 setSelectedDeveloperId(devId);
+                 updateField('complexName', devId ? (developers.find(d => d.developer_id === devId)?.developer_name || '') : '');
+                 // Сбросить выбранный ЖК при смене застройщика
+                 updateField('complex', '');
+               }}
+               disabled={isLoadingDevelopers}
+               style={{ width: '100%' }}
+             >
+               <option value="">Выберите застройщика</option>
+               {developers.map(dev => (
+                 <option key={dev.developer_id} value={dev.developer_id}>{dev.developer_name}</option>
+               ))}
+             </select>
+             {developersError && <span className={styles.error}>{developersError}</span>}
+             {errors.complexName && <span className={styles.error}>{errors.complexName}</span>}
+          </div>
+          <div className={styles.group} style={{ minWidth: 0 }}>
+            <label className={styles.label} htmlFor="complex">ЖК</label>
+            <select
+              id="complex"
+              className={errors.complex ? styles.inputError : styles.input}
+              value={form.complex}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => updateField('complex', e.target.value)}
+              disabled={isLoadingComplexes}
+              style={{ width: '100%' }}
+            >
+              <option value="">Выберите ЖК</option>
+              {complexes.map(complex => (
+                <option key={complex.id} value={complex.id}>{complex.company_name}</option>
+              ))}
+            </select>
+            {complexesError && <span className={styles.error}>{complexesError}</span>}
+            {errors.complex && <span className={styles.error}>{errors.complex}</span>}
+          </div>
         </div>
       )}
 

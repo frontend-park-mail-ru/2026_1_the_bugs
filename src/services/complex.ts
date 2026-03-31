@@ -1,3 +1,10 @@
+/**
+ * Получить список девелоперов (ЖК) с бэкенда.
+ * @returns Promise<{ developers: { avatar_url: string, developer_id: number, developer_name: string }[], len: number }>
+ */
+export async function getDevelopers() {
+    return apiService.get('/utility-companies/developers', {});
+}
 import type { UtilityCompany } from "src/types";
 import { apiService } from "./apiClass";
 
@@ -25,4 +32,12 @@ export async function getUtilityCompanyByAlias(filter: IUtilityCompanyFilter): P
     const encodedAlias = encodeURIComponent(filter.alias);
     const resp: IUtilityCompanyResponse = await apiService.get(`/utility-companies/by-alias/${encodedAlias}`, {});
     return resp;
+}
+
+/**
+ * Получить список ЖК по developer_id (пока только developer_id=1).
+ * @returns Promise<{ utility_companies: { id: number, company_name: string }[], len: number }>
+ */
+export async function getComplexesByDeveloper(developer_id: number) {
+    return apiService.get('/utility-companies/', { developer_id });
 }
