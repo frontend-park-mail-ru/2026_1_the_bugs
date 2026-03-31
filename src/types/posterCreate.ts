@@ -25,7 +25,7 @@ export interface CreatePosterFormData {
 export interface CreatePosterPayload {
     price: number;
     description: string;
-    category_id: number;
+    category_alias: string;
     area: number;
 
     address: string;

@@ -38,14 +38,15 @@ export interface UtilityCompany {
   developer: Developer;
   description: string;
 }
-export interface Facility{
-
+export interface Category{
+  alias: string;
+  name: string;
 }
 export interface ApartmentDetails {
   id: number;
   alias: string;
   price: number;
-  category: string;
+  category: Category;
   description: string;
   area: number;
 

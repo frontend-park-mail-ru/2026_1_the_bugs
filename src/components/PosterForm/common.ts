@@ -13,9 +13,8 @@ export const STEP_TITLES = [
   'Особенности и цена'
 ];
 
-export const HOUSING_OPTIONS = ['Квартира'];
-const HOUSING_TYPE_TO_CATEGORY_ID: Record<string, number> = {
-  'Квартира': 1,
+export const HOUSING_OPTIONS: Record<string, string> = {
+  'flat':'Квартира',
 };
 export const ROOM_OPTIONS = ['0', '1', '2', '3', '4', '5', '6+'];
 const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
@@ -81,7 +80,7 @@ export function mapToPayload(
     .map(({ image, index }) => ({ file: image.file as File, order: index + 1 }));
 
   return {
-    category_id: HOUSING_TYPE_TO_CATEGORY_ID[form.housingType.trim()] || 1,
+    category_alias: form.housingType.trim(),
     address: form.address.trim(),
     ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
     price: Number(form.price),

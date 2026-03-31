@@ -75,7 +75,7 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
 
     formData.append('price', payload.price.toString());
     formData.append('description', payload.description);
-    formData.append('category_id', payload.category_id.toString());
+    formData.append('category_alias', payload.category_alias.toString());
     formData.append('area', payload.area.toString());
 
     formData.append('address', payload.address);
@@ -99,9 +99,9 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
     formData.append('flat_number', payload.flat_number?.toString() || '');
     formData.append('flat_floor', payload.flat_floor.toString());
 
-    // payload.features.forEach((feature, index) => {
-    //     formData.append('facilities[]', feature);  // или 'features[]' если бек ожидает
-    // });
+    payload.features.forEach((feature, index) => {
+        formData.append('features', feature);  // или 'features[]' если бек ожидает
+    });
 
     payload.images.forEach((image, index) => {
         formData.append(`photos.${index}.file`, image.file, `img_${image.order}.jpg`);
