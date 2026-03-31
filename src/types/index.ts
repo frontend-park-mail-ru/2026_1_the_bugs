@@ -7,6 +7,7 @@ export interface Apartment {
   price: number;
   rating: number;
   beds: number;
+  flat_category: string;
   imageUrl: string;
 }
 
@@ -46,12 +47,15 @@ export interface UtilityCompany {
   developer: Developer;
   description: string;
 }
-
+export interface Category{
+  alias: string;
+  name: string;
+}
 export interface ApartmentDetails {
   id: number;
   alias: string;
   price: number;
-  category: string;
+  category: Category;
   description: string;
   area: number;
 
@@ -77,6 +81,12 @@ export interface ApartmentDetails {
     order: number;
   }>;
 
+  /** Список удобств/инфраструктуры, связанных с объявлением */
+  facilities?: Array<{
+    alias: string;
+    name: string;
+  }>;
+
   seller: {
     avatar_url: string | null;
     first_name: string;
@@ -88,14 +98,16 @@ export interface ApartmentDetails {
     flat_category: string;
     flat_number: number;
     floor: number;
+    //room_count: number;
   };
 
-  company: {
+  company?: {
     id: number;
     company_name: string;
     avatar_url: string | null;
     alias: string;
   };
+
 }
 
 export interface ErrorAlert{

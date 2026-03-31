@@ -88,38 +88,56 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
  * @returns Ответ API с alias/id созданного объявления.
  */
 export async function createPoster(payload: CreatePosterPayload): Promise<CreatePosterResponse> {
+    
     const formData = new FormData();
 
-    formData.append('title', payload.title);
-    formData.append('category', payload.category);
-    formData.append('address', payload.address);
     formData.append('price', payload.price.toString());
-    formData.append('area', payload.area.toString());
-    formData.append('floor_count', payload.floor_count.toString());
     formData.append('description', payload.description);
+    formData.append('category_alias', payload.category_alias.toString());
+    formData.append('area', payload.area.toString());
 
-    if (typeof payload.lat === 'number') {
-        formData.append('lat', payload.lat.toString());
+    formData.append('address', payload.address);
+    if (payload.lat && payload.lon) {
+        formData.append('geo_lat', payload.lat.toString());
+        formData.append('geo_lon', payload.lon.toString());
     }
-    if (typeof payload.lon === 'number') {
-        formData.append('lon', payload.lon.toString());
+    formData.append('city_id', payload.city_id.toString());
+    if (payload.metro_station_id) {
+        formData.append('metro_station_id', payload.metro_station_id.toString());
+    }
+    if (payload.district) {
+        formData.append('district', payload.district);
+    }
+    formData.append('floor_count', payload.floor_count.toString());
+    if (payload.company_id) {
+        formData.append('company_id', payload.company_id.toString());
     }
 
-    payload.features.forEach((feature) => {
-        formData.append('features', feature);
+    formData.append('flat_category_id', payload.flat_category_id.toString());
+    formData.append('flat_number', payload.flat_number?.toString() || '');
+    formData.append('flat_floor', payload.flat_floor.toString());
+
+    payload.features.forEach((feature, index) => {
+        formData.append('features', feature);  // или 'features[]' если бек ожидает
     });
 
-    formData.append('flat', JSON.stringify(payload.flat));
-
-    payload.images.forEach((image) => {
-        formData.append('images', image.file);
-        formData.append('image_orders', image.order.toString());
+    payload.images.forEach((image, index) => {
+        formData.append(`photos.${index}.file`, image.file, `img_${image.order}.jpg`);
+        formData.append(`photos.${index}.order`, image.order.toString());
     });
 
-    const resp: CreatePosterResponse = await apiService.post(
-        '/posters/flat',
-        formData,
-        { 'Accept': 'application/json' }
-    );
-    return resp;
+   
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+
+        const resp: CreatePosterResponse = await apiService.post(
+            '/posters/flat',
+            formData,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    });
 }

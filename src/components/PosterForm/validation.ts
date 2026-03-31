@@ -61,13 +61,13 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
       if (flatNumberError) errors.flatNumber = flatNumberError;
     }
 
-    if (data.complexName.trim() && data.complexName.trim().length < 2) {
+    if (data.complexName && data.complexName.trim() && data.complexName.trim().length < 2) {
       errors.complexName = 'Название ЖК слишком короткое';
     }
   }
 
   if (step === 3) {
-    const allowedRooms = ['1', '2', '3', '4', '5', '6+'];
+    const allowedRooms = ['0','1', '2', '3', '4', '5', '6+'];
     const roomsError = required(data.roomCount, 'Укажите количество комнат');
     if (roomsError) errors.roomCount = roomsError;
     if (!roomsError && !allowedRooms.includes(data.roomCount)) {
@@ -84,6 +84,9 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
   if (step === 4) {
     if (data.images.length === 0) {
       errors.images = 'Добавьте минимум одно фото';
+    }
+    if (data.images.length > 12) {
+      errors.images = 'Можно загрузить не более 12 фото';
     }
   }
 

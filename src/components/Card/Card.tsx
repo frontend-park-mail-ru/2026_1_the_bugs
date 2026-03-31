@@ -30,6 +30,10 @@ export function Card({ apartment }: CardProps) {
           <span>{apartment.area.toString()} м²</span>
         </div>
         <div className={style.footer}>
+      
+            <span>
+              {apartment.flat_category}
+            </span>   
           {apartment?.rating && (
              <span className={`${style.rate} ${style[ratingClass]}`}>
             {apartment.rating.toFixed(1)}

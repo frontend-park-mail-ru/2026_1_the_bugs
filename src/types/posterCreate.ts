@@ -3,7 +3,8 @@ import type { ApartmentDetails } from './index';
 export interface UploadedImage {
   name: string;
   previewUrl: string;
-  file: File;
+  // file can be null for images that already exist on the server
+  file: File | null;
 }
 
 export interface CreatePosterFormData {
@@ -22,27 +23,32 @@ export interface CreatePosterFormData {
 }
 
 export interface CreatePosterPayload {
-  title: string;
-  category: string;
-  address: string;
-  lat?: number;
-  lon?: number;
-  price: number;
-  area: number;
-  floor_count: number;
-  description: string;
-  features: string[];
-  flat: {
-    flat_category: string;
-    flat_number: number;
-    floor: number;
-    rooms: number;
-  };
-  images: Array<{
-    file: File;
-    order: number;
-  }>;
+    price: number;
+    description: string;
+    category_alias: string;
+    area: number;
+
+    address: string;
+    lat?: number; 
+    lon?: number;   
+    city_id: number;           
+    metro_station_id?: number; 
+    district?: string;          
+    floor_count: number;       
+    company_id?: number;       
+
+    flat_category_id: number;   
+    flat_number?: number;      
+    flat_floor: number;
+
+    features: string[];   
+
+    images: Array<{
+        file: File;
+        order: number;
+    }>;
 }
+
 
 export type CreatePosterResponse = ApartmentDetails;
 

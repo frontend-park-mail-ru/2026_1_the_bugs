@@ -1,4 +1,4 @@
-import { CreatePosterForm } from '../../components/CreatePosterForm/CreatePosterForm';
+import { CreatePosterForm } from '../../components/PosterForm/CreatePosterForm/CreatePosterForm';
 import styles from './CreatePosterPage.module.css';
 
 export function CreatePosterPage() {

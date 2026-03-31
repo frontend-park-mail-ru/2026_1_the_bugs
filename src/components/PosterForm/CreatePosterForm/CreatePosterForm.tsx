@@ -1,8 +1,8 @@
 import { useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
-import { createPoster } from '../../services/posters';
-import type { CreatePosterField, StepValidationResult } from './validation';
-import { validateStep } from './validation';
+import { createPoster } from '../../../services/posters';
+import type { CreatePosterField, StepValidationResult } from '../validation';
+import { validateStep } from '../validation';
 import {
   INITIAL_CREATE_POSTER_FORM,
   TOTAL_CREATE_POSTER_STEPS,
@@ -10,116 +10,16 @@ import {
   type CreatePosterPayload,
   type CreatePosterStep,
   type UploadedImage
-} from '../../types/posterCreate';
-import styles from './CreatePosterForm.module.css';
-import { OpenStreetMapPicker } from './OpenStreetMapPicker';
-
-const STEP_TITLES = [
-  'Тип и адрес',
-  'Этаж и ЖК',
-  'Комнаты и площадь',
-  'Фотографии',
-  'Особенности и цена'
-];
-
-const HOUSING_OPTIONS = ['Квартира'];
-const ROOM_OPTIONS = ['1', '2', '3', '4', '5', '6+'];
-const FEATURE_OPTIONS = [
-  { value: 'wifi', label: 'Wi-Fi' },
-  { value: 'parking', label: 'Парковка' },
-  { value: 'conditioner', label: 'Кондиционер' },
-  { value: 'dishwasher', label: 'Посудомоечная машина' },
-  { value: 'balcony', label: 'Балкон' },
-  { value: 'wardrobe', label: 'Гардеробная' },
-  { value: 'pets', label: 'Можно с животными' }
-];
-
-const STEP_ERROR_FIELDS: Record<CreatePosterStep, CreatePosterField[]> = {
-  1: ['housingType', 'address'],
-  2: ['floor', 'floorCount', 'flatNumber', 'complexName'],
-  3: ['roomCount', 'area'],
-  4: ['images'],
-  5: ['features', 'description', 'price']
-};
+} from '../../../types/posterCreate';
+import styles from '../PosterForm.module.css';
+import { OpenStreetMapPicker } from '../OpenStreetMapPicker/OpenStreetMapPicker';
+import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_OPTIONS, STEP_ERROR_FIELDS, STEP_TITLES } from '../common';
+import { Field } from '../Field/Field';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
   return Math.min(step + 1, TOTAL_CREATE_POSTER_STEPS) as CreatePosterStep;
 }
 
-function collectErrorsUpToStep(step: CreatePosterStep, data: CreatePosterFormData) {
-  const nextErrors: Partial<Record<CreatePosterField, string>> = {};
-  for (let i = 1; i <= step; i++) {
-    Object.assign(nextErrors, validateStep(i as CreatePosterStep, data).errors);
-  }
-  return nextErrors;
-}
-
-function mapToPayload(
-  form: CreatePosterFormData,
-  coordinates: { latitude: number; longitude: number } | null
-): CreatePosterPayload {
-  const roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
-  const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
-  const imagePayload: CreatePosterPayload['images'] = form.images.map((image, index) => ({
-    file: image.file,
-    order: index + 1
-  }));
-
-  return {
-    title: `${form.housingType.trim()} ${form.address.trim()}`,
-    category: form.housingType.trim(),
-    address: form.address.trim(),
-    ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
-    price: Number(form.price),
-    area: Number(form.area),
-    floor_count: Number(form.floorCount),
-    description: form.description.trim(),
-    features: form.features,
-    flat: {
-      flat_category: `${form.roomCount.trim()}-комнатная`,
-      flat_number: flatNumber,
-      floor: Number(form.floor),
-      rooms: roomCountNumber
-    },
-    images: imagePayload
-  };
-}
-
-interface InputProps {
-  field: Exclude<CreatePosterField, 'features' | 'images'>;
-  label: string;
-  value: string;
-  errors: Partial<Record<CreatePosterField, string>>;
-  onChange: (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => void;
-  showErrorText?: boolean;
-  placeholder?: string;
-  type?: 'text' | 'email';
-}
-
-function Field({ field, label, value, errors, onChange, showErrorText = true, placeholder, type = 'text' }: InputProps) {
-  const error = errors[field];
-  const isAddressField = field === 'address';
-  const className = [
-    styles.input,
-    isAddressField ? styles.addressInput : '',
-    error ? styles.inputError : ''
-  ].filter(Boolean).join(' ');
-
-  return (
-    <div className={styles.group}>
-      <label className={styles.label} htmlFor={field}>{label}</label>
-      <input
-        id={field}
-        className={className}
-        type={type}
-        value={value}
-        placeholder={placeholder ?? ''}
-        onInput={(e: any) => onChange(field, e.target.value)}
-      />
-      {showErrorText && error && <span className={styles.error}>{error}</span>}
-    </div>
-  );
-}
 
 export function CreatePosterForm() {
   const navigate = useNavigate();
@@ -333,14 +233,15 @@ export function CreatePosterForm() {
           <div className={`${styles.group} ${styles.fullWidth}`}>
             <label className={styles.label}>Тип жилья</label>
             <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
-              {HOUSING_OPTIONS.map((option, index) => {
-                const isActive = form.housingType === option;
+              {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
+                const isActive = form.housingType === key;
+                console.log('Rendering housing option:', { key, option, index });
                 return (
                   <button
                     key={`housing-option-${index.toString()}`}
                     type="button"
                     className={`${styles.housingTypeButton} ${isActive ? styles.housingTypeButtonActive : ''}`}
-                    onClick={() => updateField('housingType', option)}
+                    onClick={() => updateField('housingType', key)}
                   >
                     {option}
                   </button>
@@ -400,7 +301,7 @@ export function CreatePosterForm() {
                     className={`${styles.roomCountButton} ${isActive ? styles.roomCountButtonActive : ''}`}
                     onClick={() => updateField('roomCount', option)}
                   >
-                    {option}
+                    {option === '0' ? 'Студия' : option}
                   </button>
                 );
               })}

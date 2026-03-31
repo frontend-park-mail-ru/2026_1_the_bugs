@@ -6,6 +6,7 @@ import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';
 import { PosterPage } from '../pages/PosterPage';
 import { CreatePosterPage } from '../pages/CreatePosterPage/CreatePosterPage';
 import { Layout } from '../components/Layout/Layout';
+import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
@@ -57,6 +58,9 @@ export function App() {
                   <ProtectedLayout path="/posters/create" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout">
                       <CreatePosterPage key="CreatePosterPage" />
                   </ProtectedLayout>
+                </Router>
+                <Router currentPath={currentPath} path="/posters/{alias}/edit">
+                  <EditPosterPage alias="{alias}" key="EditPosterPage" />
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}">
                   <PosterPage alias="{alias}" key="PosterPage" />
