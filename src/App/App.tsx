@@ -7,6 +7,7 @@ import { PosterPage } from '../pages/PosterPage';
 import { CreatePosterPage } from '../pages/CreatePosterPage/CreatePosterPage';
 import { Layout } from '../components/Layout/Layout';
 import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
+import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
 
@@ -63,6 +64,9 @@ export function App() {
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}">
                   <PosterPage alias="{alias}" key="PosterPage" />
+                </Router>
+                <Router currentPath={currentPath} path="/myposters">
+                  <MyPosterList key="MyPosterPage" />
                 </Router>
               </Switch>
             </Layout>

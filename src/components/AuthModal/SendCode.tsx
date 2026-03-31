@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';

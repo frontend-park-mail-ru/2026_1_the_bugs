@@ -5,7 +5,6 @@ import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 
 import {
-    getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
 
