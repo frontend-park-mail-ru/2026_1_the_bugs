@@ -33,7 +33,7 @@ export function MyPosterList() {
     const handleDelete = async (id: number) => {
         if (!window.confirm('Удалить объявление?')) return;
         try {
-            await apiService.delete(`/posters/${id}`);
+            await apiService.delete(`/posters/${id}`, {});
             handleGetMyPosters();
         } catch (e: any) {
             alert(e?.message || 'Ошибка удаления');
@@ -41,7 +41,7 @@ export function MyPosterList() {
     };
 
     const handleEdit = (alias: string) => {
-        navigate(`/posters/edit/${encodeURIComponent(alias)}`); // потом поменять на норм роут
+        navigate(`/posters/${encodeURIComponent(alias)}/edit`); // потом поменять на норм роут
     };
 
     if (loading) return <div className={style.center}>Загрузка…</div>;

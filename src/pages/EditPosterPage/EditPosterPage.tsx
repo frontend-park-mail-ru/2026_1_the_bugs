@@ -4,6 +4,7 @@ import styles from './EditPosterPage.module.css';
 import { getPosterByAlias } from '../../services/posters';
 import type { ApartmentDetails } from '../../types';
 import layout from '../../components/PosterPage/PosterPageLayout.module.css';
+import { useNavigate } from '@my-react/router-dom/hooks';
 
 interface EditPosterProp{
     alias: string

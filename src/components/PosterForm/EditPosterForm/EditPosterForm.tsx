@@ -445,6 +445,9 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
               >
                 {isSubmitting ? 'Применяем...' : 'Применить'}
               </button>
+              <button onClick={() => navigate(`/myposters`)} className={`${styles.button}`} type="button">
+                Назад
+              </button>
               {hasCurrentStepErrors && (
                 <div className={styles.errorHintWrap}>
                   <span className={styles.errorHintIcon} aria-hidden="true">!</span>

@@ -49,6 +49,9 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     const floorsRequiredError = required(data.floorCount, 'Укажите этажность дома');
     if (floorsRequiredError) errors.floorCount = floorsRequiredError;
 
+    const flatNumberRequiredError = required(data.flatNumber, 'Укажите номер квартиры');
+    if (flatNumberRequiredError) errors.flatNumber = flatNumberRequiredError;
+
     const floorsError = numberInRange(data.floorCount, 1, 500, 'Этажность должна быть от 1 до 500');
     if (floorsError) errors.floorCount = floorsError;
 
