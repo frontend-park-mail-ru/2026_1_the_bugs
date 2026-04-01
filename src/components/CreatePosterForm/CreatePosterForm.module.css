@@ -690,6 +690,85 @@
   font-size: 28px;
 }
 
+.addressSuggestion {
+  margin-top: 12px;
+  border: 1px solid #f2d7e9;
+  border-radius: 16px;
+  background: #fff7fc;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.addressSuggestionError {
+  border-color: transparent;
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.addressSuggestionTitle {
+  margin: 0;
+  color: #5c3650;
+  font-size: 13px;
+}
+
+.addressSuggestionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.addressSuggestionItem {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #ffeafb;
+  color: #8a4d72;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.addressSuggestionValue {
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #f3e3ee;
+  padding: 9px 11px;
+  font-size: 14px;
+  color: #3d3d3d;
+  word-break: break-word;
+}
+
+.addressSuggestionActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.addressSuggestionActions .button {
+  min-width: 0;
+}
+
+.addressConfirmButton {
+  padding: 8px 14px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.addressConfirmedBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #eaf9ef;
+  color: #177a35;
+  border: 1px solid #bce8c8;
+  padding: 7px 12px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
 @media (max-width: 900px) {
   .container {
     padding: 20px;
@@ -716,6 +795,15 @@
   }
 
   .priceFieldWrap {
+    width: 100%;
+  }
+
+  .addressSuggestionActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addressSuggestionActions .button {
     width: 100%;
   }
 }

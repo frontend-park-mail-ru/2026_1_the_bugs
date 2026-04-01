@@ -1,18 +1,16 @@
 import { useEffect, useState } from '@my-react/hooks';
 import styles from './OpenStreetMapPicker.module.css';
 
-declare global {
-  interface Window {
-    L?: any;
-  }
-}
-
 const MAP_ELEMENT_ID = 'create-poster-osm-map';
 
 let leafletLoader: Promise<any> | null = null;
 
+function getLeafletGlobal() {
+  return (window as any).L;
+}
+
 function loadLeaflet() {
-  if (window.L) return Promise.resolve(window.L);
+  if (getLeafletGlobal()) return Promise.resolve(getLeafletGlobal());
   if (leafletLoader) return leafletLoader;
 
   leafletLoader = new Promise((resolve, reject) => {
@@ -29,7 +27,7 @@ function loadLeaflet() {
 
     const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
     if (existingScript) {
-      existingScript.addEventListener('load', () => resolve(window.L));
+      existingScript.addEventListener('load', () => resolve(getLeafletGlobal()));
       existingScript.addEventListener('error', () => reject(new Error('Leaflet load failed')));
       return;
     }
@@ -38,7 +36,7 @@ function loadLeaflet() {
     script.id = scriptId;
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     script.async = true;
-    script.onload = () => resolve(window.L);
+    script.onload = () => resolve(getLeafletGlobal());
     script.onerror = () => reject(new Error('Leaflet load failed'));
     document.body.appendChild(script);
   });
@@ -46,28 +44,42 @@ function loadLeaflet() {
   return leafletLoader;
 }
 
-function formatShortAddress(rawData: any) {
-  if (!rawData) return '';
-  const address = rawData.address || rawData;
+export interface LeafletAddressSuggestion {
+  fullAddress: string;
+  city?: string;
+  district?: string;
+  street?: string;
+  house?: string;
+}
 
-  const city = address?.city || address?.town || address?.village || address?.hamlet || address?.county;
-  const district = address?.suburb || address?.district || address?.county;
-  const street = address?.road || address?.pedestrian || address?.neighbourhood;
-  const house = address?.house_number;
-  const building = address?.building;
+function buildAddressSuggestion(rawData: any): LeafletAddressSuggestion {
+  const address = rawData?.address || rawData || {};
+
+  const city = address.city || address.town || address.village || address.hamlet || address.county;
+  const district = address.suburb || address.city_district || address.district || address.state_district;
+  const street = address.road || address.pedestrian || address.neighbourhood;
+  const house = address.house_number || address.building;
 
   const parts: string[] = [];
   if (city) parts.push(city);
   if (district && district !== city) parts.push(district);
-  if (street) parts.push(street);
-  if (house) parts.push(house);
-  if (building) parts.push(building);
-
-  if (parts.length === 0) {
-    return rawData?.display_name || '';
+  if (street) {
+    parts.push(house ? `${street}, ${house}` : street);
+  } else if (house) {
+    parts.push(house);
   }
 
-  return parts.join(', ');
+  return {
+    fullAddress: parts.length ? parts.join(', ') : rawData?.display_name || '',
+    city: city || undefined,
+    district: district || undefined,
+    street: street || undefined,
+    house: house || undefined
+  };
+}
+
+function formatShortAddress(rawData: any) {
+  return buildAddressSuggestion(rawData).fullAddress;
 }
 
 async function reverseGeocode(lat: number, lon: number) {
@@ -85,7 +97,7 @@ async function reverseGeocode(lat: number, lon: number) {
 }
 
 async function geocodeAddress(query: string) {
-  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=ru&limit=1&q=${encodeURIComponent(query)}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=ru&addressdetails=1&limit=1&q=${encodeURIComponent(query)}`;
   const response = await fetch(url, {
     headers: {
       Accept: 'application/json'
@@ -95,14 +107,16 @@ async function geocodeAddress(query: string) {
     throw new Error('Не удалось найти адрес');
   }
 
-  const data = await response.json() as Array<{ lat: string; lon: string }>;
+  const data = await response.json() as Array<{ lat: string; lon: string; display_name?: string; address?: Record<string, string> }>;
   if (data.length === 0) {
     return null;
   }
 
+  const first = data[0];
   return {
-    lat: Number(data[0].lat),
-    lon: Number(data[0].lon)
+    lat: Number(first.lat),
+    lon: Number(first.lon),
+    suggestion: buildAddressSuggestion(first)
   };
 }
 
@@ -116,9 +130,10 @@ interface OpenStreetMapPickerProps {
   address: string;
   onPickAddress: (address: string) => void;
   onPickCoordinates: (latitude: number, longitude: number) => void;
+  onResolveTypedAddress?: (query: string, suggestion: LeafletAddressSuggestion | null) => void;
 }
 
-export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates }: OpenStreetMapPickerProps) {
+export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates, onResolveTypedAddress }: OpenStreetMapPickerProps) {
   const [mapController, setMapController] = useState<MapController | null>(null);
 
   useEffect(() => {
@@ -181,15 +196,23 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates 
   useEffect(() => {
     if (!mapController) return;
     const query = address.trim();
-    if (query.length < 5) return;
+    if (query.length < 5) {
+      onResolveTypedAddress?.(query, null);
+      return;
+    }
 
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
         const point = await geocodeAddress(query);
-        if (!point || cancelled) return;
+        if (cancelled) return;
 
-        const { lat, lon } = point;
+        if (!point) {
+          onResolveTypedAddress?.(query, null);
+          return;
+        }
+
+        const { lat, lon, suggestion } = point;
         if (!mapController.marker) {
           mapController.marker = mapController.L.marker([lat, lon]).addTo(mapController.map);
         } else {
@@ -197,7 +220,9 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates 
         }
         mapController.map.setView([lat, lon], 16);
         onPickCoordinates(lat, lon);
+        onResolveTypedAddress?.(query, suggestion);
       } catch (error) {
+        onResolveTypedAddress?.(query, null);
         console.warn('Address geocode failed', error);
       }
     }, 500);
@@ -206,7 +231,7 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates 
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [address, mapController]);
+  }, [address, mapController, onResolveTypedAddress]);
 
   return (
     <div className={styles.wrapper}>
