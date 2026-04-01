@@ -16,7 +16,7 @@ import {
 } from '../../../types';
 import styles from '../PosterForm.module.css';
 import { OpenStreetMapPicker } from '../OpenStreetMapPicker/OpenStreetMapPicker';
-import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_COUNT_TO_ROOM_LABEL, ROOM_OPTIONS, STEP_ERROR_FIELDS } from '../common';
+import { collectErrorsUpToStep, FEATURE_OPTIONS, mapToPayload, ROOM_COUNT_TO_ROOM_LABEL, ROOM_OPTIONS, HOUSING_OPTIONS,STEP_ERROR_FIELDS } from '../common';
 import { Field } from '../Field/Field';
 
 interface EditPosterFormProps {
@@ -35,7 +35,7 @@ function ApartmentDetailsToInitialPosterForm(poster: ApartmentDetails): CreatePo
   
 
   return {
-    housingType: poster.category,
+    housingType: poster.category.alias,
     address: poster.address,
     floor: poster.flat.floor.toString(),
     floorCount: poster.floor_count.toString(),
@@ -272,14 +272,14 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
           <div className={`${styles.group} ${styles.fullWidth}`}>
             <label className={styles.label}>Тип жилья</label>
             <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
-              {HOUSING_OPTIONS.map((option, index) => {
-                const isActive = form.housingType === option;
+              {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
+                const isActive = form.housingType === key;
                 return (
                   <button
                     key={`housing-option-${index.toString()}`}
                     type="button"
                     className={`${styles.housingTypeButton} ${isActive ? styles.housingTypeButtonActive : ''}`}
-                    onClick={() => updateField('housingType', option)}
+                    onClick={() => updateField('housingType', key)}
                   >
                     {option}
                   </button>

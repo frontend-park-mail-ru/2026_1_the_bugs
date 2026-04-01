@@ -93,7 +93,7 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
 
     formData.append('price', payload.price.toString());
     formData.append('description', payload.description);
-    formData.append('category_id', payload.category_id.toString());
+    formData.append('category_alias', payload.category_alias.toString());
     formData.append('area', payload.area.toString());
 
     formData.append('address', payload.address);

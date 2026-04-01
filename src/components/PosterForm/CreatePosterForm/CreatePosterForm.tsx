@@ -233,14 +233,15 @@ export function CreatePosterForm() {
           <div className={`${styles.group} ${styles.fullWidth}`}>
             <label className={styles.label}>Тип жилья</label>
             <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
-              {HOUSING_OPTIONS.map((option, index) => {
-                const isActive = form.housingType === option;
+              {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
+                const isActive = form.housingType === key;
+                console.log('Rendering housing option:', { key, option, index });
                 return (
                   <button
                     key={`housing-option-${index.toString()}`}
                     type="button"
                     className={`${styles.housingTypeButton} ${isActive ? styles.housingTypeButtonActive : ''}`}
-                    onClick={() => updateField('housingType', option)}
+                    onClick={() => updateField('housingType', key)}
                   >
                     {option}
                   </button>
