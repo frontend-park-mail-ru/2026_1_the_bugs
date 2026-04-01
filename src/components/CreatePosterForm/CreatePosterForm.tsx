@@ -179,6 +179,46 @@ export function CreatePosterForm() {
   const [validatedUpToStep, setValidatedUpToStep] = useState(0);
   const [draggingPhotoIndex, setDraggingPhotoIndex] = useState<number | null>(null);
   const [isUploadDragActive, setIsUploadDragActive] = useState(false);
+  const [isDeveloperMenuOpen, setIsDeveloperMenuOpen] = useState(false);
+  const [isComplexMenuOpen, setIsComplexMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onDocumentClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest('[data-custom-select="developer"]')) {
+        setIsDeveloperMenuOpen(false);
+      }
+      if (!target?.closest('[data-custom-select="complex"]')) {
+        setIsComplexMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', onDocumentClick);
+    return () => document.removeEventListener('click', onDocumentClick);
+  }, []);
+
+  const selectedDeveloperName = selectedDeveloperId == null
+    ? ''
+    : developers.find((developer) => developer.developer_id === selectedDeveloperId)?.developer_name || '';
+  const selectedComplexName = form.complex
+    ? complexes.find((complex) => complex.id === Number(form.complex))?.company_name || ''
+    : '';
+
+  const onSelectDeveloper = (developerId: number | null) => {
+    setSelectedDeveloperId(developerId);
+    updateField('complexName', developerId == null
+      ? ''
+      : developers.find((developer) => developer.developer_id === developerId)?.developer_name || '');
+    // Сбросить выбранный ЖК при смене застройщика
+    updateField('complex', '');
+    setIsDeveloperMenuOpen(false);
+    setIsComplexMenuOpen(false);
+  };
+
+  const onSelectComplex = (complexId: string) => {
+    updateField('complex', complexId);
+    setIsComplexMenuOpen(false);
+  };
 
   const updateField = (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => {
     formDraft[field] = value;
@@ -423,45 +463,103 @@ export function CreatePosterForm() {
           <Field key="field-floor" field="floor" label="Этаж квартиры" value={form.floor} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-floor-count" field="floorCount" label="Этажей в доме" value={form.floorCount} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-flat-number" field="flatNumber" label="Номер квартиры" value={form.flatNumber} errors={errors} onChange={updateField} showErrorText={false} />
-          <div className={styles.group} style={{ minWidth: 0 }}>
+          <div className={`${styles.group} ${styles.stepSelectGroup}`}>
              <label className={styles.label} htmlFor="complexName">Застройщик</label>
-             <select
-               id="complexName"
-               className={errors.complexName ? styles.inputError : styles.input}
-               value={selectedDeveloperId ?? ''}
-               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                 const devId = e.target.value ? Number(e.target.value) : null;
-                 setSelectedDeveloperId(devId);
-                 updateField('complexName', devId ? (developers.find(d => d.developer_id === devId)?.developer_name || '') : '');
-                 // Сбросить выбранный ЖК при смене застройщика
-                 updateField('complex', '');
-               }}
-               disabled={isLoadingDevelopers}
-               style={{ width: '100%' }}
-             >
-               <option value="">Выберите застройщика</option>
-               {developers.map(dev => (
-                 <option key={dev.developer_id} value={dev.developer_id}>{dev.developer_name}</option>
-               ))}
-             </select>
+             <div className={styles.customSelect} data-custom-select="developer">
+               <button
+                 id="complexName"
+                 type="button"
+                 className={`${styles.customSelectButton} ${errors.complexName ? styles.selectError : ''} ${isDeveloperMenuOpen ? styles.customSelectButtonOpen : ''}`}
+                 disabled={isLoadingDevelopers}
+                 onClick={() => setIsDeveloperMenuOpen(!isDeveloperMenuOpen)}
+               >
+                 <span
+                   className={`${styles.customSelectValue} ${selectedDeveloperName ? '' : styles.customSelectPlaceholder}`}
+                   title={selectedDeveloperName || 'Выберите застройщика'}
+                 >
+                   {selectedDeveloperName || 'Выберите застройщика'}
+                 </span>
+                 <span className={styles.stepSelectArrow} aria-hidden="true">▾</span>
+               </button>
+               {isDeveloperMenuOpen && (
+                 <div className={styles.customSelectMenu}>
+                   <button
+                     type="button"
+                     className={`${styles.customSelectOption} ${!selectedDeveloperName ? styles.customSelectOptionActive : ''}`}
+                     onClick={() => onSelectDeveloper(null)}
+                   >
+                     Выберите застройщика
+                   </button>
+                   {developers.map((developer) => (
+                     <button
+                       key={developer.developer_id}
+                       type="button"
+                       className={`${styles.customSelectOption} ${selectedDeveloperId === developer.developer_id ? styles.customSelectOptionActive : ''}`}
+                       onClick={() => onSelectDeveloper(developer.developer_id)}
+                     >
+                       {developer.developer_name}
+                     </button>
+                   ))}
+                   {!isLoadingDevelopers && developers.length === 0 && (
+                     <div className={styles.customSelectEmpty}>Список застройщиков пока пуст</div>
+                   )}
+                 </div>
+               )}
+             </div>
+             {isLoadingDevelopers && <span className={styles.selectHint}>Загружаем список застройщиков...</span>}
+             {!isLoadingDevelopers && developers.length === 0 && !developersError && (
+               <span className={styles.selectHint}>Список застройщиков пока пуст</span>
+             )}
              {developersError && <span className={styles.error}>{developersError}</span>}
              {errors.complexName && <span className={styles.error}>{errors.complexName}</span>}
           </div>
-          <div className={styles.group} style={{ minWidth: 0 }}>
+          <div className={`${styles.group} ${styles.stepSelectGroup}`}>
             <label className={styles.label} htmlFor="complex">ЖК</label>
-            <select
-              id="complex"
-              className={errors.complex ? styles.inputError : styles.input}
-              value={form.complex}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => updateField('complex', e.target.value)}
-              disabled={isLoadingComplexes}
-              style={{ width: '100%' }}
-            >
-              <option value="">Выберите ЖК</option>
-              {complexes.map(complex => (
-                <option key={complex.id} value={complex.id}>{complex.company_name}</option>
-              ))}
-            </select>
+            <div className={styles.customSelect} data-custom-select="complex">
+              <button
+                id="complex"
+                type="button"
+                className={`${styles.customSelectButton} ${errors.complex ? styles.selectError : ''} ${isComplexMenuOpen ? styles.customSelectButtonOpen : ''}`}
+                disabled={isLoadingComplexes || selectedDeveloperId == null}
+                onClick={() => setIsComplexMenuOpen(!isComplexMenuOpen)}
+              >
+                <span
+                  className={`${styles.customSelectValue} ${selectedComplexName ? '' : styles.customSelectPlaceholder}`}
+                  title={selectedComplexName || (selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК')}
+                >
+                  {selectedComplexName || (selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК')}
+                </span>
+                <span className={styles.stepSelectArrow} aria-hidden="true">▾</span>
+              </button>
+              {isComplexMenuOpen && (
+                <div className={styles.customSelectMenu}>
+                  <button
+                    type="button"
+                    className={`${styles.customSelectOption} ${!selectedComplexName ? styles.customSelectOptionActive : ''}`}
+                    onClick={() => onSelectComplex('')}
+                  >
+                    {selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК'}
+                  </button>
+                  {complexes.map((complex) => (
+                    <button
+                      key={complex.id}
+                      type="button"
+                      className={`${styles.customSelectOption} ${form.complex === String(complex.id) ? styles.customSelectOptionActive : ''}`}
+                      onClick={() => onSelectComplex(String(complex.id))}
+                    >
+                      {complex.company_name}
+                    </button>
+                  ))}
+                  {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && (
+                    <div className={styles.customSelectEmpty}>Для этого застройщика пока нет ЖК</div>
+                  )}
+                </div>
+              )}
+            </div>
+            {isLoadingComplexes && <span className={styles.selectHint}>Загружаем список ЖК...</span>}
+            {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && !complexesError && (
+              <span className={styles.selectHint}>Для этого застройщика пока нет ЖК</span>
+            )}
             {complexesError && <span className={styles.error}>{complexesError}</span>}
             {errors.complex && <span className={styles.error}>{errors.complex}</span>}
           </div>
