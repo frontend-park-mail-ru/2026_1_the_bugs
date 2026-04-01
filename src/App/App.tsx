@@ -18,11 +18,16 @@ import { authService } from '../services/auth';
 export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
+  const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const auth = await authService.isAuthenticated();
-      setIsAuthenticate(auth);
+      try {
+        const auth = await authService.isAuthenticated();
+        setIsAuthenticate(auth);
+      } finally {
+        setIsAuthResolved(true);
+      }
     };
     checkAuth();
   }, []);
@@ -46,7 +51,7 @@ export function App() {
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
-            < Layout isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="Layout">
+            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/">
                   <HomePage key="HomePage" />
