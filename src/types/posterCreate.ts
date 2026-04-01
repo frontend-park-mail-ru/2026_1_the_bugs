@@ -25,6 +25,8 @@ export interface CreatePosterFormData {
 export interface CreatePosterPayload {
   title: string;
   category: string;
+  city?: string;
+  district?: string;
   address: string;
   lat?: number;
   lon?: number;

@@ -56,11 +56,48 @@ function collectErrorsUpToStep(step: CreatePosterStep, data: CreatePosterFormDat
   return nextErrors;
 }
 
+function isDistrictChunk(value: string) {
+  const normalized = value.toLowerCase();
+  return normalized.includes('район') || normalized.includes('р-н') || normalized.includes('мкр');
+}
+
+function splitAddressParts(fullAddress: string) {
+  const normalizedFullAddress = fullAddress.trim();
+  const parts = fullAddress
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return { city: undefined as string | undefined, district: undefined as string | undefined, address: '' };
+  }
+
+  if (parts.length === 1) {
+    return { city: undefined as string | undefined, district: undefined as string | undefined, address: normalizedFullAddress };
+  }
+
+  const city = parts[0];
+  let district: string | undefined;
+  let rest = parts.slice(1);
+
+  if (rest[0] && isDistrictChunk(rest[0])) {
+    district = rest[0];
+    rest = rest.slice(1);
+  }
+
+  return {
+    city: city || undefined,
+    district,
+    address: rest.length > 0 ? rest.join(', ') : normalizedFullAddress
+  };
+}
+
 function mapToPayload(
   form: CreatePosterFormData,
   coordinates: { latitude: number; longitude: number } | null,
   developerId: number | null
 ): CreatePosterPayload {
+  const parsedAddress = splitAddressParts(form.address.trim());
   const roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
   const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
   const imagePayload: CreatePosterPayload['images'] = form.images.map((image, index) => ({
@@ -71,7 +108,9 @@ function mapToPayload(
   return {
     title: `${form.housingType.trim()} ${form.address.trim()}`,
     category: form.housingType.trim(),
-    address: form.address.trim(),
+    ...(parsedAddress.city ? { city: parsedAddress.city } : {}),
+    district: parsedAddress.district,
+    address: parsedAddress.address,
     ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
     price: Number(form.price),
     area: Number(form.area),
