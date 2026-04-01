@@ -31,6 +31,7 @@ function ApartmentDetailsToInitialPosterForm(poster: ApartmentDetails): CreatePo
   }));
 
   const features = poster.facilities?.map((val) => val.alias) ?? [];
+  console.log(ROOM_COUNT_TO_ROOM_LABEL[poster.flat.flat_category.toString()], poster.flat.flat_category.toString())
   
 
   return {

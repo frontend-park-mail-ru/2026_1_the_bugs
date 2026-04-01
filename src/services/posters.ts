@@ -1,4 +1,4 @@
-import type {Apartment, ApartmentDetails} from "src/types";
+import type {Apartment, ApartmentDetails, MyPoster} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
@@ -12,6 +12,14 @@ interface IPostersResponse {
     /** Массив объектов объявлений о квартирах */
     posters: Apartment[];
 }
+
+interface IMyPostersResponse {
+    /** Общее количество доступных объявлений */
+    len: number;
+    /** Массив объектов объявлений о квартирах */
+    posters: MyPoster[];
+}
+
 
 /**
  * Параметры запроса для пагинированного получения объявлений.
@@ -43,6 +51,16 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     }
     const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;
+}
+
+export async function getMyPosters(): Promise<IMyPostersResponse> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get('/posters/me', {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
+    });
 }
 
 /**
@@ -99,9 +117,9 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
     formData.append('flat_number', payload.flat_number?.toString() || '');
     formData.append('flat_floor', payload.flat_floor.toString());
 
-    // payload.features.forEach((feature, index) => {
-    //     formData.append('facilities[]', feature);  // или 'features[]' если бек ожидает
-    // });
+    payload.features.forEach((feature) => {
+        formData.append('features', feature);
+    });
 
     payload.images.forEach((image, index) => {
         formData.append(`photos.${index}.file`, image.file, `img_${image.order}.jpg`);

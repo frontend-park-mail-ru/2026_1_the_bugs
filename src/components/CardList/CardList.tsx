@@ -10,7 +10,6 @@ interface CardListProps {
 /** Отображает список карточек объявлений на основе переданного массива обьявлений. */
 export function CardList({ apartments }: CardListProps) {
   return (
-    
     <section className={style.cards}>
       {apartments.map(apt => (
         <Card key={apt.id.toString()} apartment={apt} />

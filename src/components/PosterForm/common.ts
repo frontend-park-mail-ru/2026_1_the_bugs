@@ -17,7 +17,7 @@ export const HOUSING_OPTIONS = ['Квартира'];
 const HOUSING_TYPE_TO_CATEGORY_ID: Record<string, number> = {
   'Квартира': 1,
 };
-export const ROOM_OPTIONS = ['0', '1', '2', '3', '4', '5', '6+'];
+export const ROOM_OPTIONS = ['Студия', '1', '2', '3', '4', '5', '6+'];
 const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
   '0': 1,
   '1': 2,
@@ -36,14 +36,34 @@ export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
   '5-комн.': '5',
   '6+ комн.': '6+',
 };
+
+    // ('Wi-Fi', 'wifi'),
+    // ('Кондиционер', 'conditioner'),
+    // ('Стиральная машина', 'washing-machine'),
+    // ('Сушилка', 'dryer'),
+    // ('Гладильная доска', 'ironing-board'),
+    // ('Утюг', 'iron'),
+    // ('Телевизор', 'tv'),
+    // ('Холодильник', 'fridge'),
+    // ('Микроволновка', 'microwave'),
+    // ('Электроплита', 'stove'),
+    // ('Посудомойка', 'dishwasher'),
+    // ('Лифт', 'elevator'),
+    // ('Парковка', 'parking'),
+    // ('Консьерж', 'concierge'),
+    // ('Детская площадка', 'playground');
+
 export const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
   { value: 'parking', label: 'Парковка' },
   { value: 'conditioner', label: 'Кондиционер' },
-  { value: 'dishwasher', label: 'Посудомоечная машина' },
-  { value: 'balcony', label: 'Балкон' },
-  { value: 'wardrobe', label: 'Гардеробная' },
-  { value: 'pets', label: 'Можно с животными' }
+  { value: 'dishwasher', label: 'Посудомойка' },
+  { value: 'elevator', label: 'Лифт' },
+  { value: 'concierge', label: 'Консьерж' },
+  { value: 'tv', label: 'Телевизор' },
+  { value: 'fridge', label: 'Холодильник' },
+  { value: 'microwave', label: 'Микроволновка' },
+  { value: 'stove', label: 'Электроплита' },
 ];
 
 export const STEP_ERROR_FIELDS: Record<CreatePosterStep, CreatePosterField[]> = {

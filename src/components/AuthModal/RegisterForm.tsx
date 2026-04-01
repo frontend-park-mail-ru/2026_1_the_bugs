@@ -10,7 +10,6 @@ import {
   validatePassword,
   validateConfirmPassword,
   validateRegisterForm,
-  type ValidationResult,
   validateName,
   validatePhone,
   validateProfileForm,

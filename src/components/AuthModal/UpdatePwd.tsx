@@ -1,10 +1,9 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 import {
-  validateEmail,
   applyValidationResult,
   validateConfirmPassword,
   validatePassword
@@ -23,7 +22,7 @@ export interface RecoverFormState {
 export type RecoverField = 'password' | 'confirmPassword';
 
 
-export default function UpdatePwd({ onSuccess, onToggleMode }: AuthModalChildProps) {
+export default function UpdatePwd({ onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
