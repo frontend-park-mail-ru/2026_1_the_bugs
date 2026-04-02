@@ -14,6 +14,7 @@ export interface CreatePosterFormData {
   floorCount: string;
   flatNumber: string;
   complexName: string;
+  complex: string;
   roomCount: string;
   area: string;
   images: UploadedImage[];
@@ -31,7 +32,7 @@ export interface CreatePosterPayload {
     address: string;
     lat?: number; 
     lon?: number;   
-    city_id: number;           
+    city?: string;           
     metro_station_id?: number; 
     district?: string;          
     floor_count: number;       
@@ -63,6 +64,7 @@ export const INITIAL_CREATE_POSTER_FORM: CreatePosterFormData = {
   floorCount: '',
   flatNumber: '',
   complexName: '',
+  complex: '',
   roomCount: '',
   area: '',
   images: [],

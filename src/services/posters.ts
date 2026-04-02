@@ -101,7 +101,9 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
         formData.append('geo_lat', payload.lat.toString());
         formData.append('geo_lon', payload.lon.toString());
     }
-    formData.append('city_id', payload.city_id.toString());
+    if (payload.city) {
+        formData.append('city', payload.city);
+    }
     if (payload.metro_station_id) {
         formData.append('metro_station_id', payload.metro_station_id.toString());
     }
