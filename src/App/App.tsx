@@ -10,6 +10,7 @@ import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
+import type { UserResponse } from '../types';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -19,12 +20,14 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const auth = await authService.isAuthenticated();
-        setIsAuthenticate(auth);
+        const user = await authService.getMe();
+        setCurrentUser(user);
+        setIsAuthenticate(true);
       } finally {
         setIsAuthResolved(true);
       }
@@ -51,7 +54,7 @@ export function App() {
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
-            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="Layout">
+            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/">
                   <HomePage key="HomePage" />

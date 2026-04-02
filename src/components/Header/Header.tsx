@@ -1,6 +1,7 @@
 import { useEffect, useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import style from './Header.module.css';
+import type { UserResponse } from 'src/types';
 
 interface HeaderProps {
   currentPath: string;
@@ -8,10 +9,11 @@ interface HeaderProps {
   onLogoutClick: () => void;
   onAuthorizeClick: ()=> void;
   isAutenticated: boolean;
+  currentUser?: UserResponse | null;
 }
 
 /** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
-export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated }: HeaderProps) {
+export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
@@ -103,7 +105,11 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   setIsMenuOpen(!isMenuOpen);
                 }}
               >
-                <img src="/svg/profile.svg" alt="Меню" aria-hidden="true" draggable="false"/>
+                {currentUser?.avatar_url ? (
+                  <img className={style.avatar} src={currentUser.avatar_url} alt="Профиль" aria-hidden="true" draggable="false"/>
+                ) : (
+                  <img src="/svg/profile.svg" alt="Меню" aria-hidden="true" draggable="false"/>
+                )}
               </button>
               {isMenuOpen && (
                 <div className={style.menuPopup}>

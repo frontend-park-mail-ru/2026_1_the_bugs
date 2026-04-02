@@ -14,3 +14,4 @@ export interface IOAuthFlow{
     state?: string,
     device_id?: string
 }
+
