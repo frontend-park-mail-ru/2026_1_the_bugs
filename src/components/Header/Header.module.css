@@ -5,6 +5,8 @@
   max-width: calc(4 * 250px + 3 * 18px);
   width: 100%;
   margin: 20px auto;
+  position: relative;
+  z-index: 3;
 }
 
 .logo {
@@ -25,6 +27,12 @@
   box-shadow: none;
   opacity: 1;
 
+}
+.avatar {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
 }
 
 .actions {
@@ -48,4 +56,84 @@
 
 .createBtn {
   width: 110px;
+  transform-origin: center;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.createBtnVisible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.createBtnHidden {
+  opacity: 0;
+  transform: translateX(-10px) scale(0.98);
+  pointer-events: none;
+}
+
+.menuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: transparent;
+}
+
+.menuWrap {
+  position: relative;
+  z-index: 2;
+}
+
+.menuBtnActive {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  transform: scale(1.04);
+}
+
+.menuPopup {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  background: #fff;
+  border-radius: var(--radius-S);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
+  padding: 8px 0;
+  min-width: 196px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 1px solid #f0f0f0;
+}
+
+.menuSeparator {
+  height: 1px;
+  background: #979797;
+  margin: 2px 10%;
+  border: none;
+}
+
+.menuItem {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
+  color: #222;
+  font-family: inherit;
+  box-shadow: none;
+}
+
+.menuItem:hover {
+  box-shadow: none;
+  color: var(--accent);
+}
+
+.menuDelete {
+  color: #cb2d2d;
 }

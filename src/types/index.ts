@@ -113,3 +113,11 @@ export interface ApartmentDetails {
 export interface ErrorAlert{
     message: string;
 }
+
+export interface UserResponse {
+    id: number;
+    first_name: string;
+    last_name: string;
+    phone: string;
+    avatar_url: string | null;
+}

@@ -732,23 +732,38 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         {submitError && <div className={styles.submitError}>{submitError}</div>}
       </div>
       <div className={styles.nav}>
-        <div className={styles.nextButtonWrap}>
-          <button
-            className={`${styles.button} ${styles.buttonPrimary}`}
-            type="button"
-            onClick={onSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Сохранение...' : 'Сохранить'}
-          </button>
-          {hasCurrentStepErrors && (
-            <div className={styles.errorHintWrap}>
-              <span className={styles.errorHintIcon}>!</span>
-              <div className={styles.errorHintPopup}>
-                {currentStepErrorMessages.map((msg, i) => (
-                  <div key={`error-${i}`}>{msg}</div>
-                ))}
-              </div>
+        {(() => {
+          const cumulativeErrors = collectErrorsUpToStep(5, formDraft);
+          const fieldsUpToCurrentStep = (Array.from({ length: 5 }, (_, index) => index + 1) as CreatePosterStep[])
+            .flatMap((step) => STEP_ERROR_FIELDS[step]);
+          const currentStepErrorMessages = fieldsUpToCurrentStep
+            .map((field) => cumulativeErrors[field])
+            .filter((message): message is string => !!message);
+          const hasCurrentStepErrors =  currentStepErrorMessages.length > 0;
+
+          return (
+            <div className={styles.nextButtonWrap}>
+              <button
+                className={`${styles.button} ${styles.buttonPrimary}`}
+                type="button"
+                onClick={onSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Применяем...' : 'Применить'}
+              </button>
+              <button onClick={() => navigate(`/myposters`)} className={`${styles.button}`} type="button">
+                Назад
+              </button>
+              {hasCurrentStepErrors && (
+                <div className={styles.errorHintWrap}>
+                  <span className={styles.errorHintIcon} aria-hidden="true">!</span>
+                  <div className={styles.errorHintPopup}>
+                    {currentStepErrorMessages.map((message, index) => (
+                      <div key={`step-error-5-${index.toString()}`}>{message}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

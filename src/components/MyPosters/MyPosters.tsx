@@ -33,7 +33,7 @@ export function MyPosterList() {
     const handleDelete = async (id: number) => {
         if (!window.confirm('Удалить объявление?')) return;
         try {
-            await apiService.delete(`/posters/${id}`);
+            await apiService.delete(`/posters/${id}`, {});
             handleGetMyPosters();
         } catch (e: any) {
             alert(e?.message || 'Ошибка удаления');
