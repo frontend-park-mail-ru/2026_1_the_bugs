@@ -8,6 +8,7 @@ import {
 } from '../AuthModal/authValidation';
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { ProfileSetAvatar } from './ProfileSetAvatar';
+import { ProfilePassword } from './ProfilePassword';
 
 type ProfileTab = 'main' | 'password';
 type ProfileField =
@@ -353,9 +354,7 @@ export function Profile() {
 
             {activeTab === 'password' && (
             <section className={style.profileForm}>
-                {/*
-                щащаща
-                */}
+                <ProfilePassword email={email} />
             </section>
             )}
 
