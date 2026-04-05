@@ -100,6 +100,9 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     if (!descriptionError && data.description.trim().length < 20) {
       errors.description = 'Описание должно быть не короче 20 символов';
     }
+    if (!descriptionError && data.description.trim().length > 3000) {
+      errors.description = 'Описание должно быть короче 3000 символов';
+    }
 
     const priceRequiredError = required(data.price, 'Укажите цену');
     if (priceRequiredError) errors.price = priceRequiredError;

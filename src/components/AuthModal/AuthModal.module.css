@@ -95,35 +95,6 @@
   filter: grayscale(0) !important;
 }
 
-/* МОДИФИКАТОРЫ - переопределяют только цвета и нужные свойства */
-.primary {
-  width: 60%;
-  border: none;
-  padding: 12px;
-  background-color: var(--accent);
-  color: white;
-}
-
-.primary:hover:not(:disabled) {
-  background-color: var(--accent-hover);
-}
-
-.secondary {
-  width: 60%;
-  padding: 12px;
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.secondary:hover:not(:disabled) {
-  background-color: #e8e8e8;
-  border-color: #999;
-}
-
 @media (max-width: 768px) {
   .modal-content {
     width: 90%;

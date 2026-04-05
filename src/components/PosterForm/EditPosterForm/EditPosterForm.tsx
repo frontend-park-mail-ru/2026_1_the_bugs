@@ -117,6 +117,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
   // ---- все шаги видны сразу (редактирование) ----
   const visibleSteps = TOTAL_CREATE_POSTER_STEPS;
   const [validatedUpToStep] = useState(TOTAL_CREATE_POSTER_STEPS); // все шаги уже «пройдены»
+  const shouldHighlightAddressConfirmation = addressConfirmationError === 'Подтвердите адрес, чтобы перейти к следующему шагу';
 
   // ---- загрузка списка застройщиков ----
   useEffect(() => {
@@ -474,65 +475,77 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
   return (
     <div className={styles.container}>
       {/* Шаг 1: Тип жилья и адрес */}
-      <div className={`${styles.grid} ${styles.stepSection}`}>
-        <div className={styles.fullWidth}>
-          <h3 className={styles.sectionTitle}>{`Шаг 1: ${STEP_TITLES[0]}`}</h3>
-        </div>
-        <div className={`${styles.group} ${styles.fullWidth}`}>
-          <label className={styles.label}>Тип жилья</label>
-          <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
-            {Object.entries(HOUSING_OPTIONS).map(([key, option]) => (
-              <button
-                key={key}
-                type="button"
-                className={`${styles.housingTypeButton} ${form.housingType === key ? styles.housingTypeButtonActive : ''}`}
-                onClick={() => updateField('housingType', key)}
-              >
-                {option}
-              </button>
-            ))}
+     <div className={`${styles.grid} ${styles.stepSection}`}>
+          <div className={styles.fullWidth}>
+            <h3 className={styles.sectionTitle}>{`Шаг 1: ${STEP_TITLES[0]}`}</h3>
           </div>
-        </div>
-        <div className={styles.fullWidth}>
-          <OpenStreetMapPicker
-            key="osm-picker"
-            address={form.address}
-            onPickAddress={onAddressPickedFromMap}
-            onPickCoordinates={(lat, lng) => setCoordinates({ latitude: lat, longitude: lng })}
-            onResolveTypedAddress={onResolveTypedAddress}
-          />
-        </div>
-        <div className={styles.fullWidth}>
-          <Field
-            field="address"
-            label="Адрес"
-            value={form.address}
-            errors={addressFieldErrors}
-            onChange={(_, value) => onAddressInput(value)}
-            showErrorText={false}
-            placeholder="Например: Москва, ул. Ленина, 10"
-          />
-          {addressSuggestionCandidate &&
-            normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress) && (
-              <div className={`${styles.addressSuggestion} ${addressConfirmationError === 'Подтвердите адрес, чтобы перейти к следующему шагу' ? styles.addressSuggestionError : ''}`}>
+          <div className={`${styles.group} ${styles.fullWidth}`}>
+            <label className={styles.label}>Тип жилья</label>
+            <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
+              {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
+                const isActive = form.housingType === key;
+                console.log('Rendering housing option:', { key, option, index });
+                return (
+                  <button
+                    key={`housing-option-${index.toString()}`}
+                    type="button"
+                    className={`${styles.housingTypeButton} ${isActive ? styles.housingTypeButtonActive : ''}`}
+                    onClick={() => updateField('housingType', key)}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className={styles.fullWidth}>
+            <OpenStreetMapPicker
+              key="osm-picker"
+              address={form.address}
+              onPickAddress={onAddressPickedFromMap}
+              onPickCoordinates={(latitude, longitude) => setCoordinates({ latitude, longitude })}
+              onResolveTypedAddress={onResolveTypedAddress}
+            />
+          </div>
+          <div className={styles.fullWidth}>
+            <Field
+              key="field-address"
+              field="address"
+              label="Адрес"
+              value={form.address}
+              errors={addressFieldErrors}
+              onChange={(_, value) => onAddressInput(value)}
+              showErrorText={false}
+              placeholder="Например: Москва, ул. Ленина, 10"
+            />
+            {addressSuggestionCandidate && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress) && (
+              <div className={`${styles.addressSuggestion} ${shouldHighlightAddressConfirmation ? styles.addressSuggestionError : ''}`}>
                 <p className={styles.addressSuggestionTitle}>Мы определили адрес. Подтвердите, что это ваш адрес:</p>
                 <div className={styles.addressSuggestionGrid}>
-                  {addressSuggestionCandidate.suggestion.city && <span>Город: {addressSuggestionCandidate.suggestion.city}</span>}
-                  {addressSuggestionCandidate.suggestion.district && <span>Район: {addressSuggestionCandidate.suggestion.district}</span>}
-                  {addressSuggestionCandidate.suggestion.street && <span>Улица: {addressSuggestionCandidate.suggestion.street}</span>}
-                  {addressSuggestionCandidate.suggestion.house && <span>Дом: {addressSuggestionCandidate.suggestion.house}</span>}
+                  {addressSuggestionCandidate.suggestion.city && (
+                    <span className={styles.addressSuggestionItem}>Город: {addressSuggestionCandidate.suggestion.city}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.district && (
+                    <span className={styles.addressSuggestionItem}>Район: {addressSuggestionCandidate.suggestion.district}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.street && (
+                    <span className={styles.addressSuggestionItem}>Улица: {addressSuggestionCandidate.suggestion.street}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.house && (
+                    <span className={styles.addressSuggestionItem}>Дом: {addressSuggestionCandidate.suggestion.house}</span>
+                  )}
                 </div>
                 <div className={styles.addressSuggestionValue}>{addressSuggestionCandidate.suggestion.fullAddress}</div>
                 <div className={styles.addressSuggestionActions}>
-                  <button type="button" className={`${styles.button} ${styles.buttonPrimary}`} onClick={confirmAddress}>
+                  <button type="button" className={`${styles.button} ${styles.buttonPrimary} ${styles.addressConfirmButton}`} onClick={confirmAddress}>
                     Да, это мой адрес
                   </button>
                   {isAddressConfirmed && <span className={styles.addressConfirmedBadge}>Адрес подтвержден</span>}
                 </div>
               </div>
             )}
+          </div>
         </div>
-      </div>
 
       {/* Шаг 2: Этаж, этажность, номер, застройщик, ЖК */}
       <div className={`${styles.grid} ${styles.stepTwoRow} ${styles.stepSection}`}>
@@ -731,17 +744,8 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         </div>
         {submitError && <div className={styles.submitError}>{submitError}</div>}
       </div>
-      <div className={styles.nav}>
-        {(() => {
-          const cumulativeErrors = collectErrorsUpToStep(5, formDraft);
-          const fieldsUpToCurrentStep = (Array.from({ length: 5 }, (_, index) => index + 1) as CreatePosterStep[])
-            .flatMap((step) => STEP_ERROR_FIELDS[step]);
-          const currentStepErrorMessages = fieldsUpToCurrentStep
-            .map((field) => cumulativeErrors[field])
-            .filter((message): message is string => !!message);
-          const hasCurrentStepErrors =  currentStepErrorMessages.length > 0;
 
-          return (
+      <div className={styles.nav}>
             <div className={styles.nextButtonWrap}>
               <button
                 className={`${styles.button} ${styles.buttonPrimary}`}
@@ -749,7 +753,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                 onClick={onSubmit}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Применяем...' : 'Применить'}
+                {isSubmitting ? 'Сохранияем...' : 'Сохранить'}
               </button>
               <button onClick={() => navigate(`/myposters`)} className={`${styles.button}`} type="button">
                 Назад
@@ -765,9 +769,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                 </div>
               )}
             </div>
-          )}
         </div>
-      </div>
     </div>
   );
 }

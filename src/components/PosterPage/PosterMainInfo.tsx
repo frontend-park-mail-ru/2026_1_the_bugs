@@ -8,13 +8,14 @@ interface PosterMainInfoProps {
 
 export function PosterMainInfo({ poster }: PosterMainInfoProps) {
   const metro = (poster.metro || '').trim();
+  const district = (poster.district || '').trim();
 
   return (
     <article className={shared.card}>
       <h1 className={styles.address}>{poster.address}</h1>
       <div className={styles.metaInline}>
         {metro && <span>Метро: {metro}</span>}
-        <span>Район: {poster.district}</span>
+        {district && <span>Район: {district}</span>}
         <span>Город: {poster.city}</span>
       </div>
     </article>

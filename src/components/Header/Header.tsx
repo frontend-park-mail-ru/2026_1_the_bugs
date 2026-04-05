@@ -1,6 +1,7 @@
 import { useEffect, useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import style from './Header.module.css';
+import appStyle from './../../App/App.module.css';
 import type { UserResponse } from 'src/types';
 
 interface HeaderProps {
@@ -69,7 +70,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
           <div className={style['actions']}>
             {showBtn && (
               <button
-                className={`${style.secondary} ${style.createBtn} ${isBtnVisible ? style.createBtnVisible : style.createBtnHidden}`}
+                className={`${appStyle.secondary} ${style.createBtn} ${isBtnVisible ? style.createBtnVisible : style.createBtnHidden}`}
                 type="button"
                 aria-label="Создать объявление"
                 tabIndex={isBtnVisible ? 0 : -1}
@@ -130,7 +131,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                     onClick={() => {
                       closeMenu();
                       if (!isMyPostersRoute) {
-                        navigate('/myposters');
+                        navigate('/my-posters');
                       }
                     }}
                   >
@@ -138,13 +139,15 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   </button>
                   <div className={style.menuSeparator} />
                   <button
-                    className={style.menuItem + ' ' + style.menuDelete}
+                    style={{'display': 'flex'}}
+                    className={style.menuItem}
                     type="button"
                     onClick={() => {
                       closeMenu();
                       onLogoutClick();
                     }}
                   >
+                    <img src="/svg/logout.svg" alt="Выйти" aria-hidden="true" draggable="false"/>
                     Выйти
                   </button>
                 </div>
@@ -155,7 +158,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
         
         ) : (
           <div className={style['actions']}>
-            <button className={style.secondary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
+            <button className={appStyle.primary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
               Войти
             </button>
           </div>

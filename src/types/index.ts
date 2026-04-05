@@ -18,6 +18,7 @@ export interface MyPoster {
   area: number;
   price: number;
   avatar_url: string;
+  category: Category
 }
 
 export interface UtilityCompanyPhoto {
