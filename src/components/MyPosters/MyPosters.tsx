@@ -99,7 +99,7 @@ export function MyPosterList() {
                                 {isMenuOpen && (
                                     <div className={style.menuPopup}>
                                         <button
-                                            className={style.menuItem}
+                                            className={`${style.menuItem} fontHero`}
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
@@ -110,7 +110,7 @@ export function MyPosterList() {
                                         </button>
                                         <div className={style.menuSeparator} />
                                         <button
-                                            className={style.menuItem + ' ' + style.menuDelete}
+                                            className={`${style.menuItem} ${style.menuDelete} fontHero`}
                                             onClick={() => {
                                                 setMenuOpen(null);
                                                 handleDelete(apt.id);

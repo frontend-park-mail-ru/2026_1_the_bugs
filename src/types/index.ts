@@ -11,6 +11,16 @@ export interface Apartment {
   imageUrl: string;
 }
 
+export interface Profile {
+  avatar_url: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  phone: string;
+  //has_password: boolean;
+}
+
 export interface MyPoster {
   id: number;
   alias: string;

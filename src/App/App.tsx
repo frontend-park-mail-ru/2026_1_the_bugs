@@ -10,6 +10,7 @@ import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
+import { Profile } from '../components/Profile/Profile';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -72,6 +73,9 @@ export function App() {
                 </Router>
                 <Router currentPath={currentPath} path="/myposters">
                   <MyPosterList key="MyPosterPage" />
+                </Router>
+                <Router currentPath={currentPath} path="/profile">
+                  <Profile alias="{alias}" key="ProfilePage" />
                 </Router>
               </Switch>
             </Layout>
