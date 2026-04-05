@@ -151,38 +151,69 @@ export function Profile() {
         setSaveMessage(null);
         setError(null);
 
-        let result = validateName(firstName, 'firstname');
-        if (!result.isValid) {
-            setSingleHighlight('firstname', result.error);
+        const currentFirstName = profile?.first_name || '';
+        const currentLastName = profile?.last_name || '';
+        const currentPhone = profile?.phone || '';
+
+        const isFirstNameChanged = firstName !== currentFirstName;
+        const isLastNameChanged = lastName !== currentLastName;
+        const isPhoneChanged = phone !== currentPhone;
+        const isAvatarChanged = !!avatarFile;
+
+        if (!isFirstNameChanged && !isLastNameChanged && !isPhoneChanged && !isAvatarChanged) {
+            setSaveMessage('Изменений нет');
             return;
         }
 
-        result = validateName(lastName, 'lastname');
-        if (!result.isValid) {
-            setSingleHighlight('lastname', result.error);
-            return;
+        if (isFirstNameChanged) {
+            const result = validateName(firstName, 'firstname');
+            if (!result.isValid) {
+                setSingleHighlight('firstname', result.error);
+                return;
+            }
         }
 
-        result = validatePhone(phone);
-        if (!result.isValid) {
-            setSingleHighlight('phone', result.error);
-            return;
+        if (isLastNameChanged) {
+            const result = validateName(lastName, 'lastname');
+            if (!result.isValid) {
+                setSingleHighlight('lastname', result.error);
+                return;
+            }
+        }
+
+        if (isPhoneChanged) {
+            const result = validatePhone(phone);
+            if (!result.isValid) {
+                setSingleHighlight('phone', result.error);
+                return;
+            }
         }
 
         clearValidationState();
         setIsSaving(true);
+        const hasAvatarUpload = !!avatarFile;
 
         const formData = new FormData();
-        formData.append('first_name', firstName);
-        formData.append('last_name', lastName);
-        formData.append('phone', phone);
+
+        if (isFirstNameChanged) {
+            formData.append('first_name', firstName);
+        }
+
+        if (isLastNameChanged) {
+            formData.append('last_name', lastName);
+        }
+
+        if (isPhoneChanged) {
+            formData.append('phone', phone);
+        }
 
         if (avatarFile) {
             formData.append('avatar', avatarFile);
         }
 
         try {
-            const updated = await authService.updateMeProfile(formData);
+            await authService.updateMeProfile(formData);
+            const updated = await authService.getMe() as Profile;
             const nextAvatarCacheBuster = avatarFile ? Date.now() : avatarCacheBuster;
             setProfile(updated);
             setFirstName(updated.first_name || '');
@@ -190,10 +221,12 @@ export function Profile() {
             setPhone(updated.phone || '');
             setAvatarCacheBuster(nextAvatarCacheBuster);
             setSaveMessage('Данные профиля сохранены');
-            if (avatarPreview) {
+
+            if (!hasAvatarUpload && avatarPreview) {
                 URL.revokeObjectURL(avatarPreview);
+                setAvatarPreview(null);
             }
-            setAvatarPreview(null);
+
             setAvatarFile(null);
             resetAvatarInput();
         } catch (e: any) {
@@ -266,7 +299,7 @@ export function Profile() {
 
             <article className={style.profileCard}>
                 <div className={style.avatarWrap}>
-                    <img className={style.avatar} src={avatarSrc} alt="Аватар пользователя" draggable="false" />
+                    <img key={avatarSrc} className={style.avatar} src={avatarSrc} alt="Аватар пользователя" draggable="false" />
                 </div>
                 <div className={style.profileMeta}>
                     <h1 className={style.fullName}>{fullName}</h1>
