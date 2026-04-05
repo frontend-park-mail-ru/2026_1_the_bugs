@@ -53,6 +53,17 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     return resp;
 }
 
+export async function getMyPosterByAlias(alias: string): Promise<ApartmentDetails> {
+    const resp = await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get(`/posters/me/${alias}`, {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
+    });
+    return resp.poster as ApartmentDetails
+}
+
 export async function getMyPosters(): Promise<IMyPostersResponse> {
     return await authService.WithRefresh(async () => {
         const token = apiService.getToken();
@@ -104,9 +115,6 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
     if (payload.city) {
         formData.append('city', payload.city);
     }
-    if (payload.metro_station_id) {
-        formData.append('metro_station_id', payload.metro_station_id.toString());
-    }
     if (payload.district) {
         formData.append('district', payload.district);
     }
@@ -134,6 +142,70 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
 
         const resp: CreatePosterResponse = await apiService.post(
             '/posters/flat',
+            formData,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    });
+}
+
+
+export async function updatePoster(alias: string, payload: CreatePosterPayload) {
+    const formData = new FormData();
+
+    formData.append('price', payload.price.toString());
+    formData.append('description', payload.description);
+    formData.append('category_alias', payload.category_alias.toString());
+    formData.append('area', payload.area.toString());
+
+    formData.append('address', payload.address);
+    if (payload.lat && payload.lon) {
+        formData.append('geo_lat', payload.lat.toString());
+        formData.append('geo_lon', payload.lon.toString());
+    }
+    if (payload.city) {
+        formData.append('city', payload.city);
+    }
+    if (payload.district) {
+        formData.append('district', payload.district);
+    }
+    formData.append('floor_count', payload.floor_count.toString());
+    if (payload.company_id) {
+        formData.append('company_id', payload.company_id.toString());
+    }
+
+    formData.append('flat_category_id', payload.flat_category_id.toString());
+    formData.append('flat_number', payload.flat_number?.toString() || '');
+    formData.append('flat_floor', payload.flat_floor.toString());
+
+    payload.features.forEach((feature) => {
+        formData.append('features', feature);
+    });
+    console.log( payload.images)
+
+    payload.images.forEach((image, index) => {
+        if (image.file instanceof File) {
+            formData.append(`photos.${index}.file`, image.file, `img_${image.order}.jpg`);
+            formData.append(`photos.${index}.order`, image.order.toString());
+        } else if (image.url && typeof image.url === 'string') {
+            formData.append(`photos.${index}.url`, image.url);
+            formData.append(`photos.${index}.order`, image.order.toString());
+        } else {
+            console.warn('Фото без file и url пропущено', image);
+        }
+    });
+
+    console.log(formData)
+
+   
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+
+        const resp: CreatePosterResponse = await apiService.put(
+            `/posters/flat/${alias}`,
             formData,
             {
                 'Authorization': `Bearer ${token}`,

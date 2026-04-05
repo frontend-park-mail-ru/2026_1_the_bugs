@@ -14,6 +14,7 @@ import {
 import styles from '../PosterForm.module.css';
 import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_OPTIONS, STEP_ERROR_FIELDS, STEP_TITLES } from '../common';
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
+import { Field } from '../Field/Field';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
   return Math.min(step + 1, TOTAL_CREATE_POSTER_STEPS) as CreatePosterStep;
@@ -30,31 +31,6 @@ interface InputProps {
   showErrorText?: boolean;
   placeholder?: string;
   type?: 'text' | 'email';
-}
-
-function Field({ field, label, value, errors, onChange, showErrorText = true, placeholder, type = 'text' }: InputProps) {
-  const error = errors[field];
-  const isAddressField = field === 'address';
-  const className = [
-    styles.input,
-    isAddressField ? styles.addressInput : '',
-    error ? styles.inputError : ''
-  ].filter(Boolean).join(' ');
-
-  return (
-    <div className={styles.group}>
-      <label className={styles.label} htmlFor={field}>{label}</label>
-      <input
-        id={field}
-        className={className}
-        type={type}
-        value={value}
-        placeholder={placeholder ?? ''}
-        onInput={(e: any) => onChange(field, e.target.value)}
-      />
-      {showErrorText && error && <span className={styles.error}>{error}</span>}
-    </div>
-  );
 }
 
 interface AddressSuggestionCandidate {

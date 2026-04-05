@@ -3,7 +3,6 @@ import type { ApartmentDetails } from './index';
 export interface UploadedImage {
   name: string;
   previewUrl: string;
-  // file can be null for images that already exist on the server
   file: File | null;
 }
 
@@ -47,6 +46,7 @@ export interface CreatePosterPayload {
     images: Array<{
         file: File;
         order: number;
+        url?: string;
     }>;
 }
 

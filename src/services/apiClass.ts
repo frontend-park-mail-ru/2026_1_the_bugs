@@ -70,12 +70,12 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async put(endpoint: string, headers: Record<string, any>, data: any) {
+    async put(endpoint: string, data: any, headers: Record<string, any>) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
-               headers:headers,
-                body: JSON.stringify(data),
+                headers:headers,
+                body: data,
             });
             return this.handleResponse(response);
         } catch (error) {

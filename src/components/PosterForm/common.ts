@@ -16,7 +16,7 @@ export const STEP_TITLES = [
 export const HOUSING_OPTIONS: Record<string, string> = {
   'flat':'Квартира',
 };
-export const ROOM_OPTIONS = ['Студия', '1', '2', '3', '4', '5', '6+'];
+export const ROOM_OPTIONS = ['0', '1', '2', '3', '4', '5', '6+'];
 const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
   '0': 1,
   '1': 2,
@@ -27,7 +27,7 @@ const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
   '6+': 7,
 };
 export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
-  'Студия': 'Студия',
+  'Студия': '0',
   '1-комн.': '1',
   '2-комн.': '2',
   '3-комн.': '3',
@@ -35,22 +35,6 @@ export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
   '5-комн.': '5',
   '6+ комн.': '6+',
 };
-
-    // ('Wi-Fi', 'wifi'),
-    // ('Кондиционер', 'conditioner'),
-    // ('Стиральная машина', 'washing-machine'),
-    // ('Сушилка', 'dryer'),
-    // ('Гладильная доска', 'ironing-board'),
-    // ('Утюг', 'iron'),
-    // ('Телевизор', 'tv'),
-    // ('Холодильник', 'fridge'),
-    // ('Микроволновка', 'microwave'),
-    // ('Электроплита', 'stove'),
-    // ('Посудомойка', 'dishwasher'),
-    // ('Лифт', 'elevator'),
-    // ('Парковка', 'parking'),
-    // ('Консьерж', 'concierge'),
-    // ('Детская площадка', 'playground');
 
 export const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
@@ -128,7 +112,8 @@ export function mapToPayload(
   const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
   const imagePayload: CreatePosterPayload['images'] = form.images.map((image, index) => ({
     file: image.file,
-    order: index + 1
+    order: index + 1,
+    url: image?.previewUrl,
   })) as CreatePosterPayload['images'];
 
   return {
