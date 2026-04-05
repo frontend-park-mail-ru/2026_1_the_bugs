@@ -76,6 +76,7 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     if (!roomsError && !allowedRooms.includes(data.roomCount)) {
       errors.roomCount = 'Выберите корректное количество комнат';
     }
+    console.log(data.roomCount)
 
     const areaRequiredError = required(data.area, 'Укажите площадь');
     if (areaRequiredError) errors.area = areaRequiredError;

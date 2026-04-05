@@ -1,4 +1,5 @@
-import { useState } from '@my-react/hooks';
+import { useState, useEffect } from '@my-react/hooks';
+import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import { createPoster } from '../../../services/posters';
 import type { CreatePosterField, StepValidationResult } from '../validation';
@@ -7,13 +8,12 @@ import {
   INITIAL_CREATE_POSTER_FORM,
   TOTAL_CREATE_POSTER_STEPS,
   type CreatePosterFormData,
-  type CreatePosterPayload,
   type CreatePosterStep,
   type UploadedImage
 } from '../../../types/posterCreate';
 import styles from '../PosterForm.module.css';
-import { OpenStreetMapPicker } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_OPTIONS, STEP_ERROR_FIELDS, STEP_TITLES } from '../common';
+import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
@@ -21,7 +21,76 @@ function nextStep(step: CreatePosterStep): CreatePosterStep {
 }
 
 
+
+interface InputProps {
+  field: Exclude<CreatePosterField, 'features' | 'images'>;
+  label: string;
+  value: string;
+  errors: Partial<Record<CreatePosterField, string>>;
+  onChange: (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => void;
+  showErrorText?: boolean;
+  placeholder?: string;
+  type?: 'text' | 'email';
+}
+
+interface AddressSuggestionCandidate {
+  typedAddress: string;
+  suggestion: LeafletAddressSuggestion;
+}
+
+interface AddressLookupState {
+  query: string;
+  recognized: boolean;
+}
+
+function normalizeAddressForCompare(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/\s*,\s*/g, ',')
+    .trim();
+}
+
 export function CreatePosterForm() {
+  const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
+  const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
+  const [complexesError, setComplexesError] = useState<string | null>(null);
+  const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
+
+  // Загрузка ЖК при выборе застройщика
+  useEffect(() => {
+    if (selectedDeveloperId == null) {
+      setComplexes([]);
+      setComplexesError(null);
+      return;
+    }
+    setIsLoadingComplexes(true);
+    getComplexesByDeveloper(selectedDeveloperId)
+      .then((data) => {
+        setComplexes(data.utility_companies || []);
+        setComplexesError(null);
+      })
+      .catch(() => {
+        setComplexesError('Ошибка загрузки списка ЖК');
+      })
+      .finally(() => setIsLoadingComplexes(false));
+  }, [selectedDeveloperId]);
+      const [developers, setDevelopers] = useState<{ developer_id: number; developer_name: string }[]>([]);
+      const [isLoadingDevelopers, setIsLoadingDevelopers] = useState(false);
+      const [developersError, setDevelopersError] = useState<string | null>(null);
+
+      useEffect(() => {
+        setIsLoadingDevelopers(true);
+        getDevelopers()
+          .then((data) => {
+            setDevelopers(data.developers || []);
+            setDevelopersError(null);
+          })
+          .catch(() => {
+            setDevelopersError('Ошибка загрузки списка ЖК');
+          })
+          .finally(() => setIsLoadingDevelopers(false));
+      }, []);
   const navigate = useNavigate();
   const [visibleSteps, setVisibleSteps] = useState<CreatePosterStep>(1);
   const [form, setForm] = useState<CreatePosterFormData>(INITIAL_CREATE_POSTER_FORM);
@@ -35,6 +104,56 @@ export function CreatePosterForm() {
   const [validatedUpToStep, setValidatedUpToStep] = useState(0);
   const [draggingPhotoIndex, setDraggingPhotoIndex] = useState<number | null>(null);
   const [isUploadDragActive, setIsUploadDragActive] = useState(false);
+  const [isDeveloperMenuOpen, setIsDeveloperMenuOpen] = useState(false);
+  const [isComplexMenuOpen, setIsComplexMenuOpen] = useState(false);
+  const [isAddressManualInput, setIsAddressManualInput] = useState(false);
+  const [addressSuggestionCandidate, setAddressSuggestionCandidate] = useState<AddressSuggestionCandidate | null>(null);
+  const [addressLookupState, setAddressLookupState] = useState<AddressLookupState | null>(null);
+  const [isAddressConfirmed, setIsAddressConfirmed] = useState(false);
+  const [addressConfirmationError, setAddressConfirmationError] = useState<string | null>(null);
+  const shouldHighlightAddressAsInvalid = addressConfirmationError === 'Укажите корректный адрес';
+  const shouldHighlightAddressConfirmation = addressConfirmationError === 'Подтвердите адрес, чтобы перейти к следующему шагу';
+  const addressFieldErrors = shouldHighlightAddressAsInvalid
+    ? { ...errors, address: addressConfirmationError }
+    : errors;
+
+  useEffect(() => {
+    const onDocumentClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest('[data-custom-select="developer"]')) {
+        setIsDeveloperMenuOpen(false);
+      }
+      if (!target?.closest('[data-custom-select="complex"]')) {
+        setIsComplexMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', onDocumentClick);
+    return () => document.removeEventListener('click', onDocumentClick);
+  }, []);
+
+  const selectedDeveloperName = selectedDeveloperId == null
+    ? ''
+    : developers.find((developer) => developer.developer_id === selectedDeveloperId)?.developer_name || '';
+  const selectedComplexName = form.complex
+    ? complexes.find((complex) => complex.id === Number(form.complex))?.company_name || ''
+    : '';
+
+  const onSelectDeveloper = (developerId: number | null) => {
+    setSelectedDeveloperId(developerId);
+    updateField('complexName', developerId == null
+      ? ''
+      : developers.find((developer) => developer.developer_id === developerId)?.developer_name || '');
+    // Сбросить выбранный ЖК при смене застройщика
+    updateField('complex', '');
+    setIsDeveloperMenuOpen(false);
+    setIsComplexMenuOpen(false);
+  };
+
+  const onSelectComplex = (complexId: string) => {
+    updateField('complex', complexId);
+    setIsComplexMenuOpen(false);
+  };
 
   const updateField = (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => {
     formDraft[field] = value;
@@ -44,6 +163,67 @@ export function CreatePosterForm() {
       delete nextErrors[field];
       setErrors(nextErrors);
     }
+  };
+
+  const onAddressInput = (value: string) => {
+    setIsAddressManualInput(true);
+    setIsAddressConfirmed(false);
+    setAddressConfirmationError(null);
+    setAddressSuggestionCandidate(null);
+    setAddressLookupState(null);
+    updateField('address', value);
+  };
+
+  const onAddressPickedFromMap = (value: string) => {
+    setIsAddressManualInput(false);
+    setIsAddressConfirmed(false);
+    setAddressConfirmationError(null);
+    setAddressSuggestionCandidate(null);
+    setAddressLookupState(null);
+    updateField('address', value);
+  };
+
+  const onResolveTypedAddress = (query: string, suggestion: LeafletAddressSuggestion | null) => {
+
+    const normalizedCurrent = normalizeAddressForCompare(formDraft.address);
+    const normalizedQuery = normalizeAddressForCompare(query);
+    console.log("Resolving typed address", { query, suggestion, normalizedCurrent, normalizedQuery });
+    if (!normalizedCurrent || normalizedCurrent !== normalizedQuery) {
+      return;
+    }
+
+    if (!suggestion?.fullAddress.trim()) {
+      setAddressLookupState({ query, recognized: false });
+      setAddressSuggestionCandidate(null);
+      setIsAddressConfirmed(false);
+      return;
+    }
+
+    const normalizedTyped = normalizeAddressForCompare(query);
+    const normalizedLeaflet = normalizeAddressForCompare(suggestion.fullAddress);
+
+    if (!normalizedLeaflet || normalizedTyped === normalizedLeaflet) {
+      setAddressLookupState({ query, recognized: true });
+      setAddressSuggestionCandidate(null);
+      setIsAddressConfirmed(false);
+      return;
+    }
+
+    setAddressConfirmationError(null);
+    setIsAddressConfirmed(false);
+    setAddressLookupState({ query, recognized: true });
+    setAddressSuggestionCandidate({
+      typedAddress: query,
+      suggestion
+    });
+  };
+
+  const confirmAddress = () => {
+    if (!addressSuggestionCandidate) return;
+    setAddressConfirmationError(null);
+    setIsAddressConfirmed(true);
+    setAddressLookupState({ query: addressSuggestionCandidate.suggestion.fullAddress, recognized: true });
+    updateField('address', addressSuggestionCandidate.suggestion.fullAddress);
   };
 
   const toggleFeature = (featureValue: string) => {
@@ -173,9 +353,36 @@ export function CreatePosterForm() {
   const onNext = () => {
     setValidatedUpToStep(Math.max(validatedUpToStep, visibleSteps));
     const nextErrors = collectErrorsUpToStep(visibleSteps, formDraft);
-    const isValid = Object.keys(nextErrors).length === 0;
+    let addressError: string | null = null;
+
+    if (visibleSteps === 1 && !nextErrors.address) {
+      const normalizedCurrentAddress = normalizeAddressForCompare(form.address);
+      const isLookupActual =
+        !!addressLookupState
+        && normalizeAddressForCompare(addressLookupState.query) === normalizedCurrentAddress;
+      const hasAddressToConfirm =
+        !!addressSuggestionCandidate
+        && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress);
+
+      console.log("Address validation", { normalizedCurrentAddress, addressLookupState, isLookupActual, hasAddressToConfirm, isAddressConfirmed });
+
+      if (!isLookupActual || !addressLookupState?.recognized) {
+        addressError = 'Укажите корректный адрес';
+      }else if (hasAddressToConfirm && !isAddressConfirmed) {
+        addressError = 'Подтвердите адрес, чтобы перейти к следующему шагу';
+      }
+    }
+
+    setAddressConfirmationError(addressError);
+
+    if (addressError === 'Укажите корректный адрес') {
+      nextErrors.address = addressError;
+    }
+
+    const isValid = Object.keys(nextErrors).length === 0 && !addressError;
     setErrors(nextErrors);
     if (!isValid) return;
+
     setSubmitError(null);
     setVisibleSteps(nextStep(visibleSteps));
   };
@@ -253,8 +460,9 @@ export function CreatePosterForm() {
             <OpenStreetMapPicker
               key="osm-picker"
               address={form.address}
-              onPickAddress={(address) => updateField('address', address)}
+              onPickAddress={onAddressPickedFromMap}
               onPickCoordinates={(latitude, longitude) => setCoordinates({ latitude, longitude })}
+              onResolveTypedAddress={onResolveTypedAddress}
             />
           </div>
           <div className={styles.fullWidth}>
@@ -263,11 +471,37 @@ export function CreatePosterForm() {
               field="address"
               label="Адрес"
               value={form.address}
-              errors={errors}
-              onChange={updateField}
+              errors={addressFieldErrors}
+              onChange={(_, value) => onAddressInput(value)}
               showErrorText={false}
               placeholder="Например: Москва, ул. Ленина, 10"
             />
+            {addressSuggestionCandidate && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress) && (
+              <div className={`${styles.addressSuggestion} ${shouldHighlightAddressConfirmation ? styles.addressSuggestionError : ''}`}>
+                <p className={styles.addressSuggestionTitle}>Мы определили адрес. Подтвердите, что это ваш адрес:</p>
+                <div className={styles.addressSuggestionGrid}>
+                  {addressSuggestionCandidate.suggestion.city && (
+                    <span className={styles.addressSuggestionItem}>Город: {addressSuggestionCandidate.suggestion.city}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.district && (
+                    <span className={styles.addressSuggestionItem}>Район: {addressSuggestionCandidate.suggestion.district}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.street && (
+                    <span className={styles.addressSuggestionItem}>Улица: {addressSuggestionCandidate.suggestion.street}</span>
+                  )}
+                  {addressSuggestionCandidate.suggestion.house && (
+                    <span className={styles.addressSuggestionItem}>Дом: {addressSuggestionCandidate.suggestion.house}</span>
+                  )}
+                </div>
+                <div className={styles.addressSuggestionValue}>{addressSuggestionCandidate.suggestion.fullAddress}</div>
+                <div className={styles.addressSuggestionActions}>
+                  <button type="button" className={`${styles.button} ${styles.buttonPrimary} ${styles.addressConfirmButton}`} onClick={confirmAddress}>
+                    Да, это мой адрес
+                  </button>
+                  {isAddressConfirmed && <span className={styles.addressConfirmedBadge}>Адрес подтвержден</span>}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -280,7 +514,106 @@ export function CreatePosterForm() {
           <Field key="field-floor" field="floor" label="Этаж квартиры" value={form.floor} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-floor-count" field="floorCount" label="Этажей в доме" value={form.floorCount} errors={errors} onChange={updateField} showErrorText={false} />
           <Field key="field-flat-number" field="flatNumber" label="Номер квартиры" value={form.flatNumber} errors={errors} onChange={updateField} showErrorText={false} />
-          <Field key="field-complex-name" field="complexName" label="Название ЖК" value={form.complexName} errors={errors} onChange={updateField} showErrorText={false} />
+          <div className={`${styles.group} ${styles.stepSelectGroup}`}>
+             <label className={styles.label} htmlFor="complexName">Застройщик</label>
+             <div className={styles.customSelect} data-custom-select="developer">
+               <button
+                 id="complexName"
+                 type="button"
+                 className={`${styles.customSelectButton} ${errors.complexName ? styles.selectError : ''} ${isDeveloperMenuOpen ? styles.customSelectButtonOpen : ''}`}
+                 disabled={isLoadingDevelopers}
+                 onClick={() => setIsDeveloperMenuOpen(!isDeveloperMenuOpen)}
+               >
+                 <span
+                   className={`${styles.customSelectValue} ${selectedDeveloperName ? '' : styles.customSelectPlaceholder}`}
+                   title={selectedDeveloperName || 'Выберите застройщика'}
+                 >
+                   {selectedDeveloperName || 'Выберите застройщика'}
+                 </span>
+                 <span className={styles.stepSelectArrow} aria-hidden="true">▾</span>
+               </button>
+               {isDeveloperMenuOpen && (
+                 <div className={styles.customSelectMenu}>
+                   <button
+                     type="button"
+                     className={`${styles.customSelectOption} ${!selectedDeveloperName ? styles.customSelectOptionActive : ''}`}
+                     onClick={() => onSelectDeveloper(null)}
+                   >
+                     Выберите застройщика
+                   </button>
+                   {developers.map((developer) => (
+                     <button
+                       key={developer.developer_id}
+                       type="button"
+                       className={`${styles.customSelectOption} ${selectedDeveloperId === developer.developer_id ? styles.customSelectOptionActive : ''}`}
+                       onClick={() => onSelectDeveloper(developer.developer_id)}
+                     >
+                       {developer.developer_name}
+                     </button>
+                   ))}
+                   {!isLoadingDevelopers && developers.length === 0 && (
+                     <div className={styles.customSelectEmpty}>Список застройщиков пока пуст</div>
+                   )}
+                 </div>
+               )}
+             </div>
+             {isLoadingDevelopers && <span className={styles.selectHint}>Загружаем список застройщиков...</span>}
+             {!isLoadingDevelopers && developers.length === 0 && !developersError && (
+               <span className={styles.selectHint}>Список застройщиков пока пуст</span>
+             )}
+             {developersError && <span className={styles.error}>{developersError}</span>}
+             {errors.complexName && <span className={styles.error}>{errors.complexName}</span>}
+          </div>
+          <div className={`${styles.group} ${styles.stepSelectGroup}`}>
+            <label className={styles.label} htmlFor="complex">ЖК</label>
+            <div className={styles.customSelect} data-custom-select="complex">
+              <button
+                id="complex"
+                type="button"
+                className={`${styles.customSelectButton} ${errors.complex ? styles.selectError : ''} ${isComplexMenuOpen ? styles.customSelectButtonOpen : ''}`}
+                disabled={isLoadingComplexes || selectedDeveloperId == null}
+                onClick={() => setIsComplexMenuOpen(!isComplexMenuOpen)}
+              >
+                <span
+                  className={`${styles.customSelectValue} ${selectedComplexName ? '' : styles.customSelectPlaceholder}`}
+                  title={selectedComplexName || (selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК')}
+                >
+                  {selectedComplexName || (selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК')}
+                </span>
+                <span className={styles.stepSelectArrow} aria-hidden="true">▾</span>
+              </button>
+              {isComplexMenuOpen && (
+                <div className={styles.customSelectMenu}>
+                  <button
+                    type="button"
+                    className={`${styles.customSelectOption} ${!selectedComplexName ? styles.customSelectOptionActive : ''}`}
+                    onClick={() => onSelectComplex('')}
+                  >
+                    {selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК'}
+                  </button>
+                  {complexes.map((complex) => (
+                    <button
+                      key={complex.id}
+                      type="button"
+                      className={`${styles.customSelectOption} ${form.complex === String(complex.id) ? styles.customSelectOptionActive : ''}`}
+                      onClick={() => onSelectComplex(String(complex.id))}
+                    >
+                      {complex.company_name}
+                    </button>
+                  ))}
+                  {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && (
+                    <div className={styles.customSelectEmpty}>Для этого застройщика пока нет ЖК</div>
+                  )}
+                </div>
+              )}
+            </div>
+            {isLoadingComplexes && <span className={styles.selectHint}>Загружаем список ЖК...</span>}
+            {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && !complexesError && (
+              <span className={styles.selectHint}>Для этого застройщика пока нет ЖК</span>
+            )}
+            {complexesError && <span className={styles.error}>{complexesError}</span>}
+            {errors.complex && <span className={styles.error}>{errors.complex}</span>}
+          </div>
         </div>
       )}
 
@@ -415,6 +748,9 @@ export function CreatePosterForm() {
           const currentStepErrorMessages = fieldsUpToCurrentStep
             .map((field) => cumulativeErrors[field])
             .filter((message): message is string => !!message);
+          if (visibleSteps === 1 && addressConfirmationError) {
+            currentStepErrorMessages.push(addressConfirmationError);
+          }
           const hasCurrentStepErrors = validatedUpToStep >= visibleSteps && currentStepErrorMessages.length > 0;
 
           return visibleSteps < TOTAL_CREATE_POSTER_STEPS ? (

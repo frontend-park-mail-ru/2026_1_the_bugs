@@ -1,7 +1,7 @@
 import { useEffect, useState } from '@my-react/hooks';
 import { EditPosterForm } from '../../components/PosterForm/EditPosterForm/EditPosterForm';
 import styles from './EditPosterPage.module.css';
-import { getPosterByAlias } from '../../services/posters';
+import { getMyPosterByAlias } from '../../services/posters';
 import type { ApartmentDetails } from '../../types';
 import layout from '../../components/PosterPage/PosterPageLayout.module.css';
 import { useNavigate } from '@my-react/router-dom/hooks';
@@ -18,10 +18,10 @@ export function EditPosterPage({alias}:EditPosterProp) {
     useEffect(() => {
         const loadPoster = async () => {
           try {
-            const data = await getPosterByAlias(alias);
+            const data = await getMyPosterByAlias(alias);
             setPoster(data);
           } catch (e: any) {
-            setError(e?.message || 'Не удалось загрузить объявление');
+            setError('Не удалось загрузить объявление');
           } finally {
             setLoading(false);
           }

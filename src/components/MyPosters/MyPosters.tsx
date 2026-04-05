@@ -41,13 +41,11 @@ export function MyPosterList() {
     };
 
     const handleEdit = (alias: string) => {
-        navigate(`/posters/${encodeURIComponent(alias)}/edit`); // потом поменять на норм роут
+        navigate(`/posters/${encodeURIComponent(alias)}/edit`);
     };
 
     if (loading) return <div className={style.center}>Загрузка…</div>;
     if (error) return <div className={style.error}>{error}</div>;
-
-    // Demo card for style preview
 
         const anyMenuOpen =  menuOpen !== null;
     return (

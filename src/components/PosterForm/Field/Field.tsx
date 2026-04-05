@@ -12,7 +12,7 @@ interface InputProps {
   type?: 'text' | 'email';
 }
 
-export function Field({ field, label, value, errors, onChange, showErrorText = true, placeholder, type = 'text' }: InputProps) {
+export function Field({ field, label, value, errors, onChange, showErrorText = false, placeholder, type = 'text' }: InputProps) {
   const error = errors[field];
   const isAddressField = field === 'address';
   const className = [
