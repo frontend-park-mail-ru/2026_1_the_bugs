@@ -31,6 +31,7 @@ interface IPostersFilters {
     offset: number;
     /** Alias ЖК для фильтрации объявлений */
     utility_company?: string;
+    search?: string;
 }
 
 /**
@@ -48,6 +49,9 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     };
     if (filters.utility_company) {
         params["utility_company"] = filters.utility_company;
+    }
+    if (filters.search) {
+        params["search_query"] = filters.search;
     }
     const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;

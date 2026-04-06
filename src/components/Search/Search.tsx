@@ -1,32 +1,47 @@
+import { useState } from '@my-react/hooks';
 import style from './Search.module.css';
 
 interface SearchProps {
   value: string;
-  onInput: (value: string) => void;
-  onSearch: () => void;
+  onSearch: (value: string) => void;
 }
 
-/** Строка поиска по району или метро с кнопками фильтра и запуска поиска. */
-export function Search({ value, onInput, onSearch }: SearchProps) {
+export function Search({ value, onSearch }: SearchProps) {
+  const [search, setSearch] = useState(value)
+
+  const handleInput = (e: any) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSearchClick = () => {
+    onSearch(search);
+  };
+
   return (
     <div className={style.search}>
       <input
         className={style.input}
         type="text"
         placeholder="Поиск по району или метро"
-        value={value}
-        onInput={(e: any) => onInput(e.target.value)}
+        value={search}
+        onInput={handleInput}  // ✅ onChange вместо onInput!
       />
-      <button className={`${style.btn} ${style.accent}`} type="button" aria-label="Фильтр">
-        <img src="/svg/filter.svg" alt="" aria-hidden="true" draggable="false"/>
+      <button 
+        className={`${style.btn} ${style.accent}`} 
+        type="button" 
+        aria-label="Фильтр"
+        title="Фильтр"
+      >
+        <img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false}/>
       </button>
       <button
         className={`${style.btn} ${style.dark}`}
         type="button"
         aria-label="Поиск"
-        onClick={onSearch}
+        title="Поиск"
+        onClick={handleSearchClick}
       >
-        <img src="/svg/search.svg" alt="" aria-hidden="true" draggable="false"/>
+        <img src="/svg/search.svg" alt="" aria-hidden="true" draggable={false}/>
       </button>
     </div>
   );

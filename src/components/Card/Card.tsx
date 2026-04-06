@@ -8,6 +8,7 @@ interface CardProps {
 
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
 export function Card({ apartment }: CardProps) {
+  console.log(apartment)
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :
     apartment.rating >= 6 ? 'mid' :

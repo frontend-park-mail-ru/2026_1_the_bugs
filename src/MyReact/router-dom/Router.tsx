@@ -1,9 +1,10 @@
 import type { JSXElementType } from "@my-react/types/jsx"
 
-interface IRouterProps{
+interface IRouterProps {
     path: string
     children: JSXElementType
     currentPath: string
+    currentSearch?: string
 }
 
 export function matchPath(pattern: string, path: string) {
@@ -44,36 +45,71 @@ export function matchPath(pattern: string, path: string) {
     return { matches: true, params }
 }
 
-export function Router({path, children, currentPath}: IRouterProps){
-    const { matches, params } = matchPath(path, currentPath)
-    console.log(`Router ${path}:`, { currentPath, matches, params, children })
+export function parseSearch(search: string): Record<string, string> {
+    const params: Record<string, string> = {}
+    if (!search) return params
+    
+    const queryString = search.startsWith('?') ? search.slice(1) : search
+    const pairs = queryString.split('&')
+    
+    for (const pair of pairs) {
+        const [key, value] = pair.split('=')
+        if (key) {
+            params[decodeURIComponent(key)] = decodeURIComponent(value || '').replaceAll('+', ' ')
+        }
+    }
+    return params
+}
+
+export function Router({path, children, currentPath, currentSearch}: IRouterProps){
+    const { matches, params: pathParams } = matchPath(path, currentPath)
+    
+    
+    console.log(`Router ${path}:`, { 
+        currentPath, 
+        currentSearch, 
+        pathParams, 
+        children,
+    })
 
     if (!matches && path != "*") return null
 
     if (children.type === 'component') {
-        children.props = { ...children.props, ...params }
+        children.props = { 
+            ...children.props, 
+            ...pathParams, 
+        }
+        if (currentSearch){
+            const queryParams = parseSearch(currentSearch)
+            children.props = {
+                ...children.props,
+                ...queryParams
+
+            }
+            console.log(currentSearch)
+        }
         console.log(`render children ${path}`)
-        return (<div>{children}</div>)
+        return <div>{children}</div>
     }
 
-    return (<div>{children}</div>)
+    return <div>{children}</div>
 }
 
-interface ISwitchrProps{
+interface ISwitchrProps {
     children: any[]
     currentPath: string
 }
 
 export function Switch({ currentPath, children }: ISwitchrProps) {
-  const childrenArray = Array.isArray(children) ? children : [children];
-  
-  for (const child of childrenArray) {
-    if (child && child.type === 'component' && child.props.path) {
-      const { matches } = matchPath(child.props.path, currentPath);
-      if (matches || child.props.path == "*") {
-        return <div>{child}</div>;
-      }
+    const childrenArray = Array.isArray(children) ? children : [children];
+    
+    for (const child of childrenArray) {
+        if (child && child.type === 'component' && child.props.path) {
+            const { matches } = matchPath(child.props.path, currentPath);
+            if (matches || child.props.path == "*") {
+                return <div>{child}</div>;
+            }
+        }
     }
-  }
-  return null;
+    return null;
 }

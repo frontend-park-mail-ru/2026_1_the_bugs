@@ -18,6 +18,7 @@ import type { UserResponse } from '../types';
  */
 export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+   const [currentSearch, setCurrentSearch] = useState(window.location.search)
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
@@ -38,6 +39,7 @@ export function App() {
   useEffect(() => {
     const handler = () => {
       setCurrentPath(window.location.pathname);
+      setCurrentSearch(window.location.search);
     };
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);
@@ -46,7 +48,7 @@ export function App() {
   return (
     <main className="main">
       <div className="page">
-        <Switch key="root" currentPath={currentPath}>
+        <Switch key="root" currentPath={currentPath} >
           <Router currentPath={currentPath} path="/oauth/vk">
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="vk" key="OAuthVerifyPageVK" />
           </Router>
@@ -56,8 +58,8 @@ export function App() {
           <Router currentPath={currentPath} path="*">
             < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
               <Switch key="main" currentPath={currentPath}>
-                <Router currentPath={currentPath} path="/">
-                  <HomePage key="HomePage" />
+                <Router currentPath={currentPath} path="/" currentSearch={currentSearch}>
+                  <HomePage search_query="" key="HomePage" />
                 </Router>
                 <Router currentPath={currentPath} path="/company/{alias}">
                   <UtilityComplex alias="{alias}" key="CompanyPage" />
