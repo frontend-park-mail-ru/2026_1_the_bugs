@@ -51,7 +51,10 @@ export interface CreatePosterPayload {
 }
 
 
-export type CreatePosterResponse = ApartmentDetails;
+export type CreatePosterResponse = {
+  alias: string
+  id: string
+};
 
 export type CreatePosterStep = 1 | 2 | 3 | 4 | 5;
 
