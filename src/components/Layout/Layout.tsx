@@ -2,6 +2,7 @@ import { Header } from '../../components/Header/Header';
 import { AuthModal } from '../../components/AuthModal/AuthModal';
 import { useState } from "@my-react/hooks";
 import { authService } from '../../services/auth';
+import type { UserResponse } from 'src/types';
 
 interface LayoutProps {
   children: any;
@@ -9,9 +10,10 @@ interface LayoutProps {
   isAuthResolved: boolean;
   isAuthenticate: boolean;
   setIsAuthenticate: (isAuth: boolean) => void;
+  currentUser?: UserResponse | null;
 }
 
-export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate }: LayoutProps) {
+export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser }: LayoutProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
 
   const onLogoutClick = () => {
@@ -35,6 +37,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
     <div>
       <Header 
         currentPath={currentPath}
+        currentUser={currentUser}
         isAuthResolved={isAuthResolved}
         isAutenticated={isAuthenticate} 
         onLogoutClick={onLogoutClick} 

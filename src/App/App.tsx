@@ -6,11 +6,12 @@ import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';
 import { PosterPage } from '../pages/PosterPage';
 import { CreatePosterPage } from '../pages/CreatePosterPage/CreatePosterPage';
 import { Layout } from '../components/Layout/Layout';
-import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { MyPosterList } from '../components/MyPosters/MyPosters';
+import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
+import type { UserResponse } from '../types';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -20,12 +21,14 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const auth = await authService.isAuthenticated();
-        setIsAuthenticate(auth);
+        const user = await authService.getMe();
+        setCurrentUser(user);
+        setIsAuthenticate(true);
       } finally {
         setIsAuthResolved(true);
       }
@@ -52,7 +55,7 @@ export function App() {
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
-            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="Layout">
+            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/">
                   <HomePage key="HomePage" />
@@ -71,8 +74,10 @@ export function App() {
                 <Router currentPath={currentPath} path="/posters/{alias}">
                   <PosterPage alias="{alias}" key="PosterPage" />
                 </Router>
-                <Router currentPath={currentPath} path="/myposters">
-                  <MyPosterList key="MyPosterPage" />
+                <Router currentPath={currentPath} path="/my-posters">
+                  <ProtectedLayout path="/my-posters" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate}>
+                      <MyPosterList key="MyPosterPage" />
+                  </ProtectedLayout>
                 </Router>
                 <Router currentPath={currentPath} path="/profile">
                   <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">

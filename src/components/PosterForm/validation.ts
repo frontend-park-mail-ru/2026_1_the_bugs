@@ -76,6 +76,7 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     if (!roomsError && !allowedRooms.includes(data.roomCount)) {
       errors.roomCount = 'Выберите корректное количество комнат';
     }
+    console.log(data.roomCount)
 
     const areaRequiredError = required(data.area, 'Укажите площадь');
     if (areaRequiredError) errors.area = areaRequiredError;
@@ -98,6 +99,9 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     if (descriptionError) errors.description = descriptionError;
     if (!descriptionError && data.description.trim().length < 20) {
       errors.description = 'Описание должно быть не короче 20 символов';
+    }
+    if (!descriptionError && data.description.trim().length > 3000) {
+      errors.description = 'Описание должно быть короче 3000 символов';
     }
 
     const priceRequiredError = required(data.price, 'Укажите цену');

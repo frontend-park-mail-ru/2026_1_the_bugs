@@ -93,9 +93,22 @@ function jsx<PropsType extends ComponentPropsType>(
     }
 }
 function stableHash(obj: any): string {
-  return btoa(
-    JSON.stringify(obj, Object.keys(obj).sort())
-  ).slice(0, 8);
+    const computeHash = (str: string): string => {
+        let hash = 5381;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * 33) ^ str.charCodeAt(i);
+        }
+        return (hash >>> 0).toString(16).slice(0, 8);
+    };
+
+    try {
+        const json = JSON.stringify(obj, Object.keys(obj).sort());
+        return computeHash(json);
+    } catch (err) {
+        // fallback: строим строку из информации об ошибке и типа объекта
+        const fallbackStr = `error:${err ?? 'unknown'}:${typeof obj}:${String(obj)}`;
+        return computeHash(fallbackStr);
+    }
 }
 
 export type { JSX };

@@ -3,7 +3,6 @@ import type { ApartmentDetails } from './index';
 export interface UploadedImage {
   name: string;
   previewUrl: string;
-  // file can be null for images that already exist on the server
   file: File | null;
 }
 
@@ -14,6 +13,7 @@ export interface CreatePosterFormData {
   floorCount: string;
   flatNumber: string;
   complexName: string;
+  complex: string;
   roomCount: string;
   area: string;
   images: UploadedImage[];
@@ -31,7 +31,7 @@ export interface CreatePosterPayload {
     address: string;
     lat?: number; 
     lon?: number;   
-    city_id: number;           
+    city?: string;           
     metro_station_id?: number; 
     district?: string;          
     floor_count: number;       
@@ -46,6 +46,7 @@ export interface CreatePosterPayload {
     images: Array<{
         file: File;
         order: number;
+        url?: string;
     }>;
 }
 
@@ -63,6 +64,7 @@ export const INITIAL_CREATE_POSTER_FORM: CreatePosterFormData = {
   floorCount: '',
   flatNumber: '',
   complexName: '',
+  complex: '',
   roomCount: '',
   area: '',
   images: [],

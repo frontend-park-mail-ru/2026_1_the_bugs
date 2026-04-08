@@ -26,7 +26,7 @@ export function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [pageSize] = useState<number>(20);
+  const [pageSize] = useState<number>(12);
   const [page, setPage] = useState<number>(getPageFromUrl());
 
   const handleSearch = () => {
@@ -35,7 +35,7 @@ export function HomePage() {
 
   const fetchPosters = async (pageNumber: number) => {
     const offset = (pageNumber - 1) * pageSize;
-    const postersResp = await getPosters({ limit: pageSize, offset });
+    const postersResp = await getPosters({ limit: pageSize, offset: offset });
     setFilteredApartments(postersResp.posters);
     setTotalCount(postersResp.len ?? 0);
   };

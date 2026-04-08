@@ -4,6 +4,7 @@ import { useNavigate } from '@my-react/router-dom/hooks';
 import { getMyPosters } from '../../services/posters';
 import { apiService } from '../../services/apiClass';
 import style from './MyPosters.module.css';
+import appStyle from "../../App/App.module.css";
 import cardStyle from '../Card/Card.module.css';
 
 import type { MyPoster, } from '../../types';
@@ -41,13 +42,11 @@ export function MyPosterList() {
     };
 
     const handleEdit = (alias: string) => {
-        navigate(`/posters/${encodeURIComponent(alias)}/edit`); // потом поменять на норм роут
+        navigate(`/posters/${encodeURIComponent(alias)}/edit`);
     };
 
     if (loading) return <div className={style.center}>Загрузка…</div>;
     if (error) return <div className={style.error}>{error}</div>;
-
-    // Demo card for style preview
 
         const anyMenuOpen =  menuOpen !== null;
     return (
@@ -56,6 +55,16 @@ export function MyPosterList() {
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
             )}
             <h1 className={style.main}>Мои объявления</h1>
+            <button
+                className={`${appStyle.primary} ${style.createBtn} `}
+                type="button"
+                aria-label="Создать объявление"
+                onClick={() => {
+                    navigate('/posters/create');
+                }}
+              >
+                + Создать новое обьявление
+              </button>
             {posters.length === 0 ? (
                 <div className={style.nothing}>У вас пока нет объявлений</div>
             ) : (
@@ -81,6 +90,7 @@ export function MyPosterList() {
                                         <span>{apt.area.toString()} м²</span>
                                     </div>
                                     <div className={cardStyle.footer}>
+                                        <span>{apt.category.name}</span>
                                         <strong>{apt.price.toLocaleString()} ₽</strong>
                                     </div>
                                 </div>

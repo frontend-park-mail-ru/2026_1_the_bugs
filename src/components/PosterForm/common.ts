@@ -27,7 +27,7 @@ const ROOM_COUNT_TO_FLAT_CATEGORY_ID: Record<string, number> = {
   '6+': 7,
 };
 export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
-  'Студия': 'Студия',
+  'Студия': '0',
   '1-комн.': '1',
   '2-комн.': '2',
   '3-комн.': '3',
@@ -35,14 +35,18 @@ export const ROOM_COUNT_TO_ROOM_LABEL: Record<string, string> = {
   '5-комн.': '5',
   '6+ комн.': '6+',
 };
+
 export const FEATURE_OPTIONS = [
   { value: 'wifi', label: 'Wi-Fi' },
   { value: 'parking', label: 'Парковка' },
   { value: 'conditioner', label: 'Кондиционер' },
-  { value: 'dishwasher', label: 'Посудомоечная машина' },
-  { value: 'balcony', label: 'Балкон' },
-  { value: 'wardrobe', label: 'Гардеробная' },
-  { value: 'pets', label: 'Можно с животными' }
+  { value: 'dishwasher', label: 'Посудомойка' },
+  { value: 'elevator', label: 'Лифт' },
+  { value: 'concierge', label: 'Консьерж' },
+  { value: 'tv', label: 'Телевизор' },
+  { value: 'fridge', label: 'Холодильник' },
+  { value: 'microwave', label: 'Микроволновка' },
+  { value: 'stove', label: 'Электроплита' },
 ];
 
 export const STEP_ERROR_FIELDS: Record<CreatePosterStep, CreatePosterField[]> = {
@@ -62,37 +66,72 @@ export function collectErrorsUpToStep(step: CreatePosterStep, data: CreatePoster
   }
   return nextErrors;
 }
+function isDistrictChunk(value: string) {
+  const normalized = value.toLowerCase();
+  return normalized.includes('район') || normalized.includes('р-н') || normalized.includes('мкр');
+}
+
+
+function splitAddressParts(fullAddress: string) {
+  const normalizedFullAddress = fullAddress.trim();
+  const parts = fullAddress
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return { city: undefined as string | undefined, district: undefined as string | undefined, address: '' };
+  }
+
+  if (parts.length === 1) {
+    return { city: undefined as string | undefined, district: undefined as string | undefined, address: normalizedFullAddress };
+  }
+
+  const city = parts[0];
+  let district: string | undefined;
+  let rest = parts.slice(1);
+
+  if (rest[0] && isDistrictChunk(rest[0])) {
+    district = rest[0];
+    rest = rest.slice(1);
+  }
+
+  return {
+    city: city || undefined,
+    district,
+    address: rest.length > 0 ? rest.join(', ') : normalizedFullAddress
+  };
+}
 
 export function mapToPayload(
   form: CreatePosterFormData,
-  coordinates: { latitude: number; longitude: number } | null
+  coordinates: { latitude: number; longitude: number } | null,
 ): CreatePosterPayload {
-  let roomCountNumber
-  if (form.roomCount == 'Студия'){
-    roomCountNumber = 0
-  }else{
-     roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
-  }
+  const parsedAddress = splitAddressParts(form.address.trim());
+  //const roomCountNumber = form.roomCount === '6+' ? 6 : Number(form.roomCount);
   const flatNumber = form.flatNumber.trim() ? Number(form.flatNumber) : 0;
-  const imagePayload: CreatePosterPayload['images'] = form.images
-    .map((image, index) => ({ image, index }))
-    .filter(({ image }) => image.file !== null)
-    .map(({ image, index }) => ({ file: image.file as File, order: index + 1 }));
+  const imagePayload: CreatePosterPayload['images'] = form.images.map((image, index) => ({
+    file: image.file,
+    order: index + 1,
+    url: image?.previewUrl,
+  })) as CreatePosterPayload['images'];
 
   return {
     category_alias: form.housingType.trim(),
-    address: form.address.trim(),
+    ...(parsedAddress.city ? { city: parsedAddress.city } : {}),
+    district: parsedAddress.district,
+    address: parsedAddress.address,
     ...(coordinates ? { lat: coordinates.latitude, lon: coordinates.longitude } : {}),
     price: Number(form.price),
     area: Number(form.area),
     floor_count: Number(form.floorCount),
     description: form.description.trim(),
     features: form.features,
-    flat_category_id: ROOM_COUNT_TO_FLAT_CATEGORY_ID[form.roomCount.trim()] || 1,
+    flat_category_id: ROOM_COUNT_TO_FLAT_CATEGORY_ID[form.roomCount],
     flat_number: flatNumber,
     flat_floor: Number(form.floor),
     images: imagePayload,
-    city_id: 1, // TODO: выбрать город
+    company_id: form.complex ? Number(form.complex) : undefined,
+    city: parsedAddress.city,
   };
 }
-

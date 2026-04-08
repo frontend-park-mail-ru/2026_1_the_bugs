@@ -1,6 +1,7 @@
 import { apiService } from "./apiClass";
 import { type ErrorResponse, type IOAuthFlow, type LoginResponse } from "../types/api";
 import type { Profile } from '../types';
+import type { UserResponse } from "../types";
 
 /**
  * Сервис аутентификации, управляющий жизненным циклом JWT-токена с автоматическим обновлением.
@@ -156,7 +157,7 @@ class AuthService {
         );
         apiService.setToken(res.access_token);
     }
-    async getMe(token?: string) {
+    async getMe(token?: string): Promise<UserResponse> {
         return await this.WithRefresh(async () => {
             const t = token ?? apiService.getToken();
             const data = await apiService.get(

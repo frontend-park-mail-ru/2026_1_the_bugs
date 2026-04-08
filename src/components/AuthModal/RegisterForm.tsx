@@ -1,5 +1,6 @@
 import { useState, useEffect } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
+import appStyle from "../../App/App.module.css";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
@@ -326,9 +327,9 @@ export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildP
           </div>
         </div>
 
-        <button 
+        <button style={{'width':'60%'}}
           type="submit" 
-          className={style.primary} 
+          className={appStyle.primary} 
           disabled={isLoading}
         onClick={isFirstPage ? nextPage : handleRegister}
         >
@@ -336,8 +337,8 @@ export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildP
         </button>
           
       </form>
-      <button 
-        className={style.secondary} 
+      <button style={{'width':'60%'}}
+        className={appStyle.secondary} 
         onClick={isFirstPage ? ()=>{toggleMode('login')} : prevPage} 
         disabled={isLoading}
       >

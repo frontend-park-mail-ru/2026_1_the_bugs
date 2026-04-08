@@ -70,7 +70,7 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async put(endpoint: string, headers: Record<string, any>, data: any) {
+    async put(endpoint: string, data: any, headers: Record<string, any>) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
@@ -90,7 +90,7 @@ class ApiService {
      * @returns Promise с распарсенными JSON-данными ответа или null для 204.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
-    async delete(endpoint: string, headers: Record<string, any>) {
+    async delete(endpoint: string, headers: Record<string, any> = {}) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'DELETE',

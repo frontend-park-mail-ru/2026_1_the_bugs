@@ -1,5 +1,6 @@
 import { useState, useEffect } from '@my-react/hooks';
 import style from "./AuthModal.module.css";
+import appStyle from "../../App/App.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -173,17 +174,17 @@ export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildPro
               </div>
             </div>
 
-            <button 
+            <button style={{'width':'60%'}}
               type="submit" 
-              className={style.primary} 
+              className={appStyle.primary} 
               disabled={isLoading}
             >
               {isLoading ? 'Загрузка...' :  'Войти' }
             </button>
          
           </form>
-          <button 
-            className={style.secondary} 
+          <button  style={{'width':'60%'}}
+            className={appStyle.secondary} 
             onClick={()=>toggleMode('register')} 
             disabled={isLoading}
           >
