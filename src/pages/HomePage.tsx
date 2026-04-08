@@ -45,6 +45,9 @@ export function HomePage({search_query}: Props) {
     console.log(`Fetching offset ${offset}, search: "${searchVal}"`);
     
     try {
+      if (!hasMore){
+        return
+      }
       const postersResp = await getPosters({ 
         limit: pageSize, 
         offset, 
@@ -63,6 +66,8 @@ export function HomePage({search_query}: Props) {
       setApartments(newApartments);
       setTotalCount(postersResp.len || 0);
       setHasMore(true);
+    }catch{
+      setHasMore(false);
     } finally {
       setIsLoading(false);
       setIsFetchingMore(false);
