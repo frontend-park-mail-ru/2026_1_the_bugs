@@ -24,11 +24,11 @@
 }
 
 .cardsGrid {
+    margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 300px));
+    gap: 18px;
     justify-content: center;
-    margin: 0 auto;
 }
 
 @media (max-width: 768px) {
