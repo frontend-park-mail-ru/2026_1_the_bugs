@@ -138,8 +138,9 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                     Мои объявления
                   </button>
                   <div className={style.menuSeparator} />
-                  <button
-                    className={`${style.menuItem} ${style.menuDelete} fontHero`}
+                  < button
+                    style={{'display':'flex'}}
+                    className={`${style.menuItem} fontHero`}
                     type="button"
                     onClick={() => {
                       closeMenu();

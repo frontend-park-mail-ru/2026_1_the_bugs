@@ -167,7 +167,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  max-width: calc(4 * 250px + 3 * 18px);
+  /* max-width: calc(4 * 250px + 3 * 18px); */
   width: 100%;
   margin: 0 auto;
 }
