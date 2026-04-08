@@ -201,10 +201,8 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
     };
   }, []);
 
-  // Handle initialCoordinates after map is ready
   useEffect(() => {
     if (!mapController) return;
-    // read initial coordinates from global placeholder if set by parent
     const raw: any = (window as any).__INITIAL_OSM_COORDS__;
     if (!raw || typeof raw.lat !== 'number' || typeof raw.lon !== 'number') return;
 

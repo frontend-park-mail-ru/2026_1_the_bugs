@@ -25,14 +25,24 @@
 
 .cardsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
     justify-content: center;
     margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: repeat(1, minmax(180px, 1fr));
+    justify-items: center; 
+    align-items: center; 
+  }
+}
+
 .myCard {
     position: relative;
+    max-width: 300px;
+    width: 100%;
 }
 
 .menuBtn {

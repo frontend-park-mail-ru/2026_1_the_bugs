@@ -110,6 +110,11 @@ export function validateStep(step: CreatePosterStep, data: CreatePosterFormData)
     const priceError = positiveNumber(data.price, 'Цена должна быть положительным числом');
     if (priceError) errors.price = priceError;
 
+    if (Number(data.price) > 10000000){
+      errors.price = "Слишком большая цена";
+    }
+  
+
     const previousStepErrors = [1, 2, 3, 4]
       .map((s) => validateStep(s as CreatePosterStep, data).errors)
       .reduce((acc, curr) => ({ ...acc, ...curr }), {} as Partial<Record<CreatePosterField, string>>);

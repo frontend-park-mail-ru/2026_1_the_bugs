@@ -1,8 +1,7 @@
 
 import { useEffect, useState } from '@my-react/hooks';
 import { useNavigate } from '@my-react/router-dom/hooks';
-import { getMyPosters } from '../../services/posters';
-import { apiService } from '../../services/apiClass';
+import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
 import appStyle from "../../App/App.module.css";
 import cardStyle from '../Card/Card.module.css';
@@ -31,14 +30,9 @@ export function MyPosterList() {
         handleGetMyPosters();
     }, []);
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Удалить объявление?')) return;
-        try {
-            await apiService.delete(`/posters/${id}`, {});
-            handleGetMyPosters();
-        } catch (e: any) {
-            alert(e?.message || 'Ошибка удаления');
-        }
+    const handleDelete = async (alias: string) => {
+        await deletePosterByAlias(alias)
+        await handleGetMyPosters();
     };
 
     const handleEdit = (alias: string) => {
@@ -123,7 +117,7 @@ export function MyPosterList() {
                                             className={`${style.menuItem} ${style.menuDelete} fontHero`}
                                             onClick={() => {
                                                 setMenuOpen(null);
-                                                handleDelete(apt.id);
+                                                handleDelete(apt.alias);
                                             }}
                                         >
                                             Удалить

@@ -31,6 +31,7 @@ interface IPostersFilters {
     offset: number;
     /** Alias ЖК для фильтрации объявлений */
     utility_company?: string;
+    search?: string;
 }
 
 /**
@@ -48,6 +49,9 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     };
     if (filters.utility_company) {
         params["utility_company"] = filters.utility_company;
+    }
+    if (filters.search) {
+        params["search_query"] = filters.search;
     }
     const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;
@@ -91,6 +95,24 @@ export async function getPosterByAlias(alias: string): Promise<ApartmentDetails>
     );
     return resp.poster;
 }
+
+
+export async function deletePosterByAlias(alias: string): Promise<ApartmentDetails> {
+    const encodedAlias = encodeURIComponent(alias);
+    const resp = await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        const resp: { poster: ApartmentDetails } = await apiService.delete(
+            `/posters/flat/${encodedAlias}`,
+             {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    })
+    return resp.poster;
+}
+
 
 /**
  * Создает новое объявление о квартире.
@@ -140,7 +162,7 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
     return await authService.WithRefresh(async () => {
         const token = apiService.getToken();
 
-        const resp: CreatePosterResponse = await apiService.post(
+        const resp: {poster: CreatePosterResponse} = await apiService.post(
             '/posters/flat',
             formData,
             {
@@ -148,7 +170,7 @@ export async function createPoster(payload: CreatePosterPayload): Promise<Create
                 'Accept': 'application/json',
             },
         );
-        return resp
+        return resp.poster
     });
 }
 

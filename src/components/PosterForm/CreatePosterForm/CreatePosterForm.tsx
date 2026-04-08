@@ -111,11 +111,6 @@ export function CreatePosterForm() {
   const [addressLookupState, setAddressLookupState] = useState<AddressLookupState | null>(null);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(false);
   const [addressConfirmationError, setAddressConfirmationError] = useState<string | null>(null);
-  const shouldHighlightAddressAsInvalid = addressConfirmationError === 'Укажите корректный адрес';
-  const shouldHighlightAddressConfirmation = addressConfirmationError === 'Подтвердите адрес, чтобы перейти к следующему шагу';
-  const addressFieldErrors = shouldHighlightAddressAsInvalid
-    ? { ...errors, address: addressConfirmationError }
-    : errors;
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
@@ -175,6 +170,7 @@ export function CreatePosterForm() {
   };
 
   const onAddressPickedFromMap = (value: string) => {
+    setIsSubmitting(true);
     setIsAddressManualInput(false);
     setIsAddressConfirmed(false);
     setAddressConfirmationError(null);
@@ -184,10 +180,11 @@ export function CreatePosterForm() {
   };
 
   const onResolveTypedAddress = (query: string, suggestion: LeafletAddressSuggestion | null) => {
-
+    setIsSubmitting(false)
     const normalizedCurrent = normalizeAddressForCompare(formDraft.address);
     const normalizedQuery = normalizeAddressForCompare(query);
     console.log("Resolving typed address", { query, suggestion, normalizedCurrent, normalizedQuery });
+    
     if (!normalizedCurrent || normalizedCurrent !== normalizedQuery) {
       return;
     }
@@ -355,11 +352,10 @@ export function CreatePosterForm() {
     const nextErrors = collectErrorsUpToStep(visibleSteps, formDraft);
     let addressError: string | null = null;
 
-    if (visibleSteps === 1 && !nextErrors.address) {
+    if (!nextErrors.address) {
       const normalizedCurrentAddress = normalizeAddressForCompare(form.address);
       const isLookupActual =
-        !!addressLookupState
-        && normalizeAddressForCompare(addressLookupState.query) === normalizedCurrentAddress;
+        !!addressLookupState;
       const hasAddressToConfirm =
         !!addressSuggestionCandidate
         && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress);
@@ -399,8 +395,9 @@ export function CreatePosterForm() {
       const payload = mapToPayload(formDraft, coordinates);
       const response = await createPoster(payload);
       const alias = response.alias || '';
+      console.log(response)
+      setCreatedAlias(alias);
       setIsPublished(true);
-      setCreatedAlias(alias || null);
     } catch (error: any) {
       setSubmitError(error?.message || 'Не удалось опубликовать объявление');
     } finally {
@@ -442,7 +439,6 @@ export function CreatePosterForm() {
             <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
               {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
                 const isActive = form.housingType === key;
-                console.log('Rendering housing option:', { key, option, index });
                 return (
                   <button
                     key={`housing-option-${index.toString()}`}
@@ -471,13 +467,13 @@ export function CreatePosterForm() {
               field="address"
               label="Адрес"
               value={form.address}
-              errors={addressFieldErrors}
+              errors={errors}
               onChange={(_, value) => onAddressInput(value)}
               showErrorText={false}
               placeholder="Например: Москва, ул. Ленина, 10"
             />
             {addressSuggestionCandidate && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress) && (
-              <div className={`${styles.addressSuggestion} ${shouldHighlightAddressConfirmation ? styles.addressSuggestionError : ''}`}>
+              <div className={`${styles.addressSuggestion} ${addressConfirmationError ? styles.addressSuggestionError : ''}`}>
                 <p className={styles.addressSuggestionTitle}>Мы определили адрес. Подтвердите, что это ваш адрес:</p>
                 <div className={styles.addressSuggestionGrid}>
                   {addressSuggestionCandidate.suggestion.city && (
@@ -748,15 +744,15 @@ export function CreatePosterForm() {
           const currentStepErrorMessages = fieldsUpToCurrentStep
             .map((field) => cumulativeErrors[field])
             .filter((message): message is string => !!message);
-          if (visibleSteps === 1 && addressConfirmationError) {
+          if (addressConfirmationError) {
             currentStepErrorMessages.push(addressConfirmationError);
           }
           const hasCurrentStepErrors = validatedUpToStep >= visibleSteps && currentStepErrorMessages.length > 0;
 
           return visibleSteps < TOTAL_CREATE_POSTER_STEPS ? (
           <div className={styles.nextButtonWrap}>
-            <button className={`${styles.button} ${styles.buttonPrimary}`} type="button" onClick={onNext}>
-              Далее
+            <button className={`${styles.button} ${styles.buttonPrimary}`} type="button" onClick={onNext} disabled={isSubmitting}>
+              {!isSubmitting ? 'Далее': 'Подождите...'}
             </button>
             {hasCurrentStepErrors && (
               <div className={styles.errorHintWrap}>

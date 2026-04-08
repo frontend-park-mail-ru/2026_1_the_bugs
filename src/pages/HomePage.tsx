@@ -3,71 +3,109 @@ import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { type Apartment } from '../types';
-import Pagination from '../components/Pagination/Pagination';
+import { useNavigate } from '@my-react/router-dom/hooks';
 
+ const updatePageSize = () => {
+      console.log(window.innerWidth)
+      const width = window.innerWidth;
+      if (width >= 2400){
+        return 20;
+      }
+      if (width >= 1400) {
+        return (12);
+      } else if (width >= 1000) {
+        return(9);
+      } else if (width >= 768) {
+        return(6);
+      } else {
+        return(4);
+      }
+};
 
-function getPageFromUrl(): number {
-  try {
-      const params = new URLSearchParams(window.location.search);
-      const p = parseInt(params.get('page') ?? '1', 10);
-      return isNaN(p) || p < 1 ? 1 : p;
-    } catch {
-      return 1;
-    }
+interface Props{
+  search_query: string;
 }
 
+export function HomePage({search_query}: Props) {
+  const navigate = useNavigate()
+  const [searchQuery, setSearchQuery] = useState(search_query);
+  const [apartments, setApartments] = useState<Apartment[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(updatePageSize());
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-/**
- * Главная страница приложения.
- * Отображает шапку, герой-секцию и список квартир.
- */
-export function HomePage() {
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredApartments, setFilteredApartments] = useState<Apartment[] | undefined>(undefined);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [pageSize] = useState<number>(12);
-  const [page, setPage] = useState<number>(getPageFromUrl());
-
-  const handleSearch = () => {
-    // kept for future client-side search
-  };
-
-  const fetchPosters = async (pageNumber: number) => {
-    const offset = (pageNumber - 1) * pageSize;
-    const postersResp = await getPosters({ limit: pageSize, offset: offset });
-    setFilteredApartments(postersResp.posters);
-    setTotalCount(postersResp.len ?? 0);
-  };
-
-  useEffect(() => { fetchPosters(page); }, [page]);
-
-  const handlePageChange = (p: number) => {
-    setPage(p);
+  const fetchData = async (searchVal: string = '', append = false) => {
+    if (isLoading || (!append && apartments.length > 0)) return;
+    
+    setIsLoading(true);
+    setIsFetchingMore(true);
+    const offset = append ? apartments.length : 0;
+    console.log(`Fetching offset ${offset}, search: "${searchVal}"`);
+    
     try {
-      const params = new URLSearchParams(window.location.search);
-      params.set('page', String(p));
-      const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : '');
-      window.history.replaceState(null, '', newUrl);
-    } catch {
-      // ignore
+      if (!hasMore){
+        return
+      }
+      const postersResp = await getPosters({ 
+        limit: pageSize, 
+        offset, 
+        search: searchVal 
+      });
+      if (postersResp.posters.length == 0){
+        setHasMore(false)
+        return
+      }
+
+      const newApartments = append 
+        ? [...apartments, ...postersResp.posters] 
+        : postersResp.posters;
+        
+      
+      setApartments(newApartments);
+      setTotalCount(postersResp.len || 0);
+      setHasMore(true);
+    }catch{
+      setHasMore(false);
+    } finally {
+      setIsLoading(false);
+      setIsFetchingMore(false);
     }
   };
+
+    const handleSearch = (searchVal: string) => {
+    setSearchQuery(searchVal);
+    
+    const params = new URLSearchParams(window.location.search);
+    if (searchVal) {
+      params.set('search_query', searchVal);
+    } else {
+      params.delete('search_query');
+    }
+    navigate(`${window.location.pathname}?${params.toString()}`)
+    setApartments([]);
+    setHasMore(true);
+    fetchData(searchVal, false);
+  };
+
+  useEffect(() => {
+    fetchData(searchQuery, false);
+  }, [searchQuery]);
 
   return (
     <div>
-      <Hero key="hero"
+      <Hero 
         searchValue={searchQuery}
-        onSearchInput={setSearchQuery}
         onSearch={handleSearch}
       />
-      { filteredApartments && <CardList key="card_list" apartments={filteredApartments} />}
-
-      <Pagination
-        page={page}
-        total={totalCount}
+      
+      <CardList
         pageSize={pageSize}
-        onPageChange={handlePageChange}
+        apartments={apartments} 
+        isFetchingMore={isFetchingMore}
+        hasMore={hasMore}
+        onLoadMore={() => fetchData(searchQuery, true)}
       />
     </div>
   );
