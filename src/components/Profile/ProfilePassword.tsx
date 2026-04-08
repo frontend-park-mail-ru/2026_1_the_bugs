@@ -16,13 +16,12 @@ interface ProfilePasswordProps {
 }
 
 interface PasswordFormState {
-	currentPassword: string;
 	newPassword: string;
 	confirmPassword: string;
 	code: string;
 }
 
-type PasswordField = 'currentPassword' | 'newPassword' | 'confirmPassword' | 'code';
+type PasswordField = 'newPassword' | 'confirmPassword' | 'code';
 type PasswordStep = 'form' | 'verify' | 'success';
 
 const CODE_RESEND_SECONDS = 60;
@@ -41,7 +40,6 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const [formData, setFormData] = useState<PasswordFormState>({
-		currentPassword: '',
 		newPassword: '',
 		confirmPassword: '',
 		code: '',
@@ -92,39 +90,29 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 	const handlePasswordFormSubmit = async (event: any) => {
 		event.preventDefault();
 
-		if (formData.currentPassword === '') {
-			setSingleFieldError('currentPassword', 'Введите текущий пароль');
-			return;
-		}
-
 		let result = validateConfirmPassword(formData.newPassword, formData.confirmPassword);
 		if (!applyValidationResult(result, setError, setFieldHighlights)) return;
 
 		result = validatePassword(formData.newPassword);
 		if (!applyValidationResult(result, setError, setFieldHighlights)) return;
 
-		if (formData.currentPassword === formData.newPassword) {
-			setError('Новый пароль должен отличаться от текущего');
-			setFieldHighlights({ currentPassword: true, newPassword: true });
-			return;
-		}
-
 		setIsLoading(true);
 		clearFeedback();
 
 		try {
-			await authService.login({ email, password: formData.currentPassword });
+			
 			await authService.sendCode({ email });
 			setStep('verify');
+			
 			setTimerRestartKey(timerRestartKey + 1);
 			setSuccessMessage('Код отправлен на вашу почту');
 		} catch (e: any) {
 			const err = e as ErrorResponse;
 			if (err.status === 400 || err.status === 401) {
-				setSingleFieldError('currentPassword', 'Текущий пароль введен неверно');
+				setError('Пользователь не найден');;
 			} else if (err.status === 429) {
 				setError('Слишком много попыток. Попробуйте позже');
-				setFieldHighlights({ currentPassword: true });
+				setFieldHighlights({ newPassword: true, confirmPassword: true });
 			} else {
 				setError(err?.data?.details || err?.message || 'Не удалось отправить код подтверждения');
 			}
@@ -150,7 +138,6 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 			setStep('success');
 			setSuccessMessage('Пароль успешно обновлен');
 			setFormData({
-				currentPassword: '',
 				newPassword: '',
 				confirmPassword: '',
 				code: '',
@@ -207,15 +194,6 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 			return;
 		}
 
-		if (field === 'currentPassword') {
-			if (value === '') {
-				setSingleFieldError('currentPassword', 'Введите текущий пароль');
-				return;
-			}
-			clearFeedback();
-			return;
-		}
-
 		if (field === 'code') {
 			if (value.trim() === '') {
 				setSingleFieldError('code', 'Введите код из письма');
@@ -224,6 +202,7 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 			clearFeedback();
 		}
 	};
+	console.log(step)
 
 	const handleCloseVerifyModal = () => {
 		setStep('form');
@@ -233,53 +212,9 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 		});
 		clearFeedback();
 	};
-
-	if (step === 'success') {
-		return (
-			<section className={style.form}>
-				<p className={style.successText}>{successMessage}</p>
-				<button
-					type="button"
-					className={style.saveBtn}
-					onClick={() => {
-						clearFeedback();
-						setStep('form');
-					}}
-				>
-					Изменить еще раз
-				</button>
-			</section>
-		);
-	}
-
 	return (
 		<div>
 			<form className={style.form} onSubmit={handlePasswordFormSubmit}>
-				<label htmlFor="currentPassword" className={style.label}>Введите текущий пароль:</label>
-				<div className={style.passwordWrapper}>
-					<input
-						id="currentPassword"
-						className={style.input}
-						style={getHighlightStyle(fieldHighlights.currentPassword)}
-						type={showCurrentPassword ? 'text' : 'password'}
-						value={formData.currentPassword}
-						onInput={(e: any) => handleInputWithValidation('currentPassword', e.target.value)}
-						placeholder="Текущий пароль"
-					/>
-					<img
-						src="/svg/eye.svg"
-						alt="Показать пароль"
-						className={`${style.eyeIcon} ${showCurrentPassword ? style.eyeIconActive : ''}`}
-						draggable="false"
-						onMouseDown={(e: any) => e.preventDefault()}
-						onClick={(e: any) => {
-							e.preventDefault();
-							e.stopPropagation();
-							setShowCurrentPassword(!showCurrentPassword);
-						}}
-					/>
-				</div>
-
 				<label htmlFor="newPassword" className={style.label}>Введите новый пароль:</label>
 				<div className={style.passwordWrapper}>
 					<input
@@ -340,7 +275,7 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 				</button>
 			</form>
 
-			<Modal isOpen={step === 'verify'} onClose={handleCloseVerifyModal}>
+			<Modal isOpen={step === 'verify'}  key="VerifyModal" onClose={handleCloseVerifyModal}>
 				<div>
 					<h2 className={authModalStyle.title}>Смена пароля</h2>
 
@@ -380,6 +315,19 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 						{!isResendActive ? `Отправить ${tick} сек.` : 'Отправить еще раз'}
 					</button>
 
+				</div>
+			</Modal>
+			<Modal isOpen={step === 'success'} key="SuccessModal" onClose={handleCloseVerifyModal}>
+				<div>
+					<p className={authModalStyle.title}>Пароль успешно изменен!</p>
+					
+					<button
+						type="button"
+						className={authModalStyle.primary}
+						onClick={()=>setStep('form')}
+					>
+						Назад
+					</button>
 				</div>
 			</Modal>
 		</div>
