@@ -18,7 +18,7 @@
 
 .input {
   border: none;
-  background: transparent;
+  background: none;
   padding: 10px 16px;
   font-size: 14px;
   outline: none;
@@ -26,8 +26,11 @@
   min-width: 0;
   width: 100%;
   overflow: hidden;
+  box-shadow: none;
 }
-
+.input:focus{
+  box-shadow: none;
+}
 .btn {
   width: 40px;
   height: 40px;

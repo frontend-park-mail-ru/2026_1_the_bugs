@@ -1,5 +1,6 @@
 import { apiService } from "./apiClass";
 import { type ErrorResponse, type IOAuthFlow, type LoginResponse } from "../types/api";
+import type { Profile } from '../types';
 import type { UserResponse } from "../types";
 
 /**
@@ -165,6 +166,21 @@ class AuthService {
                 { 'Authorization': `Bearer ${t}`, 'Accept': 'application/json' }
             );
             return data;
+        });
+    }
+
+    async updateMeProfile(payload: FormData): Promise<Profile> {
+        return await this.WithRefresh(async () => {
+            const token = apiService.getToken();
+            const data = await apiService.put(
+                '/user/me/profile',
+                {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                },
+                payload,
+            );
+            return data as Profile;
         });
     }
 

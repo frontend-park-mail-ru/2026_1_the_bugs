@@ -115,7 +115,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
               {isMenuOpen && (
                 <div className={style.menuPopup}>
                   <button
-                    className={style.menuItem}
+                    className={`${style.menuItem} fontHero`}
                     type="button"
                     onClick={() => {
                       closeMenu();
@@ -126,7 +126,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   </button>
                   <div className={style.menuSeparator} />
                   <button
-                    className={style.menuItem}
+                    className={`${style.menuItem} fontHero`}
                     type="button"
                     onClick={() => {
                       closeMenu();
@@ -139,8 +139,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   </button>
                   <div className={style.menuSeparator} />
                   <button
-                    style={{'display': 'flex'}}
-                    className={style.menuItem}
+                    className={`${style.menuItem} ${style.menuDelete} fontHero`}
                     type="button"
                     onClick={() => {
                       closeMenu();

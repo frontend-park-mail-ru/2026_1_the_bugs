@@ -10,6 +10,7 @@ import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
 import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
+import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
 
 /**
@@ -76,6 +77,11 @@ export function App() {
                 <Router currentPath={currentPath} path="/my-posters">
                   <ProtectedLayout path="/my-posters" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate}>
                       <MyPosterList key="MyPosterPage" />
+                  </ProtectedLayout>
+                </Router>
+                <Router currentPath={currentPath} path="/profile">
+                  <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">
+                      <Profile alias="{alias}" key="ProfilePage" />
                   </ProtectedLayout>
                 </Router>
               </Switch>

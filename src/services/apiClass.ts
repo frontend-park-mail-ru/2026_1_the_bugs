@@ -64,9 +64,9 @@ class ApiService {
     }
 
     /**
-     * Выполняет PUT-запрос с JSON-данными.
+     * Выполняет PUT-запрос с JSON или FormData-данными.
      * @param endpoint - Путь к API-эндпоинту (например, '/users/1').
-     * @param data - JSON-данные для отправки в теле запроса.
+     * @param data - Данные для отправки в теле запроса.
      * @returns Promise с распарсенными JSON-данными ответа.
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
@@ -74,8 +74,8 @@ class ApiService {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
-                headers:headers,
-                body: data,
+               headers:headers,
+                body: data instanceof FormData ? data : JSON.stringify(data),
             });
             return this.handleResponse(response);
         } catch (error) {
