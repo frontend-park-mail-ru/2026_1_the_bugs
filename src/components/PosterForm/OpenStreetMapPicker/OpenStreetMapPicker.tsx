@@ -159,12 +159,12 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         setMapController(localController);
 
         // If initial coordinates provided via props, set marker + view
-        try {
-          const initCoords = (window as any).__INITIAL_OSM_COORDS__;
-          // prefer prop-driven initialCoordinates if provided; otherwise none
-        } catch (err) {
-          // noop
-        }
+        // try {
+        //   const initCoords = (window as any).__INITIAL_OSM_COORDS__;
+        //   // prefer prop-driven initialCoordinates if provided; otherwise none
+        // } catch (err) {
+        //   // noop
+        // }
 
         map.on('click', async (e: any) => {
           const lat = e.latlng.lat;

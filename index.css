@@ -189,7 +189,7 @@ img {
   }
 }
 
-.input {
+input {
   background: var(--card);
   border-radius: var(--radius-L);
   box-shadow: var(--shadow);
@@ -198,10 +198,11 @@ img {
   padding: 10px 16px;
   font-size: 14px;
   outline: none;
+  font-family: "Hero", system-ui, sans-serif;
   color: var(--text);
 }
 
-.input:focus {
+input:focus {
   box-shadow: var(--shadow-accent);
 }
 
