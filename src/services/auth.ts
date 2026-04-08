@@ -174,11 +174,12 @@ class AuthService {
             const token = apiService.getToken();
             const data = await apiService.put(
                 '/user/me/profile',
+                payload,
                 {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
-                },
-                payload,
+                }
+              
             );
             return data as Profile;
         });
