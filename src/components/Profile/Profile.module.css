@@ -95,7 +95,7 @@
 	text-transform: none;
 	color: var(--text);
 	opacity: 0.8;
-	font-size: 20px;
+	font-size: 24px;
 	line-height: 1;
 	padding: 0;
     box-shadow: none !important;
@@ -116,13 +116,6 @@
 	font-size: 24px;
 	line-height: 1;
 	font-family: "Hero", system-ui, sans-serif;
-}
-
-.photoButtons {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 14px;
-	margin-bottom: 4px;
 }
 
 .fileInput {

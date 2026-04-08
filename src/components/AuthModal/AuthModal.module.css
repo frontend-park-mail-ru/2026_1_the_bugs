@@ -1,20 +1,6 @@
 /* Используем глобальные .modal и .modal-content из index.css */
 /* Здесь только специфичные стили для AuthModal */
 
-/* Кнопка закрытия */
-.close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 40px !important;
-  color: #999;
-  background: none;
-  border: none;
-  padding: 0;
-  line-height: 1;
-  box-shadow: none !important;
-}
-
 /* Стили для форм авторизации */
 .title {
   margin: 0 0 30px 0;

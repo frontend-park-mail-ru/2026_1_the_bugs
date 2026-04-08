@@ -1,0 +1,12 @@
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 40px !important;
+  color: #999;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  box-shadow: none !important;
+}

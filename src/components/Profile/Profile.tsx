@@ -9,6 +9,7 @@ import {
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { ProfileSetAvatar } from './ProfileSetAvatar';
 import { ProfilePassword } from './ProfilePassword';
+import { ProfileCreatePassword } from './ProfileCreatePassword';
 
 type ProfileTab = 'main' | 'password';
 type ProfileField =
@@ -134,16 +135,6 @@ export function Profile() {
         setError(null);
         setSaveMessage(null);
         resetAvatarInput();
-    };
-
-    const handleAvatarRemove = () => {
-        if (avatarPreview) {
-            URL.revokeObjectURL(avatarPreview);
-        }
-        setAvatarFile(null);
-        setAvatarPreview(null);
-        resetAvatarInput();
-        setSaveMessage(null);
     };
 
     const handleSave = async (event: Event) => {
@@ -335,10 +326,7 @@ export function Profile() {
             {activeTab === 'main' && (
             <form className={style.profileForm} onSubmit={handleSave}>
                 <label className={style.label}>Фотография:</label>
-                <div className={style.photoButtons}>
                     <button type="button" className={style.ghostAction} onClick={handleAvatarInputClick}>Изменить</button>
-                    <button type="button" className={style.ghostAction} onClick={handleAvatarRemove}>Удалить</button>
-                </div>
                 <input
                     id="profileAvatarInput"
                     className={style.fileInput}

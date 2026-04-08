@@ -1,4 +1,5 @@
 import { useEffect } from '@my-react/hooks';
+import style from "./Modal.module.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ export function Modal({ isOpen, onClose, children}: ModalProps) {
   return (
     <div className={`modal ${isOpen ? 'active' : ''}`} onClick={handleOverlayClick}>
       <div className="modal-content">
-          <button className="close-button" onClick={onClose}></button>
+          <button className={style.close} onClick={onClose}>&times;</button>
           {children}
       </div>
     </div>
