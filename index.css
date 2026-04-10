@@ -105,8 +105,8 @@ button img {
   padding: 40px 40px 20px 40px;
   border: none;
   box-shadow: var(--shadow);
-  width: 90%;
-  max-width: 450px;
+  width: var(--modal-width, 90%);
+  max-width: var(--modal-max-width, 450px);
   position: relative;
   animation: slideDown 0.3s ease-out;
   max-height: calc(100vh - 100px);

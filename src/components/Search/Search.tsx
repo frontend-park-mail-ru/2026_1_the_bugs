@@ -1,5 +1,7 @@
 import { useState } from '@my-react/hooks';
 import { Filter } from '../Filter/Filter';
+import { FilterMore } from '../Filter/FilterMore';
+import { Modal } from '../Modal/Modal';
 import style from './Search.module.css';
 
 interface SearchProps {
@@ -10,6 +12,7 @@ interface SearchProps {
 export function Search({ value, onSearch }: SearchProps) {
   const [search, setSearch] = useState(value);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   const handleInput = (e: any) => {
     setSearch(e.target.value);
@@ -53,9 +56,23 @@ export function Search({ value, onSearch }: SearchProps) {
 
       {isFilterOpen && (
         <div className={style.filterMenu} onClick={(e: MouseEvent) => e.stopPropagation()}>
-          <Filter onClose={() => setIsFilterOpen(false)} />
+          <Filter
+            onClose={() => setIsFilterOpen(false)}
+            onOpenMore={() => {
+              setIsFilterOpen(false);
+              setIsMoreOpen(true);
+            }}
+          />
         </div>
       )}
+
+      <Modal
+        isOpen={isMoreOpen}
+        onClose={() => setIsMoreOpen(false)}
+        contentClassName={style.moreModalContent}
+      >
+        <FilterMore onClose={() => setIsMoreOpen(false)} />
+      </Modal>
     </div>
   );
 }

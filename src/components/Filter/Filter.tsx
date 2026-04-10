@@ -3,12 +3,13 @@ import style from './Filter.module.css';
 
 interface FilterProps {
     onClose: () => void;
+    onOpenMore: () => void;
 }
 
 const propertyTypes = ['Квартира', 'Комната', 'Койко-место', 'Дом/дача', 'Коттедж', 'Таунхаус'];
 const roomOptions = ['1', '2', '3', '4', '5', '6+'];
 
-export function Filter({ onClose }: FilterProps) {
+export function Filter({ onClose, onOpenMore }: FilterProps) {
     const [selectedType, setSelectedType] = useState('Квартира');
     const [selectedRoom, setSelectedRoom] = useState('2');
     const [minPrice, setMinPrice] = useState('35000');
@@ -71,7 +72,7 @@ export function Filter({ onClose }: FilterProps) {
                     Сохранить
                 </button>
                 или
-                <button type="button" className={style.advancedBtn}>
+                <button type="button" className={style.advancedBtn} onClick={onOpenMore}>
                     расширенные фильтры
                 </button>
             </div>

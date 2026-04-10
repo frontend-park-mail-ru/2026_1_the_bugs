@@ -77,9 +77,23 @@
   z-index: 7;
 }
 
+.moreModalContent {
+  --modal-width: min(860px, calc(100vw - 24px));
+  --modal-max-width: min(860px, calc(100vw - 24px));
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 18px;
+}
+
 @media (max-width: 600px) {
   .filterMenu {
     top: calc(100% + 10px);
     width: calc(100vw - 12px);
+  }
+
+  .moreModalContent {
+    --modal-width: calc(100vw - 12px);
+    --modal-max-width: calc(100vw - 12px);
+    padding: 14px;
   }
 }
