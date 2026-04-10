@@ -51,7 +51,8 @@ export function CardList({
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
   return (
-    <section className={style.cards}>
+    <div style={{'align-items':'center'}}>
+        <section className={style.cards}>
       {apartments.map((apt) => (
         <Card key={apt.id.toString()} apartment={apt} />
       ))}
@@ -66,6 +67,8 @@ export function CardList({
         )}
       
     </section>
+    </div>
+  
   );
 }
 

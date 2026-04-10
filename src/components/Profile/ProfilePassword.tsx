@@ -1,5 +1,6 @@
 import { useEffect, useState } from '@my-react/hooks';
 import style from './ProfilePassword.module.css';
+import appStyle from "../../App/App.module.css";
 import authModalStyle from '../AuthModal/AuthModal.module.css';
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -301,14 +302,14 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 							</div>
 						</div>
 
-						<button type="submit" className={authModalStyle.primary} disabled={isLoading}>
+						<button type="submit" className={appStyle.primary} disabled={isLoading}>
 							{isLoading ? 'Загрузка...' : 'Подтвердить'}
 						</button>
 					</form>
 
 					<button
 						type="button"
-						className={authModalStyle.secondary}
+						className={appStyle.secondary}
 						onClick={handleResendCode}
 						disabled={!isResendActive || isLoading}
 					>
@@ -323,7 +324,7 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 					
 					<button
 						type="button"
-						className={authModalStyle.primary}
+						className={appStyle.primary}
 						onClick={()=>setStep('form')}
 					>
 						Назад

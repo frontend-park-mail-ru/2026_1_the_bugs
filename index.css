@@ -102,7 +102,7 @@ button img {
 .modal-content {
   border-radius: 20px;
   background-color: var(--bg);
-  padding: 40px 40px 20px 40px;
+  padding: 40px 20px 20px 20px;
   border: none;
   box-shadow: var(--shadow);
   width: 90%;
@@ -183,7 +183,7 @@ img {
     gap: 16px;
   }
   .modal-content {
-    padding: 24px 6px 12px 6px;
+    padding: 24px 12px 12px 12px;
     max-width: 98vw;
     margin: 24px auto;
   }

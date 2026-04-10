@@ -12,7 +12,7 @@ export function PosterMainInfo({ poster }: PosterMainInfoProps) {
 
   return (
     <article className={shared.card}>
-      <h1 className={styles.address}>{poster.address}</h1>
+      <h1 className={styles.address}>{poster.flat.flat_category} <br/>{poster.address}</h1>
       <div className={styles.metaInline}>
         {metro && <span>Метро: {metro}</span>}
         {district && <span>Район: {district}</span>}

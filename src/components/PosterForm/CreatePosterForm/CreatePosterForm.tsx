@@ -384,6 +384,9 @@ export function CreatePosterForm() {
   };
 
   const onSubmit = async () => {
+    if (isSubmitting){
+      return
+    }
     setValidatedUpToStep(TOTAL_CREATE_POSTER_STEPS);
     const validation = validateStep(TOTAL_CREATE_POSTER_STEPS, formDraft);
     if (!applyValidation(validation)) return;

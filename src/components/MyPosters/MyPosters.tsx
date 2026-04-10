@@ -115,7 +115,8 @@ export function MyPosterList() {
                                         <div className={style.menuSeparator} />
                                         <button
                                             className={`${style.menuItem} ${style.menuDelete} fontHero`}
-                                            onClick={() => {
+                                            onClick={(e:MouseEvent) => {
+                                                e.stopPropagation();
                                                 setMenuOpen(null);
                                                 handleDelete(apt.alias);
                                             }}

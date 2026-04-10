@@ -51,10 +51,10 @@ export function App() {
       <div className="page">
         <Switch key="root" currentPath={currentPath} >
           <Router currentPath={currentPath} path="/oauth/vk">
-            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="vk" key="OAuthVerifyPageVK" />
+            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} setCurrentUser={setCurrentUser} provider="vk" key="OAuthVerifyPageVK" />
           </Router>
           <Router currentPath={currentPath} path="/oauth/yandex">
-            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="yandex" key="OAuthVerifyPageYandex" />
+            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate}  setCurrentUser={setCurrentUser} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
             < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">

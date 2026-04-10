@@ -2,7 +2,7 @@
   background: var(--card);
   border-radius: 18px;
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 12px 14px;
   display: grid;
   gap: 14px;
   font-size: 14px;

@@ -3,13 +3,15 @@ import { authService } from '../../services/auth';
 import type { IOAuthFlow } from 'src/types/api';
 import { useNavigate } from '@my-react/router-dom/hooks';
 import style from './OAuthVerifyPage.module.css';
+import type { UserResponse } from 'src/types';
 
 interface IOAuthVerifyProps {
   provider: 'vk' | 'yandex';
+  setCurrentUser: (user: UserResponse)=>void
   setIsAuthenticate: (isAuth: boolean) => void;
 }
 
-export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyProps) {
+export function OAuthVerifyPage({ provider, setIsAuthenticate, setCurrentUser }: IOAuthVerifyProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,6 +65,8 @@ export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyPro
           await authService.loginFromYandex(flow);
           break;
       }
+      const user = await authService.getMe()
+      setCurrentUser(user)
       setIsSuccess(true);
       setIsAuthenticate(true);
       setTimeout(() => navigate('/'), 1200);
