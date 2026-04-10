@@ -5,10 +5,18 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: any;
+  contentClassName?: string;
+  overlayClassName?: string;
 }
 
 /** Универсальная модальная обёртка с затемнённым оверлеем; закрывается кликом по фону. */
-export function Modal({ isOpen, onClose, children}: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  children,
+  contentClassName = '',
+  overlayClassName = '',
+}: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -29,9 +37,9 @@ export function Modal({ isOpen, onClose, children}: ModalProps) {
   };
 
   return (
-    <div className={`modal ${isOpen ? 'active' : ''}`} onClick={handleOverlayClick}>
-      <div className="modal-content">
-          <button className={style.close} onClick={onClose}>&times;</button>
+    <div className={`modal ${isOpen ? 'active' : ''} ${overlayClassName}`.trim()} onClick={handleOverlayClick}>
+      <div className={`modal-content ${contentClassName}`.trim()}>
+        <button className={style.close} onClick={onClose}>&times;</button>
           {children}
       </div>
     </div>
