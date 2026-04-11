@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'the-react/hooks';
 import style from './ProfilePassword.module.css';
-import appStyle from "../../App/App.module.css";
 import authModalStyle from '../AuthModal/AuthModal.module.css';
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -11,6 +10,7 @@ import {
 } from '../AuthModal/authValidation';
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { Modal } from '../Modal/Modal';
+import { Button } from '../Button/Button';
 
 interface ProfilePasswordProps {
 	email: string;
@@ -302,19 +302,19 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 							</div>
 						</div>
 
-						<button type="submit" className={appStyle.primary} disabled={isLoading}>
+						<Button type="submit" variant="accent" disabled={isLoading}>
 							{isLoading ? 'Загрузка...' : 'Подтвердить'}
-						</button>
+						</Button>
 					</form>
 
-					<button
+					<Button
 						type="button"
-						className={appStyle.secondary}
+						variant="secondary"
 						onClick={handleResendCode}
 						disabled={!isResendActive || isLoading}
 					>
 						{!isResendActive ? `Отправить ${tick} сек.` : 'Отправить еще раз'}
-					</button>
+					</Button>
 
 				</div>
 			</Modal>
@@ -322,13 +322,13 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 				<div>
 					<p className={authModalStyle.title}>Пароль успешно изменен!</p>
 					
-					<button
+					<Button
 						type="button"
-						className={appStyle.primary}
+						variant="primary"
 						onClick={()=>setStep('form')}
 					>
 						Назад
-					</button>
+					</Button>
 				</div>
 			</Modal>
 		</div>

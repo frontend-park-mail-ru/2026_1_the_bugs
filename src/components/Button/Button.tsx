@@ -1,22 +1,27 @@
 import type { JSXElementType } from "the-react"
 import styles from "./Button.module.css"
 
-type ButtonVariant = 'primary' | 'accent' | 'secondary'
+type ButtonVariant = 'primary' | 'accent' | 'secondary' | 'none' | 'menu'
 type ButtonType = 'button' | 'submit' | 'reset'
 type IconPosition = 'left' | 'right'
+type ButtonShape = 'default' | 'round'
 
 interface ButtonProps {
-    children?: JSXElementType | string
+    children?: JSXElementType | string | (JSXElementType | string)[]
     text?: string
     icon?: JSXElementType
     iconPosition?: IconPosition
     variant?: ButtonVariant
+    shape?: ButtonShape
     id?: string
     'aria-label'?: string
+    'aria-hidden'?: boolean
     className?: string
+    style?: Record<string, string | number>
+    tabIndex?: number
     disabled?: boolean
     type?: ButtonType
-    onClick?: () => void
+    onClick?: (e: any) => void
 }
 
 /** Универсальная кнопка проекта с тремя визуальными вариантами. */
@@ -26,20 +31,25 @@ export const Button = ({
     icon,
     iconPosition = 'left',
     variant = 'primary',
+    shape = 'default',
     id,
     'aria-label': ariaLabel,
+    'aria-hidden': ariaHidden,
     className = '',
+    style,
+    tabIndex,
     disabled = false,
     type = 'button',
     onClick,
 }: ButtonProps) => {
     const content = children ?? text
-    const classes = [styles.button, styles[variant], className].filter(Boolean).join(' ')
+    const isMenuVariant = variant === 'menu'
+    const classes = [styles.button, styles[variant], shape === 'round' ? styles.round : '', className].filter(Boolean).join(' ')
 
     return (
-        <button id={id} aria-label={ariaLabel} className={classes} type={type} disabled={disabled} onClick={onClick}>
+        <button id={id} aria-label={ariaLabel} aria-hidden={ariaHidden} className={classes} style={style} tabIndex={tabIndex} type={type} disabled={disabled} onClick={onClick}>
             {icon && iconPosition === 'left' ? <span className={styles.icon}>{icon}</span> : null}
-            {content ? <span className={styles.label}>{content}</span> : null}
+            {isMenuVariant ? content : content ? <span className={styles.label}>{content}</span> : null}
             {icon && iconPosition === 'right' ? <span className={styles.icon}>{icon}</span> : null}
         </button>
     )

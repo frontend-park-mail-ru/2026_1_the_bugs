@@ -3,10 +3,10 @@ import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
 import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
-import appStyle from "../../App/App.module.css";
 import cardStyle from '../Card/Card.module.css';
 
 import type { MyPoster, } from '../../types';
+import { Button } from '../Button/Button';
 
 export function MyPosterList() {
     const navigate = useNavigate();
@@ -49,16 +49,17 @@ export function MyPosterList() {
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
             )}
             <h1 className={style.main}>Мои объявления</h1>
-            <button
-                className={`${appStyle.primary} ${style.createBtn} `}
+            <Button
+                variant='accent'
                 type="button"
+                style={{'display':'flex', 'margin':'0 auto'}}
                 aria-label="Создать объявление"
                 onClick={() => {
                     navigate('/posters/create');
                 }}
               >
-                + Создать новое обьявление
-              </button>
+                + Создать новое объявление
+              </Button>
             {posters.length === 0 ? (
                 <div className={style.nothing}>У вас пока нет объявлений</div>
             ) : (

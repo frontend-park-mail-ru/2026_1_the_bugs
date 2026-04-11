@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'the-react/hooks';
 import style from "./AuthModal.module.css";
-import appStyle from "../../App/App.module.css";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
@@ -21,6 +20,7 @@ import {
     getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
+import { Button } from '../Button/Button';
 
 export type RegisterField = 'email' | 'password' | 'confirmPassword' | 'firstname' | 'lastname' | 'phone';
 
@@ -191,7 +191,7 @@ export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildP
 
       <form 
         className={style.form} 
-        onSubmit={handleRegister}
+        onSubmit={isFirstPage ? nextPage : handleRegister}
       >
         <div className={style.formGroups}>
             {
@@ -327,23 +327,22 @@ export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildP
           </div>
         </div>
 
-        <button style={{'width':'60%'}}
+        <Button variant="accent"
+          style={{'width':'60%'}}
           type="submit" 
-          className={appStyle.primary} 
           disabled={isLoading}
-        onClick={isFirstPage ? nextPage : handleRegister}
         >
           {isLoading ? 'Загрузка...' : (isFirstPage ? 'Продолжить' : 'Создать аккаунт')}
-        </button>
+        </Button>
           
       </form>
-      <button style={{'width':'60%'}}
-        className={appStyle.secondary} 
+      <Button variant='secondary'
+        style={{'width':'60%', 'display':'flex', 'margin':'0 auto'}}
         onClick={isFirstPage ? ()=>{toggleMode('login')} : prevPage} 
         disabled={isLoading}
       >
         Назад
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useState } from 'the-react/hooks';
 import style from "./AuthModal.module.css";
-import appStyle from "../../App/App.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -13,6 +12,7 @@ import {
     getErrorMessage,
     getHighlightStyle,
 } from './authErrors'
+import { Button } from '../Button/Button';
 
 export interface RecoverFormState {
   email: string;
@@ -123,22 +123,22 @@ export default function RecoverEmail({ onToggleMode }: AuthModalChildProps) {
               </div>
             </div>
 
-            <button style={{'width':'60%'}}
+            <Button variant='accent'
+              style={{'width':'60%'}}
               type="submit" 
-              className={appStyle.primary} 
               disabled={isLoading}
             >
               {isLoading ? 'Загрузка...' :  'Отправить код' }
-            </button>
+            </Button>
             
           </form>
-          <button style={{'width':'60%'}}
-            className={appStyle.secondary} 
+          <Button variant='secondary'
+            style={{'width':'60%', 'display':'flex', 'margin':'0 auto'}}
             onClick={()=>toggleMode('login')} 
             disabled={isLoading}
           >
             Назад
-          </button>
+          </Button>
         </div>
         );
 }

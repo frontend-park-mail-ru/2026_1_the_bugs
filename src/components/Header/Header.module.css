@@ -6,7 +6,7 @@
   width: 100%;
   margin: 20px auto;
   position: relative;
-  z-index: 3;
+  z-index: 20;
   padding-inline: 10px;
 }
 
@@ -41,59 +41,21 @@
   gap: 12px;
 }
 
-.btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-}
-
-.secondary {
-  width: 80px;
-  height: 36px;
-  border: none;
-  background-color: var(--accent);
-  color: white;
-}
-
-.createBtn {
-  width: 110px;
-  transform-origin: center;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: opacity 0.24s ease, transform 0.24s ease;
-}
-
-.createBtnVisible {
-  opacity: 1;
-  transform: translateX(0) scale(1);
-  pointer-events: auto;
-}
-
-.createBtnHidden {
-  opacity: 0;
-  transform: translateX(-10px) scale(0.98);
-  pointer-events: none;
-}
-
 .menuOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  z-index: 19;
   background: transparent;
 }
 
 .menuWrap {
   position: relative;
-  z-index: 2;
+  z-index: 21;
 }
 
-.menuBtnActive {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
-  transform: scale(1.04);
-}
 
 .menuPopup {
   position: absolute;
@@ -104,7 +66,7 @@
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
   padding: 8px 0;
   min-width: 196px;
-  z-index: 2;
+  z-index: 22;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -116,23 +78,6 @@
   background: #979797;
   margin: 2px 10%;
   border: none;
-}
-
-.menuItem {
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  text-align: left;
-  font-size: 15px;
-  cursor: pointer;
-  color: #222;
-  font-family: inherit;
-  box-shadow: none;
-}
-
-.menuItem:hover {
-  box-shadow: none;
-  color: var(--accent);
 }
 
 .menuDelete {
