@@ -7,15 +7,28 @@ import type { ErrorResponse } from "src/types/api";
  * токенной аутентификацией и парсингом JSON-ответов.
  */
 class ApiService {
-    /** Базовый URL для всех API-запросов (например, '/api' или полный URL) */
     baseURL: string | undefined;
+    csrfToken: string | undefined;
+    lock: boolean = false;
 
     /**
-     * Создает экземпляр ApiService.
      * @param baseURL - Базовый URL для API-запросов. По умолчанию '/api'.
      */
     constructor(baseURL: string = '/api') {
         this.baseURL = baseURL;
+    }
+
+    async init() {
+        console.log("start")
+        if (!this.lock){
+            this.lock = true
+            const res = await this.get('/csrf-token');
+            this.csrfToken = res.csrf_token;
+            this.lock = false
+        }
+
+     
+
     }
 
     /**
@@ -31,6 +44,7 @@ class ApiService {
             const response = await fetch(`${this.baseURL}${endpoint}?${paramsURL}`, {
                 method: 'GET',
                 headers: {...headers, "Accept": 'application/json'},
+                credentials: 'include'
             });
             return this.handleResponse(response);
         } catch (error) {
@@ -49,14 +63,18 @@ class ApiService {
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
     async post(endpoint: string, data: any, headers: any, cookie: boolean = true) {
+        if (!this.csrfToken){
+            console.warn("missing csrf token")
+            await this.init()
+        }
         try {
-            const response = await fetch(`${this.baseURL}${endpoint}`, {
+            const response = await this.handelWithCSRF(()=>fetch(`${this.baseURL}${endpoint}`, {
                 method: 'POST',
-                headers: headers,
+                headers: {...headers, 'X-CSRF-TOKEN': this.csrfToken},
                 body: data,
-                credentials: cookie ? 'include': 'omit',
-            });
-            return this.handleResponse(response);
+                credentials: 'include',
+            }));
+            return response;
         } catch (error) {
             console.error('POST request error:', error);
             throw error;
@@ -71,13 +89,18 @@ class ApiService {
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
     async put(endpoint: string, data: any, headers: Record<string, any>) {
+        if (!this.csrfToken){
+            console.warn("missing csrf token")
+            await this.init()
+        }
         try {
-            const response = await fetch(`${this.baseURL}${endpoint}`, {
+            const response = await this.handelWithCSRF(()=>fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
-               headers:headers,
+                headers: {...headers, 'X-CSRF-TOKEN': this.csrfToken || ''},
                 body: data instanceof FormData ? data : JSON.stringify(data),
-            });
-            return this.handleResponse(response);
+                credentials: 'include'
+            }));
+            return response;
         } catch (error) {
             console.error('PUT request error:', error);
             throw error;
@@ -91,12 +114,17 @@ class ApiService {
      * @throws ErrorResponse при неудачном запросе или не-2xx статусе.
      */
     async delete(endpoint: string, headers: Record<string, any> = {}) {
+         if (!this.csrfToken){
+            console.warn("missing csrf token")
+            await this.init()
+        }
         try {
-            const response = await fetch(`${this.baseURL}${endpoint}`, {
+            const response = await this.handelWithCSRF(()=>fetch(`${this.baseURL}${endpoint}`, {
                 method: 'DELETE',
-                headers:headers,
-            });
-            return this.handleResponse(response);
+                headers: {...headers, 'X-CSRF-TOKEN': this.csrfToken || ''},
+                credentials: 'include'
+            }));
+            return response;
         } catch (error) {
             console.error('DELETE request error:', error);
             throw error;
@@ -126,6 +154,23 @@ class ApiService {
         return data;
     }
 
+    async handelWithCSRF(fn: () => any): Promise<any> {
+        try {
+            const response = await fn();
+            return await this.handleResponse(response as Response); 
+        } catch (e: any) {
+            console.log(e)
+            const err = e as ErrorResponse;
+            console.log(err.status)
+            if (err.status == 403) {
+                await this.init()
+                const response = await fn();
+                return await this.handleResponse(response as Response);;
+            }
+            throw e;
+        }
+    }
+
     /**
      * Получить токен аутентификации из localStorage.
      * @returns Текущий токен аутентификации или null.
@@ -153,5 +198,3 @@ class ApiService {
 
 
 export const apiService = new ApiService(API_URL);
-
-export { ApiService };

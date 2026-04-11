@@ -12,6 +12,7 @@ import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
+import { apiService } from '../services/apiClass';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -19,10 +20,14 @@ import type { UserResponse } from '../types';
  */
 export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-   const [currentSearch, setCurrentSearch] = useState(window.location.search)
+  const [currentSearch, setCurrentSearch] = useState(window.location.search)
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
+
+  useEffect(()=>{
+    apiService.init()
+  }, [])
 
   useEffect(() => {
     const checkAuth = async () => {
