@@ -20,7 +20,9 @@ export function Search({ value, onSearch }: SearchProps) {
   };
 
   const handleSearchClick = () => {
-    onSearch(search);
+    const input = document.querySelector(`.${style.input}`) as HTMLInputElement | null;
+    const actualValue = input ? input.value : search;
+    onSearch(actualValue);
   };
 
   return (

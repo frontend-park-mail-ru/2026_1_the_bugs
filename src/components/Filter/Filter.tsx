@@ -59,6 +59,7 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
                         <Button
                             key={room}
                             variant='none'
+                            shape='round'
                             type="button"
                             className={`${style.roomChip} ${selectedRoom === room ? style.chipActive : ''}`}
                             onClick={() => setSelectedRoom(room)}

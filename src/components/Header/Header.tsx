@@ -56,14 +56,14 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
       {isMenuOpen && (
         <div className={style.menuOverlay} onClick={closeMenu} />
       )}
-      <Button
-        variant="none"
+      <button
         className={style['logo']}
         type="button"
         aria-label="Перейти на главную"
         onClick={() => navigate('/')}
-        text="ДОМДЕЛИ"
-      />
+      >
+        ДОМДЕЛИ
+      </button>
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (

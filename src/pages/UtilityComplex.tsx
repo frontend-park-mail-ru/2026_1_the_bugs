@@ -16,6 +16,9 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
 	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
+	const [isFetchingMore, setIsFetchingMore] = useState(false);
+	const [hasMore, setHasMore] = useState(true);
+	const pageSize = 12;
 
 	const handelPostersList = async() => {
 		const postersResp = await getPosters({limit: 12, offset: 0, utility_company: alias});
@@ -32,6 +35,17 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			console.error('Failed to load utility complex by alias:', error);
 			setUtilityError('Не удалось загрузить данные ЖК');
 		}
+	}
+
+	const handleLoadMore = async () => {
+		setIsFetchingMore(true);
+		const offset = apartments?.length || 0;
+		const postersResp = await getPosters({limit: pageSize, offset, utility_company: alias});
+		if (postersResp.posters.length < pageSize) {
+			setHasMore(false);
+		}
+		setApartments([...(apartments || []), ...postersResp.posters]);
+		setIsFetchingMore(false);
 	}
 
 	useEffect(
@@ -51,7 +65,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 					<h2 className="fontHero">Объявления в этом ЖК</h2>
 				</div>
 				{apartments && (
-					<CardList key="card_list_utility" apartments={apartments} />
+					<CardList key="card_list_utility" apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
 				)}
 			</section>
 		</div>

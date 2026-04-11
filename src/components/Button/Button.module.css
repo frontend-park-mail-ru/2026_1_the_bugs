@@ -101,6 +101,7 @@
 	padding: 12px 16px;
 	border-radius: 0;
 	justify-content: center;
+	gap: 2px;
 	font-size: 15px;
 	text-align: center;
 	cursor: pointer;
