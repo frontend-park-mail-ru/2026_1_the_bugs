@@ -1,10 +1,10 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import { EditPosterForm } from '../../components/PosterForm/EditPosterForm/EditPosterForm';
 import styles from './EditPosterPage.module.css';
 import { getMyPosterByAlias } from '../../services/posters';
 import type { ApartmentDetails } from '../../types';
 import layout from '../../components/PosterPage/PosterPageLayout.module.css';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 
 interface EditPosterProp{
     alias: string

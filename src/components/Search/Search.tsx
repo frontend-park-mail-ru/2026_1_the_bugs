@@ -1,4 +1,4 @@
-import { useState } from '@my-react/hooks';
+import { useState } from 'the-react/hooks';
 import { Filter } from '../Filter/Filter';
 import { FilterMore } from '../Filter/FilterMore';
 import { Modal } from '../Modal/Modal';

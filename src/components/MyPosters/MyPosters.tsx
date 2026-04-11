@@ -1,6 +1,6 @@
 
-import { useEffect, useState } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useEffect, useState } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
 import appStyle from "../../App/App.module.css";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import type { ApartmentDetails } from '../../types';
 import styles from './PosterGallery.module.css';
 

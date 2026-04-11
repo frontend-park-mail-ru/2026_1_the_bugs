@@ -1,5 +1,5 @@
-import { useState, useEffect } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useState, useEffect } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
 import { updatePoster } from '../../../services/posters'; // предположительно есть такой сервис
 import type { CreatePosterField, StepValidationResult } from '../validation';

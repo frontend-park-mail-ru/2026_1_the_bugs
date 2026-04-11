@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import style from "./AuthModal.module.css";
 import appStyle from "../../App/App.module.css";
 import { authService } from '../../services/auth';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import style from './ProfilePassword.module.css';
 import appStyle from "../../App/App.module.css";
 import authModalStyle from '../AuthModal/AuthModal.module.css';

@@ -1,5 +1,5 @@
-import { Router, Switch } from '@my-react/router-dom/Router';
-import { useEffect, useState } from '@my-react/hooks';
+import {Switch, Router} from '@router-dom';
+import { useEffect, useState } from 'the-react';
 import { HomePage } from '../pages/HomePage';
 import { UtilityComplex } from '../pages/UtilityComplex';
 import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';

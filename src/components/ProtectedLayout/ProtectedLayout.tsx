@@ -1,5 +1,5 @@
 import { AuthModal } from '../../components/AuthModal/AuthModal';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 
 interface LayoutProps {
     path: string;

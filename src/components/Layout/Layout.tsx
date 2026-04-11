@@ -1,6 +1,6 @@
 import { Header } from '../../components/Header/Header';
 import { AuthModal } from '../../components/AuthModal/AuthModal';
-import { useState } from "@my-react/hooks";
+import { useState } from "the-react/hooks";
 import { authService } from '../../services/auth';
 import type { UserResponse } from 'src/types';
 

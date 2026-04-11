@@ -1,4 +1,4 @@
-import { useState } from '@my-react/hooks';
+import { useState } from 'the-react/hooks';
 import style from './Filter.module.css';
 
 interface FilterProps {

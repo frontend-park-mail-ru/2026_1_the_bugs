@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import styles from './Pagination.module.css';
 
 type Props = {

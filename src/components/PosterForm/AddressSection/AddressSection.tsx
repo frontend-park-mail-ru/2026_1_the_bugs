@@ -1,7 +1,7 @@
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
 import styles from '../PosterForm.module.css';
-import { useState, useEffect } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import type { CreatePosterField } from '../validation';
 
 export interface AddressValidationResult {

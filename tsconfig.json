@@ -16,10 +16,10 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "paths":{
-      "@my-react/*": ["./src/MyReact/*"]
+      "@router-dom": ["./src/RouterDOM/index.ts"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "@my-react",
+    "jsxImportSource": "the-react",
     "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,

@@ -1,4 +1,4 @@
-import { useEffect } from '@my-react/hooks';
+import { useEffect } from 'the-react/hooks';
 import style from "./Modal.module.css";
 
 interface ModalProps {

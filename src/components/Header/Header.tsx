@@ -1,5 +1,5 @@
-import { useEffect, useState } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useEffect, useState } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import style from './Header.module.css';
 import appStyle from './../../App/App.module.css';
 import type { UserResponse } from 'src/types';

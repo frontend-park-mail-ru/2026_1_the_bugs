@@ -1,4 +1,4 @@
-import { createApp } from '@my-react/my-react'
+import { createApp } from 'the-react'
 import { App } from './App/App';
 import {registerSW} from "virtual:pwa-register";
 import "../index.css"

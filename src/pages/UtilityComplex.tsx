@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { UtilCard } from '../components/UtilCard/UtilCard';

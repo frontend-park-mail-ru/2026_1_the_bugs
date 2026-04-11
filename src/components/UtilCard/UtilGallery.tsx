@@ -1,4 +1,4 @@
-import { useEffect, useState } from "@my-react/hooks";
+import { useEffect, useState } from "the-react/hooks";
 import style from "./UtilGallery.module.css";
 import type { UtilityCompany } from "src/types";
 

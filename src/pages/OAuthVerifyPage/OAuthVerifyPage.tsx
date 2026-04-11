@@ -1,7 +1,7 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import { authService } from '../../services/auth';
 import type { IOAuthFlow } from 'src/types/api';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 import style from './OAuthVerifyPage.module.css';
 import type { UserResponse } from 'src/types';
 

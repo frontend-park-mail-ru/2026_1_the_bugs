@@ -1,7 +1,7 @@
 import { Card } from '../Card/Card';
 import type { Apartment } from '../../types';
 import style from './CardList.module.css';
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 
 interface CardListProps {
   apartments: Apartment[];

@@ -1,4 +1,4 @@
-// import type { JSXElement } from "@my-react/types/jsx"
+// import type { JSXElement } from "the-react/types/jsx"
 
 // interface IButtonComponent {
 //     text: string

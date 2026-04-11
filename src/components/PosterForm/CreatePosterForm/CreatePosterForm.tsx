@@ -1,6 +1,6 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 import { createPoster } from '../../../services/posters';
 import type { CreatePosterField, StepValidationResult } from '../validation';
 import { validateStep } from '../validation';

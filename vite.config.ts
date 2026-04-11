@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   resolve: {
     alias: {
-      '@my-react': '/src/MyReact', 
+      '@router-dom': '/src/RouterDOM/index.ts', 
     },
   },
   plugins: [
