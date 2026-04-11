@@ -1,19 +1,49 @@
 import { useState } from '@my-react/hooks';
 import style from './Filter.module.css';
+import type { IFilters } from 'src/types';
 
 interface FilterProps {
     onClose: () => void;
     onOpenMore: () => void;
+    onApply: (filters: IFilters) => void;
+    initialFilters?: IFilters;
 }
 
-const propertyTypes = ['Квартира', 'Комната', 'Койко-место', 'Дом/дача', 'Коттедж', 'Таунхаус'];
+const propertyTypes: { label: string; alias: string }[] = [
+    { label: 'Квартира', alias: 'flat' },
+    { label: 'Дом', alias: 'house' },
+    { label: 'Апартаменты', alias: 'apartments' },
+];
 const roomOptions = ['1', '2', '3', '4', '5', '6+'];
 
-export function Filter({ onClose, onOpenMore }: FilterProps) {
-    const [selectedType, setSelectedType] = useState('Квартира');
-    const [selectedRoom, setSelectedRoom] = useState('2');
-    const [minPrice, setMinPrice] = useState('35000');
-    const [maxPrice, setMaxPrice] = useState('65000');
+export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterProps) {
+    const [selectedType, setSelectedType] = useState(initialFilters?.category ?? '');
+    const [selectedRoom, setSelectedRoom] = useState(
+        initialFilters?.room_count != null
+            ? (initialFilters.room_count >= 6 ? '6+' : String(initialFilters.room_count))
+            : ''
+    );
+    const [minPrice, setMinPrice] = useState(
+        initialFilters?.min_price != null ? String(initialFilters.min_price) : ''
+    );
+    const [maxPrice, setMaxPrice] = useState(
+        initialFilters?.max_price != null ? String(initialFilters.max_price) : ''
+    );
+
+    const handleSave = () => {
+        const roomNum = selectedRoom
+            ? (selectedRoom === '6+' ? 6 : parseInt(selectedRoom, 10))
+            : undefined;
+        const minPriceNum = minPrice ? parseInt(minPrice, 10) : undefined;
+        const maxPriceNum = maxPrice ? parseInt(maxPrice, 10) : undefined;
+        onApply({
+            category: selectedType || undefined,
+            room_count: roomNum != null && !Number.isNaN(roomNum) ? roomNum : undefined,
+            min_price: minPriceNum != null && !Number.isNaN(minPriceNum) ? minPriceNum : undefined,
+            max_price: maxPriceNum != null && !Number.isNaN(maxPriceNum) ? maxPriceNum : undefined,
+        });
+        onClose();
+    };
 
     return (
         <section className={style.panel}>
@@ -21,14 +51,14 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
             <section className={style.section}>
                 <h3 className={style.sectionTitle}>Тип объекта</h3>
                 <div className={style.chips}>
-                    {propertyTypes.map((type) => (
+                    {propertyTypes.map(({ label, alias }) => (
                         <button
-                            key={type}
+                            key={alias}
                             type="button"
-                            className={`${style.chip} ${selectedType === type ? style.chipActive : ''}`}
-                            onClick={() => setSelectedType(type)}
+                            className={`${style.chip} ${selectedType === alias ? style.chipActive : ''}`}
+                            onClick={() => setSelectedType(selectedType === alias ? '' : alias)}
                         >
-                            {type}
+                            {label}
                         </button>
                     ))}
                 </div>
@@ -39,13 +69,13 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
                 <div className={style.priceRow}>
                     <label className={style.field}>
                         <span>от</span>
-                        <input type="text" className={style.input} value={minPrice} onInput={(e: any) => setMinPrice(e.target.value)} />
+                        <input type="number" className={style.input} value={minPrice} onInput={(e: any) => setMinPrice(e.target.value)} placeholder="0" />
                         <strong>₽</strong>
                     </label>
 
                     <label className={style.field}>
                         <span>до</span>
-                        <input type="text" className={style.input} value={maxPrice} onInput={(e: any) => setMaxPrice(e.target.value)} />
+                        <input type="number" className={style.input} value={maxPrice} onInput={(e: any) => setMaxPrice(e.target.value)} placeholder="∞" />
                         <strong>₽</strong>
                     </label>
                 </div>
@@ -59,7 +89,7 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
                             key={room}
                             type="button"
                             className={`${style.roomChip} ${selectedRoom === room ? style.chipActive : ''}`}
-                            onClick={() => setSelectedRoom(room)}
+                            onClick={() => setSelectedRoom(selectedRoom === room ? '' : room)}
                         >
                             {room}
                         </button>
@@ -68,7 +98,7 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
             </section>
 
             <div className={style.actions}>
-                <button type="button" className={style.saveBtn} onClick={onClose}>
+                <button type="button" className={style.saveBtn} onClick={handleSave}>
                     Сохранить
                 </button>
                 или
