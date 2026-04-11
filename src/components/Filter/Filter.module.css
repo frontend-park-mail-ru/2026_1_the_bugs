@@ -109,16 +109,12 @@
   height: 44px;
   padding: 0 24px;
   border-radius: 999px;
-  color: #fff;  
-  background: var(--accent);
   font-size: 20px;
 }
 
 .advancedBtn {
   margin: 0;
-  background: transparent;
   color: var(--accent);
-  box-shadow: none;
   height: 44px;
   font-size: 20px;
   padding: 0;

@@ -3,6 +3,7 @@ import { authService } from '../../services/auth';
 import type { IOAuthFlow } from 'src/types/api';
 import { useNavigate } from '@router-dom';
 import style from './OAuthVerifyPage.module.css';
+import { Button } from '../../components/Button/Button';
 import type { UserResponse } from 'src/types';
 
 interface IOAuthVerifyProps {
@@ -121,18 +122,18 @@ export function OAuthVerifyPage({ provider, setIsAuthenticate, setCurrentUser }:
             {errorMessage ? 'Исправьте ошибку и попробуйте снова' : 'Не удалось войти через VK'}
           </p>
           <div className={style.buttonGroup}>
-            <button 
-              className={style.retryButton} 
+            <Button
+              variant="accent"
+              className={style.retryButton}
               onClick={handleOAuthVerify}
-            >
-              Попробовать снова
-            </button>
-            <button 
-              className={style.backButton} 
+              text="Попробовать снова"
+            />
+            <Button
+              variant="secondary"
+              className={style.backButton}
               onClick={() => navigate('/')}
-            >
-              К форме входа
-            </button>
+              text="К форме входа"
+            />
           </div>
         </div>
       </div>

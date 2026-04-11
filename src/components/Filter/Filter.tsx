@@ -1,4 +1,5 @@
 import { useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import style from './Filter.module.css';
 
 interface FilterProps {
@@ -22,14 +23,14 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
                 <h3 className={style.sectionTitle}>Тип объекта</h3>
                 <div className={style.chips}>
                     {propertyTypes.map((type) => (
-                        <button
+                        <Button
                             key={type}
+                            variant='none'
                             type="button"
                             className={`${style.chip} ${selectedType === type ? style.chipActive : ''}`}
                             onClick={() => setSelectedType(type)}
-                        >
-                            {type}
-                        </button>
+                            text={type}
+                        />
                     ))}
                 </div>
             </section>
@@ -55,26 +56,22 @@ export function Filter({ onClose, onOpenMore }: FilterProps) {
                 <h3 className={style.sectionTitle}>Всего комнат</h3>
                 <div className={style.rooms}>
                     {roomOptions.map((room) => (
-                        <button
+                        <Button
                             key={room}
+                            variant='none'
                             type="button"
                             className={`${style.roomChip} ${selectedRoom === room ? style.chipActive : ''}`}
                             onClick={() => setSelectedRoom(room)}
-                        >
-                            {room}
-                        </button>
+                            text={room}
+                        />
                     ))}
                 </div>
             </section>
 
             <div className={style.actions}>
-                <button type="button" className={style.saveBtn} onClick={onClose}>
-                    Сохранить
-                </button>
+                <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
                 или
-                <button type="button" className={style.advancedBtn} onClick={onOpenMore}>
-                    расширенные фильтры
-                </button>
+                <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
             </div>
         </section>
     );

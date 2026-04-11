@@ -36,7 +36,7 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 	const [isResendActive, setIsResendActive] = useState<boolean>(false);
 	const [timerRestartKey, setTimerRestartKey] = useState(0);
 
-	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+	// const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -271,9 +271,13 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 					{!error && successMessage && step !== 'verify' && <span className={style.successText}>{successMessage}</span>}
 				</div>
 
-				<button type="submit" className={style.saveBtn} disabled={isLoading || step === 'verify'}>
-					{isLoading ? 'Отправка...' : 'Сохранить'}
-				</button>
+				<Button
+					type="submit"
+					variant="accent"
+					className={style.saveBtn}
+					disabled={isLoading || step === 'verify'}
+					text={isLoading ? 'Отправка...' : 'Сохранить'}
+				/>
 			</form>
 
 			<Modal isOpen={step === 'verify'}  key="VerifyModal" onClose={handleCloseVerifyModal}>

@@ -57,12 +57,12 @@
 }
 
 .button:active:not(:disabled) {
-	transform: scale(0.95);
+	transform: scale(0.96);
 	opacity: 0.96;
 }
 
 .round:active:not(:disabled) {
-	transform: scale(0.95);
+	transform: scale(0.96);
     opacity: 0.96;
 }
 

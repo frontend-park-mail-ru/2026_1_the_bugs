@@ -1,4 +1,5 @@
 import { useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import style from './FilterMore.module.css';
 
 interface FilterMoreProps {
@@ -40,14 +41,14 @@ export function FilterMore({ onClose }: FilterMoreProps) {
         <h3 className={style.title}>Тип объекта</h3>
         <div className={style.chips}>
           {propertyTypes.map((type) => (
-            <button
+            <Button
               key={type}
+              variant='none'
               type="button"
               className={`${style.chip} ${selectedType === type ? style.chipActive : ''}`}
               onClick={() => setSelectedType(type)}
-            >
-              {type}
-            </button>
+              text={type}
+            />
           ))}
         </div>
       </section>
@@ -73,14 +74,14 @@ export function FilterMore({ onClose }: FilterMoreProps) {
         <h3 className={style.title}>Всего комнат</h3>
         <div className={style.chips}>
           {roomOptions.map((room) => (
-            <button
+            <Button
               key={room}
+              variant='none'
               type="button"
               className={`${style.roomChip} ${selectedRooms === room ? style.chipActive : ''}`}
               onClick={() => setSelectedRooms(room)}
-            >
-              {room}
-            </button>
+              text={room}
+            />
           ))}
         </div>
       </section>
@@ -106,14 +107,14 @@ export function FilterMore({ onClose }: FilterMoreProps) {
         <h3 className={style.title}>Удобства</h3>
         <div className={style.chips}>
           {amenities.map((name) => (
-            <button
+            <Button
               key={name}
+              variant='none'
               type="button"
               className={`${style.chip} ${selectedAmenities.includes(name) ? style.chipActive : ''}`}
               onClick={() => toggleAmenity(name)}
-            >
-              {name}
-            </button>
+              text={name}
+            />
           ))}
         </div>
       </section>
@@ -132,14 +133,14 @@ export function FilterMore({ onClose }: FilterMoreProps) {
           </label>
 
           {floorFlags.map((item) => (
-            <button
+            <Button
               key={item}
+              variant='none'
               type="button"
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
-            >
-              {item}
-            </button>
+              text={item}
+            />
           ))}
         </div>
       </section>
@@ -160,9 +161,7 @@ export function FilterMore({ onClose }: FilterMoreProps) {
       </section>
 
       <div className={style.actions}>
-        <button type="button" className={style.saveBtn} onClick={onClose}>
-          Сохранить
-        </button>
+        <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
       </div>
     </section>
   );

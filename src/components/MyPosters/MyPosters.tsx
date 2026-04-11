@@ -89,7 +89,8 @@ export function MyPosterList() {
                                         <strong>{apt.price.toLocaleString()} ₽</strong>
                                     </div>
                                 </div>
-                                <button
+                                <Button
+                                    variant="none"
                                     className={style.menuBtn + (isMenuOpen ? ' ' + style.menuBtnActive : '')}
                                     aria-label="Меню"
                                     onClick={(e:MouseEvent) => {
@@ -100,30 +101,30 @@ export function MyPosterList() {
                                     <span className={style.menuDots}>
                                         <img src="/svg/options.svg" alt="" aria-hidden="true" draggable="false" />
                                     </span>
-                                </button>
+                                </Button>
                                 {isMenuOpen && (
                                     <div className={style.menuPopup}>
-                                        <button
-                                            className={`${style.menuItem} fontHero`}
+                                        <Button
+                                            variant="menu"
+                                            className="fontHero"
+                                            text="Изменить"
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
                                                 handleEdit(apt.alias);
                                             }}
-                                        >
-                                            Изменить
-                                        </button>
+                                        />
                                         <div className={style.menuSeparator} />
-                                        <button
-                                            className={`${style.menuItem} ${style.menuDelete} fontHero`}
+                                        <Button
+                                            variant="menu"
+                                            className={`fontHero ${style.menuItemDelete}`}
+                                            text="Удалить"
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
                                                 handleDelete(apt.alias);
                                             }}
-                                        >
-                                            Удалить
-                                        </button>
+                                        />
                                     </div>
                                 )}
                             </article>

@@ -12,6 +12,7 @@ import { PosterSummary } from '../components/PosterPage/PosterSummary';
 import { PosterMap } from '../components/PosterPage/PosterMap';
 import { PosterSeller } from '../components/PosterPage/PosterSeller';
 import { PosterCompany } from '../components/PosterPage/PosterCompany';
+import { Button } from '../components/Button/Button';
 
 interface PosterPageProps {
   alias?: string;
