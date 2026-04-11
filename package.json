@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "@vkid/sdk": "^2.6.5",
-    "the-react": "^1.0.5"
+    "the-react": "^1.0.6"
   }
 }
