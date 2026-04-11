@@ -3,6 +3,7 @@ import { useNavigate } from '@router-dom';
 import style from './Header.module.css';
 import appStyle from './../../App/App.module.css';
 import type { UserResponse } from 'src/types';
+import { Button } from '../Button/Button';
 
 interface HeaderProps {
   currentPath: string;
@@ -158,9 +159,9 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
         
         ) : (
           <div className={style['actions']}>
-            <button className={appStyle.primary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
+            <Button variant="accent" type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
               Войти
-            </button>
+            </Button>
           </div>
         )}
         

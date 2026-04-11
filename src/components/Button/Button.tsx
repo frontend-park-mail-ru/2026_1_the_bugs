@@ -1,29 +1,46 @@
-// import type { JSXElement } from "the-react/types/jsx"
+import type { JSXElementType } from "the-react"
+import styles from "./Button.module.css"
 
-// interface IButtonComponent {
-//     text: string
-//     icon: JSXElement
-//     contentType: 'Icon' | 'Left+Text' | 'Text+Right' | 'Text'
-//     kind: 'contained' | 'outlined' | 'ghost'
-//     view: 'primary' | 'secondary' | 'negative'
-// }
+type ButtonVariant = 'primary' | 'accent' | 'secondary'
+type ButtonType = 'button' | 'submit' | 'reset'
+type IconPosition = 'left' | 'right'
 
-/**
- * Кнопка с различными вариантами отображения и стилями.
- * На будущее может поддерживать иконки, разные виды контента и стили оформления.
- * Пока не используем.
- */
-export const Button = () => {
+interface ButtonProps {
+    children?: JSXElementType | string
+    text?: string
+    icon?: JSXElementType
+    iconPosition?: IconPosition
+    variant?: ButtonVariant
+    id?: string
+    'aria-label'?: string
+    className?: string
+    disabled?: boolean
+    type?: ButtonType
+    onClick?: () => void
+}
 
-    // const {text, icon, contentType, kind,view} = props
+/** Универсальная кнопка проекта с тремя визуальными вариантами. */
+export const Button = ({
+    children,
+    text,
+    icon,
+    iconPosition = 'left',
+    variant = 'primary',
+    id,
+    'aria-label': ariaLabel,
+    className = '',
+    disabled = false,
+    type = 'button',
+    onClick,
+}: ButtonProps) => {
+    const content = children ?? text
+    const classes = [styles.button, styles[variant], className].filter(Boolean).join(' ')
 
-    // const s = 2
-
-    // return(
-    //     <button className={`
-    //     ${kind === 'ghost'}
-    //     `}>
-    //         {props}
-    //     </button>
-    // )
+    return (
+        <button id={id} aria-label={ariaLabel} className={classes} type={type} disabled={disabled} onClick={onClick}>
+            {icon && iconPosition === 'left' ? <span className={styles.icon}>{icon}</span> : null}
+            {content ? <span className={styles.label}>{content}</span> : null}
+            {icon && iconPosition === 'right' ? <span className={styles.icon}>{icon}</span> : null}
+        </button>
+    )
 }
