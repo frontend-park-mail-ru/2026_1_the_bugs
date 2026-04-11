@@ -1,0 +1,63 @@
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 44px;
+	padding: 8px;
+	border-radius: var(--radius-L);
+	font-family: "Aqum Two", system-ui, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1;
+	border: 1px solid transparent;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.label {
+	display: inline-flex;
+	align-items: center;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.primary {
+	background: var(--dark);
+	color: #fff;
+	box-shadow: 0 10px 24px rgba(18, 18, 18, 0.18);
+}
+
+.primary:hover:not(:disabled) {
+	background: #262626;
+}
+
+.accent {
+  background-color: var(--accent);
+  color: white;
+}
+
+.accent:hover:not(:disabled) {
+	background: var(--accent-hover);
+}
+
+.secondary {
+	background: var(--card);
+	color: var(--text);
+	border-color: var(--border);
+	box-shadow: var(--shadow);
+}
+
+.secondary:hover:not(:disabled) {
+	background: #f2f2f0;
+	border-color: rgba(0, 0, 0, 0.12);
+}
+
+.button:disabled {
+	transform: none;
+	box-shadow: none;
+}
