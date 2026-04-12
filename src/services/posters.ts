@@ -1,4 +1,4 @@
-import type {Apartment, ApartmentDetails, MyPoster} from "src/types";
+import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
@@ -24,12 +24,9 @@ interface IMyPostersResponse {
 /**
  * Параметры запроса для пагинированного получения объявлений.
  */
-interface IPostersFilters {
-    /** Максимальное количество объявлений для возврата */
+interface IPostersFilters extends IFilters {
     limit: number;
-    /** Количество объявлений для пропуска (для пагинации) */
     offset: number;
-    /** Alias ЖК для фильтрации объявлений */
     utility_company?: string;
     search?: string;
 }
@@ -53,6 +50,19 @@ export async function getPosters(filters: IPostersFilters): Promise<IPostersResp
     if (filters.search) {
         params["search_query"] = filters.search;
     }
+    if (filters.category) params["category"] = filters.category;
+    if (filters.room_count != null) params["room_count"] = filters.room_count;
+    if (filters.min_price != null) params["min_price"] = filters.min_price;
+    if (filters.max_price != null) params["max_price"] = filters.max_price;
+    if (filters.min_square != null) params["min_square"] = filters.min_square;
+    if (filters.max_square != null) params["max_square"] = filters.max_square;
+    if (filters.min_flat_floor != null) params["min_flat_floor"] = filters.min_flat_floor;
+    if (filters.max_flat_floor != null) params["max_flat_floor"] = filters.max_flat_floor;
+    if (filters.min_building_floor != null) params["min_building_floor"] = filters.min_building_floor;
+    if (filters.max_building_floor != null) params["max_building_floor"] = filters.max_building_floor;
+    if (filters.facilities && filters.facilities.length > 0) params["facilities"] = filters.facilities.join(",");
+    if (filters.not_first_floor) params["not_first_floor"] = true;
+    if (filters.not_last_floor) params["not_last_floor"] = true;
     const resp: IPostersResponse = await apiService.get("/posters/flats", params);
     return resp;
 }

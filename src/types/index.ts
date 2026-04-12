@@ -1,3 +1,19 @@
+export interface IFilters {
+  category?: string;
+  room_count?: number;
+  min_price?: number;
+  max_price?: number;
+  min_square?: number;
+  max_square?: number;
+  min_flat_floor?: number;
+  max_flat_floor?: number;
+  min_building_floor?: number;
+  max_building_floor?: number;
+  facilities?: string[];
+  not_first_floor?: boolean;
+  not_last_floor?: boolean;
+}
+
 export interface Apartment {
   id: number;
   alias: string;

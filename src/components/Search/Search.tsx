@@ -1,28 +1,46 @@
-import { useState } from 'the-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import { Button } from '../Button/Button';
 import { Filter } from '../Filter/Filter';
 import { FilterMore } from '../Filter/FilterMore';
 import { Modal } from '../Modal/Modal';
 import style from './Search.module.css';
+import type { IFilters } from 'src/types';
 
 interface SearchProps {
   value: string;
-  onSearch: (value: string) => void;
+  filters: IFilters;
+  onSearch: (value: string, filters: IFilters) => void;
 }
 
-export function Search({ value, onSearch }: SearchProps) {
+export function Search({ value, filters, onSearch }: SearchProps) {
   const [search, setSearch] = useState(value);
+  const [selectedFilters, setSelectedFilters] = useState<IFilters>(filters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+
+  useEffect(() => {
+    setSearch(value);
+  }, [value]);
+
+  useEffect(() => {
+    setSelectedFilters(filters);
+  }, [filters]);
 
   const handleInput = (e: any) => {
     setSearch(e.target.value);
   };
 
   const handleSearchClick = () => {
-    const input = document.querySelector(`.${style.input}`) as HTMLInputElement | null;
-    const actualValue = input ? input.value : search;
-    onSearch(actualValue);
+    onSearch(search, selectedFilters);
+  };
+
+  const handleFilterApply = (nextFilters: IFilters) => {
+    const mergedFilters = {
+      ...selectedFilters,
+      ...nextFilters,
+    };
+    setSelectedFilters(mergedFilters);
+    onSearch(search, mergedFilters);
   };
 
   return (
@@ -36,6 +54,11 @@ export function Search({ value, onSearch }: SearchProps) {
           placeholder="Поиск по району или метро"
           value={search}
           onInput={handleInput}
+          onKeyDown={(e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              handleSearchClick();
+            }
+          }}
         />
         <Button
           variant="accent"
@@ -61,6 +84,8 @@ export function Search({ value, onSearch }: SearchProps) {
         <div className={style.filterMenu} onClick={(e: MouseEvent) => e.stopPropagation()}>
           <Filter
             onClose={() => setIsFilterOpen(false)}
+            onApply={handleFilterApply}
+            initialFilters={selectedFilters}
             onOpenMore={() => {
               setIsFilterOpen(false);
               setIsMoreOpen(true);
@@ -74,7 +99,11 @@ export function Search({ value, onSearch }: SearchProps) {
         onClose={() => setIsMoreOpen(false)}
         contentClassName={style.moreModalContent}
       >
-        <FilterMore onClose={() => setIsMoreOpen(false)} />
+        <FilterMore
+          onClose={() => setIsMoreOpen(false)}
+          onApply={handleFilterApply}
+          initialFilters={selectedFilters}
+        />
       </Modal>
     </div>
   );
