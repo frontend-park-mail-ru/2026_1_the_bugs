@@ -10,9 +10,10 @@ interface SearchProps {
   value: string;
   filters: IFilters;
   onSearch: (value: string, filters: IFilters) => void;
+   setFilters: (filters: IFilters) => void;
 }
 
-export function Search({ value, filters, onSearch }: SearchProps) {
+export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
   const [search, setSearch] = useState(value);
   const [selectedFilters, setSelectedFilters] = useState<IFilters>(filters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -39,6 +40,7 @@ export function Search({ value, filters, onSearch }: SearchProps) {
       ...selectedFilters,
       ...nextFilters,
     };
+    console.log("handleFilterApply", mergedFilters, selectedFilters, nextFilters)
     setSelectedFilters(mergedFilters);
     onSearch(search, mergedFilters);
   };
@@ -83,6 +85,7 @@ export function Search({ value, filters, onSearch }: SearchProps) {
       {isFilterOpen && (
         <div className={style.filterMenu} onClick={(e: MouseEvent) => e.stopPropagation()}>
           <Filter
+            setFilters={setFilters}
             onClose={() => setIsFilterOpen(false)}
             onApply={handleFilterApply}
             initialFilters={selectedFilters}

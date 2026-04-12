@@ -14,14 +14,18 @@ const propertyTypes: { label: string; alias: string }[] = [
   { label: 'Дом', alias: 'house' },
   { label: 'Апартаменты', alias: 'apartments' },
 ];
-const roomOptions = ['1', '2', '3', '4', '5', '6+'];
+const roomOptions = ['0','1', '2', '3', '4', '5', '6+'];
 const amenities: { label: string; alias: string }[] = [
-  { label: 'Wi-Fi', alias: 'wifi' },
-  { label: 'Стиральная машина', alias: 'washing-machine' },
-  { label: 'Посудомоечная машина', alias: 'dishwasher' },
-  { label: 'Парковка', alias: 'parking' },
-  { label: 'Кондиционер', alias: 'conditioner' },
-  { label: 'Лифт', alias: 'elevator' },
+    { alias: 'wifi', label: 'Wi-Fi' },
+    { alias: 'parking', label: 'Парковка' },
+    { alias: 'conditioner', label: 'Кондиционер' },
+    { alias: 'dishwasher', label: 'Посудомойка' },
+    { alias: 'elevator', label: 'Лифт' },
+    { alias: 'concierge', label: 'Консьерж' },
+    { alias: 'tv', label: 'Телевизор' },
+    { alias: 'fridge', label: 'Холодильник' },
+    { alias: 'microwave', label: 'Микроволновка' },
+    { alias: 'stove', label: 'Электроплита' },
 ];
 const floorFlags = ['Не первый', 'Не последний'];
 
@@ -101,12 +105,12 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <div className={style.chips}>
           {propertyTypes.map((type) => (
             <Button
-              key={type}
+              key={type.label}
               variant='none'
               type="button"
-              className={`${style.chip} ${selectedType === type ? style.chipActive : ''}`}
-              onClick={() => setSelectedType(type)}
-              text={type}
+              className={`${style.chip} ${selectedType === type.alias ? style.chipActive : ''}`}
+              onClick={() => setSelectedType(type.alias)}
+              text={type.label}
             />
           ))}
         </div>
@@ -166,14 +170,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <h3 className={style.title}>Удобства</h3>
         <div className={style.chips}>
           {amenities.map((name) => (
-            <Button
-              key={name}
+            <button
+              key={name.alias}
               variant='none'
               type="button"
-              className={`${style.chip} ${selectedAmenities.includes(name) ? style.chipActive : ''}`}
-              onClick={() => toggleAmenity(name)}
-              text={name}
-            />
+              className={`${style.chip} ${selectedAmenities.includes(name.alias) ? style.chipActive : ''}`}
+              onClick={() => toggleAmenity(name.alias)}
+            >
+              {name.label}
+            </button>
           ))}
         </div>
       </section>
@@ -192,14 +197,13 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           </label>
 
           {floorFlags.map((item) => (
-            <Button
+            <button
               key={item}
               variant='none'
               type="button"
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
-              text={item}
-            />
+            > {item}</button>
           ))}
         </div>
       </section>
@@ -220,7 +224,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       </section>
 
       <div className={style.actions}>
-        <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
+        <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave} text="Сохранить">Сохранить </button>
       </div>
     </section>
   );

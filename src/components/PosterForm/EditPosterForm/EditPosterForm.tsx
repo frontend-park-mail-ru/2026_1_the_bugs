@@ -25,6 +25,7 @@ import {
 } from '../common';
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
+import type { ErrorResponse } from 'src/types/api';
 
 // ---- вспомогательные функции и типы ----
 function normalizeAddressForCompare(value: string) {
@@ -413,8 +414,18 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
       const response = await updatePoster(poster.alias, payload);
       setUpdatedAlias(response.alias || poster.alias);
       setIsPublished(true);
-    // } catch (error: any) {
-    //   setSubmitError(error?.message || 'Не удалось сохранить изменения');
+     } catch (error: any) {
+       const err = error as ErrorResponse
+        if (err?.status == 409){
+            setSubmitError('Похожее объявление уже размещено');
+        } 
+        else if (err?.status == 400){
+          if (err?.data?.field){
+            setSubmitError(`Направильно заполнено поле: ${err.data.field}`);
+          }
+          setSubmitError('Неправильно заполнена форма');
+        } 
+        setSubmitError('Не удалось сохранить объявление');
     } finally {
       setIsSubmitting(false);
     }

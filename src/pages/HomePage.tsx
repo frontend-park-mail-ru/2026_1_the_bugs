@@ -129,14 +129,23 @@ export function HomePage({search_query}: Props) {
   };
 
     const handleSearch = (searchVal: string, nextFilters: IFilters) => {
-    setSearchQuery(searchVal);
-    setFilters(nextFilters);
+      setSearchQuery(searchVal);
+      setFilters(nextFilters);
 
-    const query = syncQueryParams(searchVal, nextFilters);
-    navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
-    setApartments([]);
-    setHasMore(true);
-  };
+      const query = syncQueryParams(searchVal, nextFilters);
+      navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
+      setApartments([]);
+      setHasMore(true);
+    };
+
+    const handelFilters = (nextFilters: IFilters) => {
+      setFilters(nextFilters);
+      console.log(nextFilters)
+      const query = syncQueryParams(searchQuery, nextFilters);
+      navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
+      setApartments([]);
+      setHasMore(true);
+    };
 
   useEffect(() => {
     fetchData(searchQuery, filters, false);
@@ -145,6 +154,7 @@ export function HomePage({search_query}: Props) {
   return (
     <div>
       <Hero 
+        setFilters={setFilters}
         searchValue={searchQuery}
         filters={filters}
         onSearch={handleSearch}

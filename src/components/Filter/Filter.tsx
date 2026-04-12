@@ -7,6 +7,7 @@ interface FilterProps {
     onClose: () => void;
     onOpenMore: () => void;
     onApply: (filters: IFilters) => void;
+    setFilters: (filters: IFilters) => void;
     initialFilters?: IFilters;
 }
 
@@ -15,9 +16,9 @@ const propertyTypes: { label: string; alias: string }[] = [
     { label: 'Дом', alias: 'house' },
     { label: 'Апартаменты', alias: 'apartments' },
 ];
-const roomOptions = ['1', '2', '3', '4', '5', '6+'];
+const roomOptions = ['0','1', '2', '3', '4', '5', '6+'];
 
-export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterProps) {
+export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilters }: FilterProps) {
     const [selectedType, setSelectedType] = useState(initialFilters?.category ?? '');
     const [selectedRoom, setSelectedRoom] = useState(
         initialFilters?.room_count != null
@@ -30,6 +31,29 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterP
     const [maxPrice, setMaxPrice] = useState(
         initialFilters?.max_price != null ? String(initialFilters.max_price) : ''
     );
+
+    // Кнопка сброса фильтров
+    const handleReset = () => {
+        setSelectedType('');
+        setSelectedRoom('');
+        setMinPrice('');
+        setMaxPrice('');
+        setFilters({
+            category: undefined,
+            room_count: undefined,
+            min_price: undefined,
+            max_price: undefined,
+            min_square: undefined,
+            max_square: undefined,
+            min_flat_floor: undefined,
+            max_flat_floor: undefined,
+            min_building_floor: undefined,
+            max_building_floor: undefined,
+            facilities: undefined,
+            not_first_floor: undefined,
+            not_last_floor: undefined,
+        });
+    };
 
     const handleSave = () => {
         const roomNum = selectedRoom
@@ -48,7 +72,17 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterP
 
     return (
         <section className={style.panel}>
-
+            <section className={style.section}>
+                <Button 
+                    variant="secondary" 
+                    type="button" 
+                    className={style.resetBtn} 
+                    onClick={handleReset}
+                    text="Сбросить фильтры"
+                />
+                <br/>
+            </section>
+            
             <section className={style.section}>
                 <h3 className={style.sectionTitle}>Тип объекта</h3>
                 <div className={style.chips}>
@@ -100,9 +134,11 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterP
             </section>
 
             <div className={style.actions}>
-                <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
+              
+                <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave} text="Сохранить"> Сохранить </button>
                 или
                 <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
+
             </div>
         </section>
     );

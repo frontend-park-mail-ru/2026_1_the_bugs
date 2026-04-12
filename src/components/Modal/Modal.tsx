@@ -1,5 +1,5 @@
 import { useEffect } from 'the-react/hooks';
-import style from "./Modal.module.css";
+import styles from "./Modal.module.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,6 +7,7 @@ interface ModalProps {
   children: any;
   contentClassName?: string;
   overlayClassName?: string;
+  style?: Record<string, any>
 }
 
 /** Универсальная модальная обёртка с затемнённым оверлеем; закрывается кликом по фону. */
@@ -16,6 +17,7 @@ export function Modal({
   children,
   contentClassName = '',
   overlayClassName = '',
+  style
 }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -37,9 +39,9 @@ export function Modal({
   };
 
   return (
-    <div className={`modal ${isOpen ? 'active' : ''} ${overlayClassName}`.trim()} onClick={handleOverlayClick}>
+    <div className={`modal ${isOpen ? 'active' : ''} ${overlayClassName}`.trim()} onClick={handleOverlayClick} style={style}>
       <div className={`modal-content ${contentClassName}`.trim()}>
-        <button className={style.close} onClick={onClose}>&times;</button>
+        <button className={styles.close} onClick={onClose}>&times;</button>
           {children}
       </div>
     </div>

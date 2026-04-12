@@ -49,17 +49,15 @@ export function MyPosterList() {
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
             )}
             <h1 className={style.main}>Мои объявления</h1>
-            <Button
-                variant='accent'
-                type="button"
-                style={{'display':'flex', 'margin':'0 auto'}}
+            <button
+                style={{'display':'flex', 'margin':'0 auto', 'padding': '10px', 'background-color': 'var(--accent)','color': 'white'}}
                 aria-label="Создать объявление"
                 onClick={() => {
                     navigate('/posters/create');
                 }}
               >
                 + Создать новое объявление
-              </Button>
+              </button>
             {posters.length === 0 ? (
                 <div className={style.nothing}>У вас пока нет объявлений</div>
             ) : (
@@ -89,25 +87,29 @@ export function MyPosterList() {
                                         <strong>{apt.price.toLocaleString()} ₽</strong>
                                     </div>
                                 </div>
-                                <Button
+                                <button
+                                    id="ButtonMenu"
                                     variant="none"
+                                    key="ButtonMenu"
                                     className={style.menuBtn + (isMenuOpen ? ' ' + style.menuBtnActive : '')}
                                     aria-label="Меню"
                                     onClick={(e:MouseEvent) => {
                                         e.stopPropagation();
                                         setMenuOpen(isMenuOpen ? null : apt.id);
                                     }}
+                                    style={{'position': 'absolute'}}
                                 >
                                     <span className={style.menuDots}>
                                         <img src="/svg/options.svg" alt="" aria-hidden="true" draggable="false" />
                                     </span>
-                                </Button>
+                                </button>
                                 {isMenuOpen && (
                                     <div className={style.menuPopup}>
                                         <Button
                                             variant="menu"
                                             className="fontHero"
                                             text="Изменить"
+                                            key="ButtonEdit"
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
@@ -119,6 +121,7 @@ export function MyPosterList() {
                                             variant="menu"
                                             className={`fontHero ${style.menuItemDelete}`}
                                             text="Удалить"
+                                            key="ButtonDell"
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);

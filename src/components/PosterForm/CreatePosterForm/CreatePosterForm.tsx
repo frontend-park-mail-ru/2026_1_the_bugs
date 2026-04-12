@@ -15,6 +15,7 @@ import styles from '../PosterForm.module.css';
 import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, ROOM_OPTIONS, STEP_ERROR_FIELDS, STEP_TITLES } from '../common';
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
+import type { ErrorResponse } from 'src/types/api';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
   return Math.min(step + 1, TOTAL_CREATE_POSTER_STEPS) as CreatePosterStep;
@@ -402,7 +403,17 @@ export function CreatePosterForm() {
       setCreatedAlias(alias);
       setIsPublished(true);
     } catch (error: any) {
-      setSubmitError(error?.message || 'Не удалось опубликовать объявление');
+      const err = error as ErrorResponse
+      if (err?.status == 409){
+         setSubmitError('Похожее объявление уже размещено');
+      } 
+      else if (err?.status == 400){
+        if (err?.data?.field){
+          setSubmitError(`Направильно заполнено поле: ${err.data.field}`);
+        }
+        setSubmitError('Неправильно заполнена форма');
+      } 
+      setSubmitError('Не удалось опубликовать объявление');
     } finally {
       setIsSubmitting(false);
     }

@@ -310,20 +310,22 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 							{isLoading ? 'Загрузка...' : 'Подтвердить'}
 						</Button>
 					</form>
-
-					<Button
-						type="button"
-						variant="secondary"
-						onClick={handleResendCode}
-						disabled={!isResendActive || isLoading}
-					>
-						{!isResendActive ? `Отправить ${tick} сек.` : 'Отправить еще раз'}
-					</Button>
+					<div style={{'width': '100%', 'display': 'flex'}}>
+						<Button
+							type="button"
+							variant="secondary"
+							onClick={handleResendCode}
+							disabled={!isResendActive || isLoading}
+							style={{'margin':'0px auto'}}
+						>
+							{!isResendActive ? `Отправить ${tick} сек.` : 'Отправить еще раз'}
+						</Button>
+					</div>
 
 				</div>
 			</Modal>
 			<Modal isOpen={step === 'success'} key="SuccessModal" onClose={handleCloseVerifyModal}>
-				<div>
+				<div style={{'flex-direction': 'column',  'display': 'flex'}}>
 					<p className={authModalStyle.title}>Пароль успешно изменен!</p>
 					
 					<Button

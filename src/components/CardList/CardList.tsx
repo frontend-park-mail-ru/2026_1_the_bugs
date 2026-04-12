@@ -2,6 +2,8 @@ import { Card } from '../Card/Card';
 import type { Apartment } from '../../types';
 import style from './CardList.module.css';
 import { useEffect, useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
+import { useNavigate } from '@router-dom';
 
 interface CardListProps {
   apartments: Apartment[];
@@ -18,6 +20,7 @@ export function CardList({
   onLoadMore, 
   pageSize,
 }: CardListProps) {
+  const navigate = useNavigate()
   useEffect(() => {
     if (!hasMore || isFetchingMore) return;
 
@@ -53,6 +56,13 @@ export function CardList({
   return (
     <div style={{'align-items':'center'}}>
         <section className={style.cards}>
+          {((apartments.length==0) && !isFetchingMore) && (
+            <div style={{'display': 'flex', 'flex-direction': 'column', 'gap':'10px', 'align-items': 'center'}}>
+              <p>Ничего не найдено</p>
+              <Button variant="secondary" type="button" className={style.advancedBtn} onClick={()=>{navigate("/")}} text="Сбросить фильтры" />
+            </div>
+            
+          )}
       {apartments.map((apt) => (
         <Card key={apt.id.toString()} apartment={apt} />
       ))}

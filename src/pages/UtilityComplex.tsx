@@ -13,6 +13,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	if (alias === undefined){
 		return null
 	}
+	const [isLoading, setIsLoading] = useState(false)
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
 	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
@@ -26,6 +27,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	}
 
 	const handleUtilityByAlias = async () => {
+		setIsLoading(true)
 		setUtilityError(undefined);
 		try {
 			const utilityResp = await getUtilityCompanyByAlias({ alias });
@@ -34,6 +36,8 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 		} catch (error) {
 			console.error('Failed to load utility complex by alias:', error);
 			setUtilityError('Не удалось загрузить данные ЖК');
+		} finally{
+			setIsLoading(false)
 		}
 	}
 
@@ -54,6 +58,13 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			handleUtilityByAlias();
 		}, []
 	)
+	if (isLoading){
+		return(
+			<div>
+				<p className="fontHero">Загрузка ЖК...</p>
+			</div>
+		)
+	}
 
 	return (
 		<div>
