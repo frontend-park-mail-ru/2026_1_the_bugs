@@ -7,6 +7,6 @@ ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_BASE_URL=$VITE_BASE_URL
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --omit=dev
 COPY . ./
 CMD ["npm", "run", "build"]
