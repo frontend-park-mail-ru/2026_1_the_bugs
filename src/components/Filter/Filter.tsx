@@ -81,22 +81,12 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
 
     return (
         <section className={style.panel}>
-            <section className={style.section}>
-                <Button 
-                    variant="secondary" 
-                    type="button" 
-                    className={style.resetBtn} 
-                    onClick={handleReset}
-                    text="Сбросить фильтры"
-                />
-                <br/>
-            </section>
             
             <section className={style.section}>
                 <h3 className={style.sectionTitle}>Тип объекта</h3>
                 <div className={style.chips}>
                     {propertyTypes.map(({ label, alias }) => (
-                        <button
+                        <Button
                             key={alias}
                             type="button"
                             data-type-alias={alias}
@@ -104,7 +94,7 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
                             onClick={() => setSelectedType(selectedType === alias ? '' : alias)}
                         >
                             {label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </section>
@@ -149,6 +139,15 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
                 или
                 <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
 
+            </div>
+
+            <div className={style.resetWrap}>
+                <Button
+                    variant="secondary"
+                    type="button"
+                    onClick={handleReset}
+                    text="Сбросить фильтры"
+                />
             </div>
         </section>
     );
