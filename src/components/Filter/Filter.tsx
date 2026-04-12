@@ -1,4 +1,5 @@
-import { useState } from '@my-react/hooks';
+import { useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import style from './Filter.module.css';
 import type { IFilters } from 'src/types';
 
@@ -85,26 +86,23 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters }: FilterP
                 <h3 className={style.sectionTitle}>Всего комнат</h3>
                 <div className={style.rooms}>
                     {roomOptions.map((room) => (
-                        <button
+                        <Button
                             key={room}
+                            variant='none'
+                            shape='round'
                             type="button"
                             className={`${style.roomChip} ${selectedRoom === room ? style.chipActive : ''}`}
-                            onClick={() => setSelectedRoom(selectedRoom === room ? '' : room)}
-                        >
-                            {room}
-                        </button>
+                            onClick={() => setSelectedRoom(room)}
+                            text={room}
+                        />
                     ))}
                 </div>
             </section>
 
             <div className={style.actions}>
-                <button type="button" className={style.saveBtn} onClick={handleSave}>
-                    Сохранить
-                </button>
+                <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
                 или
-                <button type="button" className={style.advancedBtn} onClick={onOpenMore}>
-                    расширенные фильтры
-                </button>
+                <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
             </div>
         </section>
     );

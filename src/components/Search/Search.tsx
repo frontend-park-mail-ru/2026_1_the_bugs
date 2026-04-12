@@ -1,4 +1,5 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import { Filter } from '../Filter/Filter';
 import { FilterMore } from '../Filter/FilterMore';
 import { Modal } from '../Modal/Modal';
@@ -59,24 +60,24 @@ export function Search({ value, filters, onSearch }: SearchProps) {
             }
           }}
         />
-        <button
-          className={`${style.btn} ${style.accent}`}
+        <Button
+          variant="accent"
+          className={style.btn}
           type="button"
           aria-label="Фильтр"
           title="Фильтр"
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-        >
-          <img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />
-        </button>
-        <button
+          icon={<img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />}
+        />
+        <Button
+          variant="none"
           className={`${style.btn} ${style.dark}`}
           type="button"
           aria-label="Поиск"
           title="Поиск"
           onClick={handleSearchClick}
-        >
-          <img src="/svg/search.svg" alt="" aria-hidden="true" draggable={false} />
-        </button>
+          icon={<img src="/svg/search.svg" alt="" aria-hidden="true" draggable={false} />}
+        />
       </div>
 
       {isFilterOpen && (

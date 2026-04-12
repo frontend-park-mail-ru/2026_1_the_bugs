@@ -1,5 +1,5 @@
-import { useEffect, useState } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useEffect, useState } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import { getPosterByAlias } from '../services/posters';
 import type { ApartmentDetails } from '../types';
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import style from './ProfilePassword.module.css';
 import authModalStyle from '../AuthModal/AuthModal.module.css';
 import { authService } from '../../services/auth';
@@ -10,6 +10,7 @@ import {
 } from '../AuthModal/authValidation';
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { Modal } from '../Modal/Modal';
+import { Button } from '../Button/Button';
 
 interface ProfilePasswordProps {
 	email: string;
@@ -35,7 +36,7 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 	const [isResendActive, setIsResendActive] = useState<boolean>(false);
 	const [timerRestartKey, setTimerRestartKey] = useState(0);
 
-	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+	// const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -270,9 +271,13 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 					{!error && successMessage && step !== 'verify' && <span className={style.successText}>{successMessage}</span>}
 				</div>
 
-				<button type="submit" className={style.saveBtn} disabled={isLoading || step === 'verify'}>
-					{isLoading ? 'Отправка...' : 'Сохранить'}
-				</button>
+				<Button
+					type="submit"
+					variant="accent"
+					className={style.saveBtn}
+					disabled={isLoading || step === 'verify'}
+					text={isLoading ? 'Отправка...' : 'Сохранить'}
+				/>
 			</form>
 
 			<Modal isOpen={step === 'verify'}  key="VerifyModal" onClose={handleCloseVerifyModal}>
@@ -301,19 +306,19 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 							</div>
 						</div>
 
-						<button type="submit" className={authModalStyle.primary} disabled={isLoading}>
+						<Button type="submit" variant="accent" disabled={isLoading}>
 							{isLoading ? 'Загрузка...' : 'Подтвердить'}
-						</button>
+						</Button>
 					</form>
 
-					<button
+					<Button
 						type="button"
-						className={authModalStyle.secondary}
+						variant="secondary"
 						onClick={handleResendCode}
 						disabled={!isResendActive || isLoading}
 					>
 						{!isResendActive ? `Отправить ${tick} сек.` : 'Отправить еще раз'}
-					</button>
+					</Button>
 
 				</div>
 			</Modal>
@@ -321,13 +326,13 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 				<div>
 					<p className={authModalStyle.title}>Пароль успешно изменен!</p>
 					
-					<button
+					<Button
 						type="button"
-						className={authModalStyle.primary}
+						variant="primary"
 						onClick={()=>setStep('form')}
 					>
 						Назад
-					</button>
+					</Button>
 				</div>
 			</Modal>
 		</div>

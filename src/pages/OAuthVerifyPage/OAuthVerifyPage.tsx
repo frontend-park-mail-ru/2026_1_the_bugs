@@ -1,15 +1,18 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import { authService } from '../../services/auth';
 import type { IOAuthFlow } from 'src/types/api';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 import style from './OAuthVerifyPage.module.css';
+import { Button } from '../../components/Button/Button';
+import type { UserResponse } from 'src/types';
 
 interface IOAuthVerifyProps {
   provider: 'vk' | 'yandex';
+  setCurrentUser: (user: UserResponse)=>void
   setIsAuthenticate: (isAuth: boolean) => void;
 }
 
-export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyProps) {
+export function OAuthVerifyPage({ provider, setIsAuthenticate, setCurrentUser }: IOAuthVerifyProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,6 +66,8 @@ export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyPro
           await authService.loginFromYandex(flow);
           break;
       }
+      const user = await authService.getMe()
+      setCurrentUser(user)
       setIsSuccess(true);
       setIsAuthenticate(true);
       setTimeout(() => navigate('/'), 1200);
@@ -117,18 +122,18 @@ export function OAuthVerifyPage({ provider, setIsAuthenticate }: IOAuthVerifyPro
             {errorMessage ? 'Исправьте ошибку и попробуйте снова' : 'Не удалось войти через VK'}
           </p>
           <div className={style.buttonGroup}>
-            <button 
-              className={style.retryButton} 
+            <Button
+              variant="accent"
+              className={style.retryButton}
               onClick={handleOAuthVerify}
-            >
-              Попробовать снова
-            </button>
-            <button 
-              className={style.backButton} 
+              text="Попробовать снова"
+            />
+            <Button
+              variant="secondary"
+              className={style.backButton}
               onClick={() => navigate('/')}
-            >
-              К форме входа
-            </button>
+              text="К форме входа"
+            />
           </div>
         </div>
       </div>

@@ -24,11 +24,11 @@
 }
 
 .cardsGrid {
+    margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 300px));
+    gap: 18px;
     justify-content: center;
-    margin: 0 auto;
 }
 
 @media (max-width: 768px) {
@@ -126,22 +126,8 @@
 }
 
 
-.menuItem {
-    background: none;
-    border: none;
-    padding: 12px 22px;
-    text-align: left;
-    font-size: 15px;
-    cursor: pointer;
-    border-radius: 0;
-    color: #222;
-    font-family: inherit;
-    box-shadow: none;
-}
-
-.menuItem:hover {
-    box-shadow: none;
-    color: var(--accent);
+.menuItemDelete {
+    color: #cb2d2d;
 }
 
 

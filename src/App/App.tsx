@@ -1,5 +1,5 @@
-import { Router, Switch } from '@my-react/router-dom/Router';
-import { useEffect, useState } from '@my-react/hooks';
+import {Switch, Router} from '@router-dom';
+import { useEffect, useState } from 'the-react';
 import { HomePage } from '../pages/HomePage';
 import { UtilityComplex } from '../pages/UtilityComplex';
 import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';
@@ -12,6 +12,7 @@ import { ProtectedLayout } from '../components/ProtectedLayout/ProtectedLayout';
 import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
+import { apiService } from '../services/apiClass';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -19,10 +20,14 @@ import type { UserResponse } from '../types';
  */
 export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-   const [currentSearch, setCurrentSearch] = useState(window.location.search)
+  const [currentSearch, setCurrentSearch] = useState(window.location.search)
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
+
+  useEffect(()=>{
+    apiService.init()
+  }, [])
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -51,10 +56,10 @@ export function App() {
       <div className="page">
         <Switch key="root" currentPath={currentPath} >
           <Router currentPath={currentPath} path="/oauth/vk">
-            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="vk" key="OAuthVerifyPageVK" />
+            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} setCurrentUser={setCurrentUser} provider="vk" key="OAuthVerifyPageVK" />
           </Router>
           <Router currentPath={currentPath} path="/oauth/yandex">
-            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} provider="yandex" key="OAuthVerifyPageYandex" />
+            <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate}  setCurrentUser={setCurrentUser} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
             < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">

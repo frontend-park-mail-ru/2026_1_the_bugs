@@ -1,4 +1,4 @@
-import { useEffect } from '@my-react/hooks';
+import { useEffect } from 'the-react/hooks';
 import * as VKID from '@vkid/sdk';
 import {generateCodeVerifier, generateState } from '../../../utils/pkce';
 import { VK_OAUTH_CLIENT_ID, VK_OAUTH_REDIRECT_URL, VK_SCOPE } from '../../../config';

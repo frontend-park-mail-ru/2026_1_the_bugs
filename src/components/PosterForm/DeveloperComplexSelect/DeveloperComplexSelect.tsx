@@ -1,7 +1,7 @@
 
 import styles from '../PosterForm.module.css';
 import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 
 interface DeveloperComplexSelectProps {
   selectedDeveloperId: number | null;

@@ -1,0 +1,19 @@
+{
+  "name": "ДомДели",
+  "short_name": "DomDeli",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f08dcc",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/svg/logo.svg",
+      "type": "image/svg+xml", "sizes": "192x192"
+    },
+    {
+      "src": "/svg/logo.svg",
+      "type": "image/svg+xml", "sizes": "512x512"
+    }
+  ]
+}

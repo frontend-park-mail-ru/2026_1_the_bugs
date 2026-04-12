@@ -1,6 +1,6 @@
-import { useState } from '@my-react/hooks';
+import { useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import style from "./AuthModal.module.css";
-import appStyle from "../../App/App.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -181,13 +181,13 @@ export default function UpdatePwd({ onToggleMode }: AuthModalChildProps) {
                 {error && (<span>{error}</span>)}
               </div>
             </div>
-            <button style={{'width':'60%'}}
-              type="submit" 
-              className={appStyle.primary} 
+            <Button
+              variant='accent'
+              style={{'width':'60%'}}
+              type="submit"
               disabled={isLoading}
-            >
-              {isLoading ? 'Загрузка...' :  'Подтвердить' }
-            </button>
+              text={isLoading ? 'Загрузка...' : 'Подтвердить'}
+            />
             
           </form>
         </div>

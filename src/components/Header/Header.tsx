@@ -1,8 +1,8 @@
-import { useEffect, useState } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useEffect, useState } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import style from './Header.module.css';
-import appStyle from './../../App/App.module.css';
 import type { UserResponse } from 'src/types';
+import { Button } from '../Button/Button';
 
 interface HeaderProps {
   currentPath: string;
@@ -69,8 +69,9 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
         ) : isAutenticated ? (
           <div className={style['actions']}>
             {showBtn && (
-              <button
-                className={`${appStyle.secondary} ${style.createBtn} ${isBtnVisible ? style.createBtnVisible : style.createBtnHidden}`}
+              <Button
+                variant="secondary"
+                className={`${isBtnVisible ? style.createBtnVisible : style.createBtnHidden}`}
                 type="button"
                 aria-label="Создать объявление"
                 tabIndex={isBtnVisible ? 0 : -1}
@@ -82,23 +83,25 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                 }}
               >
                 Создать
-              </button>
+              </Button>
             )}
-            {/* <button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
+            {/* <Button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
               <img src="/svg/message.svg" alt="Сообщение" aria-hidden="true" draggable="false"/>
-            </button> */}
-            <button className={style.btn} type="button" aria-label="Избранное">
+            </Button> */}
+            <Button variant='primary' shape="round" type="button" aria-label="Избранное">
               <img src="/svg/heart.svg" alt="Лайки" aria-hidden="true" draggable="false"/>
-            </button>
-            {/* <button className={style.btn} type="button" id="openAuth" aria-label="Профиль">
+            </Button>
+            {/* <Button className={style.btn} type="button" id="openAuth" aria-label="Профиль">
               <img src="/svg/profile.svg" alt="Профиль" aria-hidden="true" draggable="false"/>
-            </button>
-            <button className={style.btn} type="button" aria-label="Выйти" onClick={onLogoutClick}>
+            </Button>
+            <Button className={style.btn} type="button" aria-label="Выйти" onClick={onLogoutClick}>
               <img src="/svg/logout.svg" alt="Выйти" aria-hidden="true" draggable="false"/>
-            </button> */}
+            </Button> */}
             <div className={style.menuWrap}>
-              <button
-                className={style.btn + (isMenuOpen ? ' ' + style.menuBtnActive : '')}
+              <Button
+                variant='primary'
+                shape="round"
+                className={isMenuOpen ? style.menuBtnActive : ''}
                 type="button"
                 aria-label="Открыть меню"
                 onClick={(e: MouseEvent) => {
@@ -111,22 +114,24 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                 ) : (
                   <img src="/svg/profile.svg" alt="Меню" aria-hidden="true" draggable="false"/>
                 )}
-              </button>
+              </Button>
               {isMenuOpen && (
                 <div className={style.menuPopup}>
-                  <button
-                    className={`${style.menuItem} fontHero`}
+                  <Button 
+                    variant='menu'
+                    className="fontHero"
+                    text="Мой профиль"
                     type="button"
                     onClick={() => {
                       closeMenu();
                       navigate('/profile');
                     }}
-                  >
-                    Мой профиль
-                  </button>
+                  />
                   <div className={style.menuSeparator} />
-                  <button
-                    className={`${style.menuItem} fontHero`}
+                  <Button 
+                    variant='menu'
+                    className="fontHero"
+                    text="Мои объявления"
                     type="button"
                     onClick={() => {
                       closeMenu();
@@ -134,22 +139,19 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                         navigate('/my-posters');
                       }
                     }}
-                  >
-                    Мои объявления
-                  </button>
+                  />
                   <div className={style.menuSeparator} />
-                  < button
-                    style={{'display':'flex'}}
-                    className={`${style.menuItem} fontHero`}
+                  <Button
+                    variant='menu'
+                    className="fontHero"
+                    icon={<img src="/svg/logout.svg" alt="Выйти" aria-hidden="true" draggable="false"/>}
+                    text="Выйти"
                     type="button"
                     onClick={() => {
                       closeMenu();
                       onLogoutClick();
                     }}
-                  >
-                    <img src="/svg/logout.svg" alt="Выйти" aria-hidden="true" draggable="false"/>
-                    Выйти
-                  </button>
+                  />
                 </div>
               )}
             </div>
@@ -158,9 +160,9 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
         
         ) : (
           <div className={style['actions']}>
-            <button className={appStyle.primary} type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
+            <Button variant="accent" type="button" id="openAuth" aria-label="Войти" onClick={onAuthorizeClick}>
               Войти
-            </button>
+            </Button>
           </div>
         )}
         

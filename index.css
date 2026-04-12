@@ -102,7 +102,7 @@ button img {
 .modal-content {
   border-radius: 20px;
   background-color: var(--bg);
-  padding: 40px 40px 20px 40px;
+  padding: 40px 20px 20px 20px;
   border: none;
   box-shadow: var(--shadow);
   width: var(--modal-width, 90%);
@@ -167,7 +167,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  /* max-width: calc(4 * 250px + 3 * 18px); */
+  max-width: calc(4 * 250px + 3 * 18px); 
   width: 100%;
   margin: 0 auto;
 }
@@ -183,7 +183,7 @@ img {
     gap: 16px;
   }
   .modal-content {
-    padding: 24px 6px 12px 6px;
+    padding: 24px 12px 12px 12px;
     max-width: 98vw;
     margin: 24px auto;
   }

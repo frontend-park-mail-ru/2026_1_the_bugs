@@ -1,6 +1,5 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import style from "./AuthModal.module.css";
-import appStyle from "../../App/App.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -16,6 +15,7 @@ import {
     getHighlightStyle,
 } from './authErrors'
 import OAuthYandexButton from '../OAuth/YandexID/YandexID';
+import { Button } from '../Button/Button';
 
 export interface AuthFormState {
   email: string;
@@ -115,7 +115,7 @@ export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildPro
 
     return (
         <div>
-            <h2 className={style.title}>
+          <h2 className={style.title}>
             Авторизация
           </h2>
 
@@ -174,22 +174,21 @@ export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildPro
               </div>
             </div>
 
-            <button style={{'width':'60%'}}
+            <Button variant="accent"
+              style={{'width':'60%'}}
               type="submit" 
-              className={appStyle.primary} 
               disabled={isLoading}
             >
               {isLoading ? 'Загрузка...' :  'Войти' }
-            </button>
-         
+            </Button>
           </form>
-          <button  style={{'width':'60%'}}
-            className={appStyle.secondary} 
+          <Button variant='secondary'
+            style={{'width':'60%', 'display':'flex', 'margin':'0 auto'}}
             onClick={()=>toggleMode('register')} 
             disabled={isLoading}
           >
             Создать аккаунт
-          </button>
+          </Button>
 
            <div style={{ textAlign: 'center', margin: '10px 0' }}>
                 <a

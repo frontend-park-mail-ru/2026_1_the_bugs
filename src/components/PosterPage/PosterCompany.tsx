@@ -13,7 +13,12 @@ export function PosterCompany({ poster }: PosterCompanyProps) {
         {poster?.company?.avatar_url && (
           <img className={styles.companyAvatar} src={poster.company?.avatar_url} alt={poster.company?.company_name} />
         )}
-        <span className={styles.companyTitle}>{poster.company?.company_name}</span>
+        <div>
+            <p className={styles.companyTitle}>{poster.company?.company_name}</p>
+            <p className={styles.companyText}>Комплекс</p>
+        </div>
+     
+        
       </div>
     </section>
   );

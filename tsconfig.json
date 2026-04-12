@@ -5,17 +5,19 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": [
+      "vite/client",
+    ],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "paths":{
-      "@my-react/*": ["./src/MyReact/*"]
+      "@router-dom": ["./src/RouterDOM/index.ts"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "@my-react",
+    "jsxImportSource": "the-react",
     "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,

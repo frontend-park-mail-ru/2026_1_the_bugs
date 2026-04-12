@@ -1,6 +1,6 @@
-import { useState, useEffect } from '@my-react/hooks';
+import { useState, useEffect } from 'the-react/hooks';
 import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 import { createPoster } from '../../../services/posters';
 import type { CreatePosterField, StepValidationResult } from '../validation';
 import { validateStep } from '../validation';
@@ -384,6 +384,9 @@ export function CreatePosterForm() {
   };
 
   const onSubmit = async () => {
+    if (isSubmitting){
+      return
+    }
     setValidatedUpToStep(TOTAL_CREATE_POSTER_STEPS);
     const validation = validateStep(TOTAL_CREATE_POSTER_STEPS, formDraft);
     if (!applyValidation(validation)) return;

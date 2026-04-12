@@ -1,4 +1,4 @@
-import type { JSXElementType } from "@my-react/types/jsx"
+import type { JSXElementType } from "the-react"
 
 interface IRouterProps {
     path: string

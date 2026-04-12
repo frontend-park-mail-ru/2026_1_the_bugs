@@ -1,7 +1,7 @@
 import { Card } from '../Card/Card';
 import type { Apartment } from '../../types';
 import style from './CardList.module.css';
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 
 interface CardListProps {
   apartments: Apartment[];
@@ -51,7 +51,8 @@ export function CardList({
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
   return (
-    <section className={style.cards}>
+    <div style={{'align-items':'center'}}>
+        <section className={style.cards}>
       {apartments.map((apt) => (
         <Card key={apt.id.toString()} apartment={apt} />
       ))}
@@ -66,6 +67,8 @@ export function CardList({
         )}
       
     </section>
+    </div>
+  
   );
 }
 

@@ -1,6 +1,6 @@
 import type { Apartment } from '../../types';
 import style from './Card.module.css';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useNavigate } from '@router-dom';
 
 interface CardProps {
   apartment: Apartment;

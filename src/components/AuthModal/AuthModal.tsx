@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import ResetCode from './SendCode';

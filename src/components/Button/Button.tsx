@@ -1,29 +1,69 @@
-// import type { JSXElement } from "@my-react/types/jsx"
+import type { JSXElementType } from "the-react"
+import styles from "./Button.module.css"
 
-// interface IButtonComponent {
-//     text: string
-//     icon: JSXElement
-//     contentType: 'Icon' | 'Left+Text' | 'Text+Right' | 'Text'
-//     kind: 'contained' | 'outlined' | 'ghost'
-//     view: 'primary' | 'secondary' | 'negative'
-// }
+type ButtonVariant = 'primary' | 'accent' | 'secondary' | 'none' | 'menu'
+type ButtonType = 'button' | 'submit' | 'reset'
+type IconPosition = 'left' | 'right'
+type ButtonShape = 'default' | 'round'
 
-/**
- * Кнопка с различными вариантами отображения и стилями.
- * На будущее может поддерживать иконки, разные виды контента и стили оформления.
- * Пока не используем.
- */
-export const Button = () => {
+interface ButtonProps {
+    children?: JSXElementType | string | (JSXElementType | string)[]
+    text?: string
+    icon?: JSXElementType
+    iconPosition?: IconPosition
+    variant?: ButtonVariant
+    shape?: ButtonShape
+    id?: string
+    'aria-label'?: string
+    'aria-hidden'?: boolean
+    className?: string
+    style?: Record<string, string | number>
+    tabIndex?: number
+    disabled?: boolean
+    type?: ButtonType
+    onClick?: (e: any) => void
+    [key: string]: any
+}
 
-    // const {text, icon, contentType, kind,view} = props
+/** Универсальная кнопка проекта с тремя визуальными вариантами. */
+export const Button = ({
+    children,
+    text,
+    icon,
+    iconPosition = 'left',
+    variant = 'primary',
+    shape = 'default',
+    id,
+    'aria-label': ariaLabel,
+    'aria-hidden': ariaHidden,
+    className = '',
+    style,
+    tabIndex,
+    disabled = false,
+    type = 'button',
+    onClick,
+    ...restProps
+}: ButtonProps) => {
+    const content = children ?? text
+    const isMenuVariant = variant === 'menu'
+    const classes = [styles.button, styles[variant], shape === 'round' ? styles.round : '', className].filter(Boolean).join(' ')
 
-    // const s = 2
-
-    // return(
-    //     <button className={`
-    //     ${kind === 'ghost'}
-    //     `}>
-    //         {props}
-    //     </button>
-    // )
+    return (
+        <button
+            id={id}
+            aria-label={ariaLabel}
+            aria-hidden={ariaHidden}
+            className={classes}
+            style={style}
+            tabIndex={tabIndex}
+            type={type}
+            disabled={disabled}
+            onClick={onClick}
+            {...restProps}
+        >
+            {icon && iconPosition === 'left' ? <span className={styles.icon}>{icon}</span> : null}
+            {isMenuVariant ? content : content ? <span className={styles.label}>{content}</span> : null}
+            {icon && iconPosition === 'right' ? <span className={styles.icon}>{icon}</span> : null}
+        </button>
+    )
 }

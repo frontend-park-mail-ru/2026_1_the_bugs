@@ -1,4 +1,5 @@
-import { useState } from '@my-react/hooks';
+import { useState } from 'the-react/hooks';
+import { Button } from '../Button/Button';
 import style from './FilterMore.module.css';
 import type { IFilters } from 'src/types';
 
@@ -98,15 +99,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       <section className={style.section}>
         <h3 className={style.title}>Тип объекта</h3>
         <div className={style.chips}>
-          {propertyTypes.map(({ label, alias }) => (
-            <button
-              key={alias}
+          {propertyTypes.map((type) => (
+            <Button
+              key={type}
+              variant='none'
               type="button"
-              className={`${style.chip} ${selectedType === alias ? style.chipActive : ''}`}
-              onClick={() => setSelectedType(selectedType === alias ? '' : alias)}
-            >
-              {label}
-            </button>
+              className={`${style.chip} ${selectedType === type ? style.chipActive : ''}`}
+              onClick={() => setSelectedType(type)}
+              text={type}
+            />
           ))}
         </div>
       </section>
@@ -132,14 +133,14 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <h3 className={style.title}>Всего комнат</h3>
         <div className={style.chips}>
           {roomOptions.map((room) => (
-            <button
+            <Button
               key={room}
+              variant='none'
               type="button"
               className={`${style.roomChip} ${selectedRooms === room ? style.chipActive : ''}`}
-              onClick={() => setSelectedRooms(selectedRooms === room ? '' : room)}
-            >
-              {room}
-            </button>
+              onClick={() => setSelectedRooms(room)}
+              text={room}
+            />
           ))}
         </div>
       </section>
@@ -164,15 +165,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       <section className={style.section}>
         <h3 className={style.title}>Удобства</h3>
         <div className={style.chips}>
-          {amenities.map(({ label, alias }) => (
-            <button
-              key={alias}
+          {amenities.map((name) => (
+            <Button
+              key={name}
+              variant='none'
               type="button"
-              className={`${style.chip} ${selectedAmenities.includes(alias) ? style.chipActive : ''}`}
-              onClick={() => toggleAmenity(alias)}
-            >
-              {label}
-            </button>
+              className={`${style.chip} ${selectedAmenities.includes(name) ? style.chipActive : ''}`}
+              onClick={() => toggleAmenity(name)}
+              text={name}
+            />
           ))}
         </div>
       </section>
@@ -191,14 +192,14 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           </label>
 
           {floorFlags.map((item) => (
-            <button
+            <Button
               key={item}
+              variant='none'
               type="button"
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
-            >
-              {item}
-            </button>
+              text={item}
+            />
           ))}
         </div>
       </section>
@@ -219,9 +220,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       </section>
 
       <div className={style.actions}>
-        <button type="button" className={style.saveBtn} onClick={handleSave}>
-          Сохранить
-        </button>
+        <Button variant="accent" type="button" className={style.saveBtn} onClick={onClose} text="Сохранить" />
       </div>
     </section>
   );

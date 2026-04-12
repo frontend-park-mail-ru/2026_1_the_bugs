@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import styles from './OpenStreetMapPicker.module.css';
 
 const MAP_ELEMENT_ID = 'create-poster-osm-map';

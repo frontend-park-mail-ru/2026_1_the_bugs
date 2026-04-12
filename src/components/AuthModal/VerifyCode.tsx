@@ -1,6 +1,5 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import style from "./AuthModal.module.css";
-import appStyle from "../../App/App.module.css";
 import {type AuthModalChildProps, type ToggleModeType} from "./AuthModal";
 import { authService } from '../../services/auth';
 import type { ErrorResponse } from 'src/types/api';
@@ -8,6 +7,7 @@ import type { ErrorResponse } from 'src/types/api';
 import {
     getHighlightStyle,
 } from './authErrors'
+import { Button } from '../Button/Button';
 
 export interface RecoverFormState {
   code: string;
@@ -137,22 +137,22 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
               </div>
             </div>
 
-            <button style={{'width':'60%'}}
+            <Button variant='accent'
+              style={{'width':'60%'}}
               type="submit" 
-              className={appStyle.primary} 
               disabled={isLoading}
             >
               {isLoading ? 'Загрузка...' :  'Подтвердить' }
-            </button>
+            </Button>
           </form>
-           <button style={{'width':'60%'}}
+           <Button variant='secondary'
+              style={{'width':'60%', 'display':'flex', 'margin':'0 auto'}}
               type="submit" 
-              className={appStyle.secondary} 
               disabled={!isSendActive }
               onClick={handleSendEmail}
             >
               {!isSendActive ? `Отправить ${tick} сек.` :  'Отправить еще раз' }
-            </button>
+            </Button>
 
           
            <div style={{ textAlign: 'center', margin: '10px 0' }}>

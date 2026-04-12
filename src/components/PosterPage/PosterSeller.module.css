@@ -11,6 +11,9 @@
 
 .sellerText {
   min-width: 0;
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.5px currentColor;
+  width: 100%;
 }
 
 .avatar {
@@ -29,9 +32,19 @@
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+.sellerTextSecondary {
+  color: var(--muted);
+  -webkit-text-stroke: 0.1px currentColor;
+  margin: 0px;
+}
+
 
 .sellerInfo {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  gap: 5px;
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.1px currentColor;
+  color: var(--muted);
+  align-items: center;
 }
 

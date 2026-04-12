@@ -1,12 +1,12 @@
 
-import { useEffect, useState } from '@my-react/hooks';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { useEffect, useState } from 'the-react/hooks';
+import { useNavigate } from '@router-dom';
 import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
-import appStyle from "../../App/App.module.css";
 import cardStyle from '../Card/Card.module.css';
 
 import type { MyPoster, } from '../../types';
+import { Button } from '../Button/Button';
 
 export function MyPosterList() {
     const navigate = useNavigate();
@@ -49,16 +49,17 @@ export function MyPosterList() {
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
             )}
             <h1 className={style.main}>Мои объявления</h1>
-            <button
-                className={`${appStyle.primary} ${style.createBtn} `}
+            <Button
+                variant='accent'
                 type="button"
+                style={{'display':'flex', 'margin':'0 auto'}}
                 aria-label="Создать объявление"
                 onClick={() => {
                     navigate('/posters/create');
                 }}
               >
-                + Создать новое обьявление
-              </button>
+                + Создать новое объявление
+              </Button>
             {posters.length === 0 ? (
                 <div className={style.nothing}>У вас пока нет объявлений</div>
             ) : (
@@ -88,7 +89,8 @@ export function MyPosterList() {
                                         <strong>{apt.price.toLocaleString()} ₽</strong>
                                     </div>
                                 </div>
-                                <button
+                                <Button
+                                    variant="none"
                                     className={style.menuBtn + (isMenuOpen ? ' ' + style.menuBtnActive : '')}
                                     aria-label="Меню"
                                     onClick={(e:MouseEvent) => {
@@ -99,29 +101,30 @@ export function MyPosterList() {
                                     <span className={style.menuDots}>
                                         <img src="/svg/options.svg" alt="" aria-hidden="true" draggable="false" />
                                     </span>
-                                </button>
+                                </Button>
                                 {isMenuOpen && (
                                     <div className={style.menuPopup}>
-                                        <button
-                                            className={`${style.menuItem} fontHero`}
+                                        <Button
+                                            variant="menu"
+                                            className="fontHero"
+                                            text="Изменить"
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
                                                 handleEdit(apt.alias);
                                             }}
-                                        >
-                                            Изменить
-                                        </button>
+                                        />
                                         <div className={style.menuSeparator} />
-                                        <button
-                                            className={`${style.menuItem} ${style.menuDelete} fontHero`}
-                                            onClick={() => {
+                                        <Button
+                                            variant="menu"
+                                            className={`fontHero ${style.menuItemDelete}`}
+                                            text="Удалить"
+                                            onClick={(e:MouseEvent) => {
+                                                e.stopPropagation();
                                                 setMenuOpen(null);
                                                 handleDelete(apt.alias);
                                             }}
-                                        >
-                                            Удалить
-                                        </button>
+                                        />
                                     </div>
                                 )}
                             </article>

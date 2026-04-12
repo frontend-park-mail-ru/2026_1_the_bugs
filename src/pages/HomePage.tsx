@@ -1,9 +1,9 @@
-import { useEffect, useState } from '@my-react/hooks';
+import { useEffect, useState } from 'the-react/hooks';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
-import { type Apartment, type IFilters } from '../types';
-import { useNavigate } from '@my-react/router-dom/hooks';
+import { type Apartment, type IFilters} from '../types';
+import { useNavigate } from '@router-dom';
 
  const updatePageSize = () => {
       console.log(window.innerWidth)
