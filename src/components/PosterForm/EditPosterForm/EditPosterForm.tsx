@@ -26,6 +26,7 @@ import {
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
 import type { ErrorResponse } from 'src/types/api';
+import { Button } from '../../Button/Button';
 
 // ---- вспомогательные функции и типы ----
 function normalizeAddressForCompare(value: string) {
@@ -105,7 +106,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
   const [isComplexMenuOpen, setIsComplexMenuOpen] = useState(false);
 
   // ---- состояния для адреса ----
-  const [isAddressManualInput, setIsAddressManualInput] = useState(false);
+  const [, setIsAddressManualInput] = useState(false);
   const [addressSuggestionCandidate, setAddressSuggestionCandidate] = useState<AddressSuggestionCandidate | null>(null);
   const [addressLookupState, setAddressLookupState] = useState<AddressLookupState | null>(null);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(false);
@@ -439,21 +440,23 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
           <h2 className={styles.successTitle}>Объявление обновлено</h2>
           <p>Изменения сохранены и доступны для просмотра.</p>
           <div className={styles.nav}>
-            <button
+            <Button
+              variant="secondary"
               className={`${styles.button} ${styles.buttonSecondary}`}
               type="button"
               onClick={() => navigate('/')}
             >
               На главную
-            </button>
+            </Button>
             {updatedAlias && (
-              <button
+              <Button
+                variant="accent"
                 className={`${styles.button} ${styles.buttonPrimary}`}
                 type="button"
                 onClick={() => navigate(`/posters/${updatedAlias}`)}
               >
                 Открыть объявление
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -496,14 +499,15 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
               {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
                 const isActive = form.housingType === key;
                 return (
-                  <button
+                  <Button
+                    variant="none"
                     key={`housing-option-${index.toString()}`}
                     type="button"
                     className={`${styles.housingTypeButton} ${isActive ? styles.housingTypeButtonActive : ''}`}
                     onClick={() => updateField('housingType', key)}
                   >
                     {option}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
@@ -547,9 +551,9 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                 </div>
                 <div className={styles.addressSuggestionValue}>{addressSuggestionCandidate.suggestion.fullAddress}</div>
                 <div className={styles.addressSuggestionActions}>
-                  <button type="button" className={`${styles.button} ${styles.buttonPrimary} ${styles.addressConfirmButton}`} onClick={confirmAddress}>
+                  <Button variant="accent" type="button" className={`${styles.button} ${styles.buttonPrimary} ${styles.addressConfirmButton}`} onClick={confirmAddress}>
                     Да, это мой адрес
-                  </button>
+                  </Button>
                   {isAddressConfirmed && <span className={styles.addressConfirmedBadge}>Адрес подтвержден</span>}
                 </div>
               </div>
@@ -570,7 +574,8 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         <div className={`${styles.group} ${styles.stepSelectGroup}`}>
           <label className={styles.label}>Застройщик</label>
           <div className={styles.customSelect} data-custom-select="developer">
-            <button
+            <Button
+              variant="none"
               type="button"
               className={`${styles.customSelectButton} ${errors.complexName ? styles.selectError : ''} ${isDeveloperMenuOpen ? styles.customSelectButtonOpen : ''}`}
               disabled={isLoadingDevelopers}
@@ -580,25 +585,27 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                 {selectedDeveloperName || 'Выберите застройщика'}
               </span>
               <span className={styles.stepSelectArrow}>▾</span>
-            </button>
+            </Button>
             {isDeveloperMenuOpen && (
               <div className={styles.customSelectMenu}>
-                <button
+                <Button
+                  variant="none"
                   type="button"
                   className={`${styles.customSelectOption} ${!selectedDeveloperName ? styles.customSelectOptionActive : ''}`}
                   onClick={() => onSelectDeveloper(null)}
                 >
                   Выберите застройщика
-                </button>
+                </Button>
                 {developers.map((dev) => (
-                  <button
-                    key={dev.developer_id}
+                  <Button
+                    variant="none"
+                    key={dev.developer_id.toString()}
                     type="button"
                     className={`${styles.customSelectOption} ${selectedDeveloperId === dev.developer_id ? styles.customSelectOptionActive : ''}`}
                     onClick={() => onSelectDeveloper(dev.developer_id)}
                   >
                     {dev.developer_name}
-                  </button>
+                  </Button>
                 ))}
                 {!isLoadingDevelopers && developers.length === 0 && <div className={styles.customSelectEmpty}>Список застройщиков пуст</div>}
               </div>
@@ -613,7 +620,8 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         <div className={`${styles.group} ${styles.stepSelectGroup}`}>
           <label className={styles.label}>ЖК</label>
           <div className={styles.customSelect} data-custom-select="complex">
-            <button
+            <Button
+              variant="none"
               type="button"
               className={`${styles.customSelectButton} ${errors.complex ? styles.selectError : ''} ${isComplexMenuOpen ? styles.customSelectButtonOpen : ''}`}
               disabled={isLoadingComplexes || selectedDeveloperId == null}
@@ -623,25 +631,27 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                 {selectedComplexName || (selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК')}
               </span>
               <span className={styles.stepSelectArrow}>▾</span>
-            </button>
+            </Button>
             {isComplexMenuOpen && (
               <div className={styles.customSelectMenu}>
-                <button
+                <Button
+                  variant="none"
                   type="button"
                   className={`${styles.customSelectOption} ${!selectedComplexName ? styles.customSelectOptionActive : ''}`}
                   onClick={() => onSelectComplex('')}
                 >
                   {selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК'}
-                </button>
+                </Button>
                 {complexes.map((c) => (
-                  <button
-                    key={c.id}
+                  <Button
+                    variant="none"
+                    key={c.id.toString()}
                     type="button"
                     className={`${styles.customSelectOption} ${form.complex === String(c.id) ? styles.customSelectOptionActive : ''}`}
                     onClick={() => onSelectComplex(String(c.id))}
                   >
                     {c.company_name}
-                  </button>
+                  </Button>
                 ))}
                 {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && (
                   <div className={styles.customSelectEmpty}>Для этого застройщика пока нет ЖК</div>
@@ -664,14 +674,15 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
           <label className={styles.label}>Всего комнат</label>
           <div className={`${styles.roomCountGroup} ${errors.roomCount ? styles.choiceGroupError : ''}`}>
             {ROOM_OPTIONS.map((option) => (
-              <button
+              <Button
+                variant="none"
                 key={option}
                 type="button"
                 className={`${styles.roomCountButton} ${form.roomCount === option ? styles.roomCountButtonActive : ''}`}
                 onClick={() => updateField('roomCount', option)}
               >
                 {option === '0' ? 'Студия' : option}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -690,7 +701,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         >
           <div className={styles.uploadControls}>
             <input id="photoUpload" className={styles.fileInput} type="file" accept="image/jpeg,image/png" multiple onChange={onPhotoInput} />
-            <button type="button" className={styles.uploadButton} onClick={openPhotoDialog}>Загрузите фото</button>
+            <Button variant="none" type="button" className={styles.uploadButton} onClick={openPhotoDialog}>Загрузите фото</Button>
             <span className={styles.uploadHint}>или перетащите JPEG, PNG до 10 Мб каждый</span>
           </div>
           {form.images.length > 0 && (
@@ -708,7 +719,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
                   {idx === 0 && <span className={styles.mainPhotoBadge}>Главное фото</span>}
                   <div className={styles.photoOverlay}>
                     <span className={styles.photoOverlayText}>Удерживайте, чтобы перетащить</span>
-                    <button type="button" className={styles.photoRemoveButton} onClick={(e: any) => removePhoto(idx, e)}>x</button>
+                    <Button variant="none" type="button" className={styles.photoRemoveButton} onClick={(e: any) => removePhoto(idx, e)}>x</Button>
                   </div>
                   <img src={image.previewUrl} alt={image.name} draggable="false" />
                 </div>
@@ -724,14 +735,15 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
         <label className={styles.label}>Особенности квартиры</label>
         <div className={`${styles.featureGrid} ${errors.features ? styles.choiceGroupError : ''}`}>
           {FEATURE_OPTIONS.map((feature) => (
-            <button
+            <Button
+              variant="none"
               key={feature.value}
               type="button"
               className={`${styles.housingTypeButton} ${form.features.includes(feature.value) ? styles.housingTypeButtonActive : ''}`}
               onClick={() => toggleFeature(feature.value)}
             >
               {feature.label}
-            </button>
+            </Button>
           ))}
         </div>
         <label className={styles.label} htmlFor="description">Описание объявления</label>
@@ -757,17 +769,18 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
 
       <div className={styles.nav}>
             <div className={styles.nextButtonWrap}>
-              <button
+              <Button
+                variant="accent"
                 className={`${styles.button} ${styles.buttonPrimary}`}
                 type="button"
                 onClick={onSubmit}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Сохранияем...' : 'Сохранить'}
-              </button>
-              <button onClick={() => navigate(`/myposters`)} className={`${styles.button}`} type="button">
+              </Button>
+              <Button variant="secondary" onClick={() => navigate(`/my-posters`)} className={`${styles.button}`} type="button">
                 Назад
-              </button>
+              </Button>
               {hasCurrentStepErrors && (
                 <div className={styles.errorHintWrap}>
                   <span className={styles.errorHintIcon} aria-hidden="true">!</span>

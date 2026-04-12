@@ -103,13 +103,17 @@
   gap: 14px;
 }
 
+.resetWrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .saveBtn {
   margin: 0;
   min-width: 240px;
   height: 44px;
   padding: 0 24px;
-  border-radius: 999px;
-  font-size: 20px;
 }
 
 .advancedBtn {
@@ -141,6 +145,14 @@
 
   .saveBtn,
   .advancedBtn {
+    width: 100%;
+  }
+
+  .resetWrap {
+    justify-content: stretch;
+  }
+
+  .resetWrap button {
     width: 100%;
   }
 

@@ -17,35 +17,12 @@ interface HeaderProps {
 export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showBtn, setShowBtn] = useState(false);
-  const [isBtnVisible, setIsBtnVisible] = useState(false);
   const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
   const isMyPostersRoute = normalizedPath === '/myposters';
-  const shouldShowBtn = isAuthResolved && isAutenticated && isMyPostersRoute;
 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [currentPath]);
-
-  useEffect(() => {
-    let showTimer: number | null = null;
-
-    if (shouldShowBtn) {
-      setShowBtn(true);
-      showTimer = window.setTimeout(() => {
-        setIsBtnVisible(true);
-      }, 0);
-    } else {
-      setIsBtnVisible(false);
-      setShowBtn(false);
-    }
-
-    return () => {
-      if (showTimer !== null) {
-        clearTimeout(showTimer);
-      }
-    };
-  }, [shouldShowBtn]);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -68,23 +45,6 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
           <div className={style['actions']} />
         ) : isAutenticated ? (
           <div className={style['actions']}>
-            {showBtn && (
-              <Button
-                variant="secondary"
-                className={`${isBtnVisible ? style.createBtnVisible : style.createBtnHidden}`}
-                type="button"
-                aria-label="Создать объявление"
-                tabIndex={isBtnVisible ? 0 : -1}
-                aria-hidden={!isBtnVisible}
-                onClick={() => {
-                  if (shouldShowBtn) {
-                    navigate('/posters/create');
-                  }
-                }}
-              >
-                Создать
-              </Button>
-            )}
             {/* <Button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
               <img src="/svg/message.svg" alt="Сообщение" aria-hidden="true" draggable="false"/>
             </Button> */}
