@@ -76,24 +76,35 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
   };
 
   const handleSave = () => {
-    const roomCount = selectedRooms
-      ? (selectedRooms === '6+' ? 6 : Number(selectedRooms))
-      : undefined;
+    const readInput = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
+    const activeType = document.querySelector(`.${style.chip}[data-type-alias].${style.chipActive}`) as HTMLElement | null;
+    const activeRoom = document.querySelector(`.${style.roomChip}.${style.chipActive}`) as HTMLElement | null;
+    const selectedAmenityNodes = document.querySelectorAll(`.${style.chip}[data-amenity-alias].${style.chipActive}`);
+    const selectedFloorNodes = document.querySelectorAll(`.${style.chip}[data-floor-flag].${style.chipActive}`);
+
+    const roomValue = activeRoom?.dataset.room || '';
+    const roomCount = roomValue ? (roomValue === '6+' ? 6 : Number(roomValue)) : undefined;
+    const selectedAmenitiesFromDom = Array.from(selectedAmenityNodes)
+      .map((node) => (node as HTMLElement).dataset.amenityAlias)
+      .filter((value): value is string => Boolean(value));
+    const selectedFloorFlagsFromDom = Array.from(selectedFloorNodes)
+      .map((node) => (node as HTMLElement).dataset.floorFlag)
+      .filter((value): value is string => Boolean(value));
 
     onApply({
-      category: selectedType || undefined,
+      category: activeType?.dataset.typeAlias || undefined,
       room_count: roomCount,
-      min_price: toNumberOrUndefined(minPrice),
-      max_price: toNumberOrUndefined(maxPrice),
-      min_square: toNumberOrUndefined(minSquare),
-      max_square: toNumberOrUndefined(maxSquare),
-      min_flat_floor: toNumberOrUndefined(minFlatFloor),
-      max_flat_floor: toNumberOrUndefined(maxFlatFloor),
-      min_building_floor: toNumberOrUndefined(minBuildingFloor),
-      max_building_floor: toNumberOrUndefined(maxBuildingFloor),
-      facilities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
-      not_first_floor: selectedFloorFlags.includes('Не первый') || undefined,
-      not_last_floor: selectedFloorFlags.includes('Не последний') || undefined,
+      min_price: toNumberOrUndefined(readInput('filter-more-min-price')),
+      max_price: toNumberOrUndefined(readInput('filter-more-max-price')),
+      min_square: toNumberOrUndefined(readInput('filter-more-min-square')),
+      max_square: toNumberOrUndefined(readInput('filter-more-max-square')),
+      min_flat_floor: toNumberOrUndefined(readInput('filter-more-min-flat-floor')),
+      max_flat_floor: toNumberOrUndefined(readInput('filter-more-max-flat-floor')),
+      min_building_floor: toNumberOrUndefined(readInput('filter-more-min-building-floor')),
+      max_building_floor: toNumberOrUndefined(readInput('filter-more-max-building-floor')),
+      facilities: selectedAmenitiesFromDom.length > 0 ? selectedAmenitiesFromDom : undefined,
+      not_first_floor: selectedFloorFlagsFromDom.includes('not_first_floor') || undefined,
+      not_last_floor: selectedFloorFlagsFromDom.includes('not_last_floor') || undefined,
     });
     onClose();
   };
@@ -103,14 +114,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       <section className={style.section}>
         <h3 className={style.title}>Тип объекта</h3>
         <div className={style.chips}>
-          {propertyTypes.map((type) => (
+          {propertyTypes.map(({ label, alias }) => (
             <Button
-              key={type.label}
+              key={alias}
               variant='none'
               type="button"
-              className={`${style.chip} ${selectedType === type.alias ? style.chipActive : ''}`}
-              onClick={() => setSelectedType(type.alias)}
-              text={type.label}
+              data-type-alias={alias}
+              className={`${style.chip} ${selectedType === alias ? style.chipActive : ''}`}
+              onClick={() => setSelectedType(selectedType === alias ? '' : alias)}
+              text={label}
             />
           ))}
         </div>
@@ -121,13 +133,13 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <div className={style.inputRow}>
           <label className={style.field}>
             <span>От</span>
-            <input type="number" className={style.input} value={minPrice} onInput={(e: any) => setMinPrice(e.target.value)} />
+            <input id="filter-more-min-price" type="number" className={style.input} value={minPrice} onInput={(e: any) => setMinPrice(e.target.value)} />
             <strong>₽</strong>
           </label>
 
           <label className={style.field}>
             <span>До</span>
-            <input type="number" className={style.input} value={maxPrice} onInput={(e: any) => setMaxPrice(e.target.value)} />
+            <input id="filter-more-max-price" type="number" className={style.input} value={maxPrice} onInput={(e: any) => setMaxPrice(e.target.value)} />
             <strong>₽</strong>
           </label>
         </div>
@@ -141,8 +153,9 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
               key={room}
               variant='none'
               type="button"
+              data-room={room}
               className={`${style.roomChip} ${selectedRooms === room ? style.chipActive : ''}`}
-              onClick={() => setSelectedRooms(room)}
+              onClick={() => setSelectedRooms(selectedRooms === room ? '' : room)}
               text={room}
             />
           ))}
@@ -154,13 +167,13 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <div className={style.inputRow}>
           <label className={style.field}>
             <span>От</span>
-            <input type="number" className={style.input} value={minSquare} onInput={(e: any) => setMinSquare(e.target.value)} />
+            <input id="filter-more-min-square" type="number" className={style.input} value={minSquare} onInput={(e: any) => setMinSquare(e.target.value)} />
             <strong>м²</strong>
           </label>
 
           <label className={style.field}>
             <span>До</span>
-            <input type="number" className={style.input} value={maxSquare} onInput={(e: any) => setMaxSquare(e.target.value)} />
+            <input id="filter-more-max-square" type="number" className={style.input} value={maxSquare} onInput={(e: any) => setMaxSquare(e.target.value)} />
             <strong>м²</strong>
           </label>
         </div>
@@ -169,16 +182,16 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       <section className={style.section}>
         <h3 className={style.title}>Удобства</h3>
         <div className={style.chips}>
-          {amenities.map((name) => (
-            <button
-              key={name.alias}
+          {amenities.map(({ label, alias }) => (
+            <Button
+              key={alias}
               variant='none'
               type="button"
-              className={`${style.chip} ${selectedAmenities.includes(name.alias) ? style.chipActive : ''}`}
-              onClick={() => toggleAmenity(name.alias)}
-            >
-              {name.label}
-            </button>
+              data-amenity-alias={alias}
+              className={`${style.chip} ${selectedAmenities.includes(alias) ? style.chipActive : ''}`}
+              onClick={() => toggleAmenity(alias)}
+              text={label}
+            />
           ))}
         </div>
       </section>
@@ -188,12 +201,12 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <div className={style.inputRow}>
           <label className={style.field}>
             <span>От</span>
-            <input type="number" className={style.input} value={minFlatFloor} onInput={(e: any) => setMinFlatFloor(e.target.value)} />
+            <input id="filter-more-min-flat-floor" type="number" className={style.input} value={minFlatFloor} onInput={(e: any) => setMinFlatFloor(e.target.value)} />
           </label>
 
           <label className={style.field}>
             <span>До</span>
-            <input type="number" className={style.input} value={maxFlatFloor} onInput={(e: any) => setMaxFlatFloor(e.target.value)} />
+            <input id="filter-more-max-flat-floor" type="number" className={style.input} value={maxFlatFloor} onInput={(e: any) => setMaxFlatFloor(e.target.value)} />
           </label>
 
           {floorFlags.map((item) => (
@@ -201,6 +214,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
               key={item}
               variant='none'
               type="button"
+              data-floor-flag={item === 'Не первый' ? 'not_first_floor' : 'not_last_floor'}
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
             > {item}</button>
@@ -213,18 +227,18 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <div className={style.inputRow}>
           <label className={style.field}>
             <span>От</span>
-            <input type="number" className={style.input} value={minBuildingFloor} onInput={(e: any) => setMinBuildingFloor(e.target.value)} />
+            <input id="filter-more-min-building-floor" type="number" className={style.input} value={minBuildingFloor} onInput={(e: any) => setMinBuildingFloor(e.target.value)} />
           </label>
 
           <label className={style.field}>
             <span>До</span>
-            <input type="number" className={style.input} value={maxBuildingFloor} onInput={(e: any) => setMaxBuildingFloor(e.target.value)} />
+            <input id="filter-more-max-building-floor" type="number" className={style.input} value={maxBuildingFloor} onInput={(e: any) => setMaxBuildingFloor(e.target.value)} />
           </label>
         </div>
       </section>
 
       <div className={style.actions}>
-        <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave} text="Сохранить">Сохранить </button>
+        <Button variant="accent" type="button" className={style.saveBtn} onClick={handleSave} text="Сохранить" />
       </div>
     </section>
   );

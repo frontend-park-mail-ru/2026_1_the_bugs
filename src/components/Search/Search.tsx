@@ -41,7 +41,8 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
       ...nextFilters,
     };
     setSelectedFilters(mergedFilters);
-    onSearch(search, mergedFilters);
+    const liveValue = (document.getElementById('global-search-input') as HTMLInputElement | null)?.value;
+    onSearch(liveValue ?? search, mergedFilters);
   };
 
   return (
@@ -50,6 +51,7 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
 
       <div className={style.search}>
         <input
+          id="global-search-input"
           className={style.input}
           type="text"
           placeholder="Поиск по району или метро"
