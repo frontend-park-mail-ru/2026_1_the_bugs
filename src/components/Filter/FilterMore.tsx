@@ -76,35 +76,25 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
   };
 
   const handleSave = () => {
-    const readInput = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
-    const activeType = document.querySelector(`.${style.chip}[data-type-alias].${style.chipActive}`) as HTMLElement | null;
-    const activeRoom = document.querySelector(`.${style.roomChip}.${style.chipActive}`) as HTMLElement | null;
-    const selectedAmenityNodes = document.querySelectorAll(`.${style.chip}[data-amenity-alias].${style.chipActive}`);
-    const selectedFloorNodes = document.querySelectorAll(`.${style.chip}[data-floor-flag].${style.chipActive}`);
-
-    const roomValue = activeRoom?.dataset.room || '';
-    const roomCount = roomValue ? (roomValue === '6+' ? 6 : Number(roomValue)) : undefined;
-    const selectedAmenitiesFromDom = Array.from(selectedAmenityNodes)
-      .map((node) => (node as HTMLElement).dataset.amenityAlias)
-      .filter((value): value is string => Boolean(value));
-    const selectedFloorFlagsFromDom = Array.from(selectedFloorNodes)
-      .map((node) => (node as HTMLElement).dataset.floorFlag)
-      .filter((value): value is string => Boolean(value));
+    const roomCount = selectedRooms ? (selectedRooms === '6+' ? 6 : Number(selectedRooms)) : undefined;
+    const selectedFloorAliases = selectedFloorFlags.map((flag) => (
+      flag === 'Не первый' ? 'not_first_floor' : 'not_last_floor'
+    ));
 
     onApply({
-      category: activeType?.dataset.typeAlias || undefined,
+      category: selectedType || undefined,
       room_count: roomCount,
-      min_price: toNumberOrUndefined(readInput('filter-more-min-price')),
-      max_price: toNumberOrUndefined(readInput('filter-more-max-price')),
-      min_square: toNumberOrUndefined(readInput('filter-more-min-square')),
-      max_square: toNumberOrUndefined(readInput('filter-more-max-square')),
-      min_flat_floor: toNumberOrUndefined(readInput('filter-more-min-flat-floor')),
-      max_flat_floor: toNumberOrUndefined(readInput('filter-more-max-flat-floor')),
-      min_building_floor: toNumberOrUndefined(readInput('filter-more-min-building-floor')),
-      max_building_floor: toNumberOrUndefined(readInput('filter-more-max-building-floor')),
-      facilities: selectedAmenitiesFromDom.length > 0 ? selectedAmenitiesFromDom : undefined,
-      not_first_floor: selectedFloorFlagsFromDom.includes('not_first_floor') || undefined,
-      not_last_floor: selectedFloorFlagsFromDom.includes('not_last_floor') || undefined,
+      min_price: toNumberOrUndefined(minPrice),
+      max_price: toNumberOrUndefined(maxPrice),
+      min_square: toNumberOrUndefined(minSquare),
+      max_square: toNumberOrUndefined(maxSquare),
+      min_flat_floor: toNumberOrUndefined(minFlatFloor),
+      max_flat_floor: toNumberOrUndefined(maxFlatFloor),
+      min_building_floor: toNumberOrUndefined(minBuildingFloor),
+      max_building_floor: toNumberOrUndefined(maxBuildingFloor),
+      facilities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
+      not_first_floor: selectedFloorAliases.includes('not_first_floor') || undefined,
+      not_last_floor: selectedFloorAliases.includes('not_last_floor') || undefined,
     });
     onClose();
   };
@@ -185,7 +175,6 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           {amenities.map(({ label, alias }) => (
             <Button
               key={alias}
-              variant='none'
               type="button"
               data-amenity-alias={alias}
               className={`${style.chip} ${selectedAmenities.includes(alias) ? style.chipActive : ''}`}
@@ -210,14 +199,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           </label>
 
           {floorFlags.map((item) => (
-            <button
+            <Button
               key={item}
               variant='none'
               type="button"
               data-floor-flag={item === 'Не первый' ? 'not_first_floor' : 'not_last_floor'}
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
-            > {item}</button>
+              text={item}
+            />
           ))}
         </div>
       </section>
