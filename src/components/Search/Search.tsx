@@ -31,7 +31,7 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
     setSearch(e.target.value);
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (search: string, selectedFilters: IFilters) => {
     onSearch(search, selectedFilters);
   };
 
@@ -40,7 +40,6 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
       ...selectedFilters,
       ...nextFilters,
     };
-    console.log("handleFilterApply", mergedFilters, selectedFilters, nextFilters)
     setSelectedFilters(mergedFilters);
     onSearch(search, mergedFilters);
   };
@@ -58,7 +57,7 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
           onInput={handleInput}
           onKeyDown={(e: KeyboardEvent) => {
             if (e.key === 'Enter') {
-              handleSearchClick();
+              handleSearchClick(search, selectedFilters);
             }
           }}
         />
@@ -71,15 +70,20 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
           onClick={() => setIsFilterOpen(!isFilterOpen)}
           icon={<img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />}
         />
-        <Button
-          variant="none"
-          className={`${style.btn} ${style.dark}`}
-          type="button"
-          aria-label="Поиск"
-          title="Поиск"
-          onClick={handleSearchClick}
-          icon={<img src="/svg/search.svg" alt="" aria-hidden="true" draggable={false} />}
+       <button
+        className={`${style.btn} ${style.dark}`}
+        type="button"
+        aria-label="Поиск"
+        title="Поиск"
+        onClick={() => handleSearchClick(search, selectedFilters)}
+        >
+        <img 
+            src="/svg/search.svg" 
+            alt="" 
+            aria-hidden="true" 
+            draggable={false} 
         />
+    </button>
       </div>
 
       {isFilterOpen && (

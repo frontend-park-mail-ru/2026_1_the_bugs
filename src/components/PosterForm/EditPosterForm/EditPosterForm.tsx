@@ -495,7 +495,6 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
             <div className={`${styles.housingTypeGroup} ${errors.housingType ? styles.choiceGroupError : ''}`}>
               {Object.entries(HOUSING_OPTIONS).map(([key, option], index) => {
                 const isActive = form.housingType === key;
-                console.log('Rendering housing option:', { key, option, index });
                 return (
                   <button
                     key={`housing-option-${index.toString()}`}

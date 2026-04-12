@@ -19,16 +19,12 @@ class ApiService {
     }
 
     async init() {
-        console.log("start")
         if (!this.lock){
             this.lock = true
             const res = await this.get('/csrf-token');
             this.csrfToken = res.csrf_token;
             this.lock = false
         }
-
-     
-
     }
 
     /**
@@ -159,9 +155,7 @@ class ApiService {
             const response = await fn();
             return await this.handleResponse(response as Response); 
         } catch (e: any) {
-            console.log(e)
             const err = e as ErrorResponse;
-            console.log(err.status)
             if (err.status == 403) {
                 await this.init()
                 const response = await fn();

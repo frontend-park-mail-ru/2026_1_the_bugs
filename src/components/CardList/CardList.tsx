@@ -32,7 +32,6 @@ export function CardList({
      requestAnimationFrame(() => {
         ticking = true;
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        console.log({ scrollTop, scrollHeight, clientHeight } )
         const newCanScroll = scrollHeight > clientHeight + 50
         const scrolledToBottom = scrollTop + clientHeight >= scrollHeight - 200;
         

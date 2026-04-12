@@ -49,7 +49,6 @@ self.addEventListener("fetch", (event) => {
       } catch (e) {
         const cache = await caches.open(API_CACHE);
         const cached = await cache.match(event.request);
-        console.log(e)
         if (cached) {
             return cached;
         }

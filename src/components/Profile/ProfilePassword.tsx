@@ -203,7 +203,6 @@ export function ProfilePassword({ email }: ProfilePasswordProps) {
 			clearFeedback();
 		}
 	};
-	console.log(step)
 
 	const handleCloseVerifyModal = () => {
 		setStep('form');

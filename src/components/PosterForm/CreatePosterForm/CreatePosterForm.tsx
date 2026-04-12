@@ -184,8 +184,6 @@ export function CreatePosterForm() {
     setIsSubmitting(false)
     const normalizedCurrent = normalizeAddressForCompare(formDraft.address);
     const normalizedQuery = normalizeAddressForCompare(query);
-    console.log("Resolving typed address", { query, suggestion, normalizedCurrent, normalizedQuery });
-    
     if (!normalizedCurrent || normalizedCurrent !== normalizedQuery) {
       return;
     }
@@ -361,8 +359,6 @@ export function CreatePosterForm() {
         !!addressSuggestionCandidate
         && normalizeAddressForCompare(form.address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress);
 
-      console.log("Address validation", { normalizedCurrentAddress, addressLookupState, isLookupActual, hasAddressToConfirm, isAddressConfirmed });
-
       if (!isLookupActual || !addressLookupState?.recognized) {
         addressError = 'Укажите корректный адрес';
       }else if (hasAddressToConfirm && !isAddressConfirmed) {
@@ -399,7 +395,6 @@ export function CreatePosterForm() {
       const payload = mapToPayload(formDraft, coordinates);
       const response = await createPoster(payload);
       const alias = response.alias || '';
-      console.log(response)
       setCreatedAlias(alias);
       setIsPublished(true);
     } catch (error: any) {

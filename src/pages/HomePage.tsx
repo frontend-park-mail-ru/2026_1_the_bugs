@@ -6,7 +6,6 @@ import { type Apartment, type IFilters} from '../types';
 import { useNavigate } from '@router-dom';
 
  const updatePageSize = () => {
-      console.log(window.innerWidth)
       const width = window.innerWidth;
       if (width >= 2400){
         return 20;
@@ -103,7 +102,6 @@ export function HomePage({search_query}: Props) {
     setIsLoading(true);
     setIsFetchingMore(true);
     const offset = append ? apartments.length : 0;
-    console.log(`Fetching offset ${offset}, search: "${searchVal}"`);
     
     try {
       const postersResp = await getPosters({ 
@@ -131,17 +129,7 @@ export function HomePage({search_query}: Props) {
     const handleSearch = (searchVal: string, nextFilters: IFilters) => {
       setSearchQuery(searchVal);
       setFilters(nextFilters);
-
       const query = syncQueryParams(searchVal, nextFilters);
-      navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
-      setApartments([]);
-      setHasMore(true);
-    };
-
-    const handelFilters = (nextFilters: IFilters) => {
-      setFilters(nextFilters);
-      console.log(nextFilters)
-      const query = syncQueryParams(searchQuery, nextFilters);
       navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
       setApartments([]);
       setHasMore(true);

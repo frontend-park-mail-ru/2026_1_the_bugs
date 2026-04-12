@@ -232,12 +232,10 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
       onResolveTypedAddress?.(query, null);
       return;
     }
-    console.log('Geocoding address:', query);
 
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
-        console.log('Performing geocode for:', query);
         const point = await geocodeAddress(query);
         if (cancelled) return;
 
@@ -252,7 +250,6 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         } else {
           mapController.marker.setLatLng([lat, lon]);
         }
-        console.log('Resolved address:', query);
         mapController.map.setView([lat, lon], 16);
         onPickCoordinates(lat, lon);
         onResolveTypedAddress?.(query, suggestion);

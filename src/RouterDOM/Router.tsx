@@ -64,13 +64,6 @@ export function parseSearch(search: string): Record<string, string> {
 export function Router({path, children, currentPath, currentSearch}: IRouterProps){
     const { matches, params: pathParams } = matchPath(path, currentPath)
     
-    
-    console.log(`Router ${path}:`, { 
-        currentPath, 
-        currentSearch, 
-        pathParams, 
-        children,
-    })
 
     if (!matches && path != "*") return null
 
@@ -86,9 +79,7 @@ export function Router({path, children, currentPath, currentSearch}: IRouterProp
                 ...queryParams
 
             }
-            console.log(currentSearch)
         }
-        console.log(`render children ${path}`)
         return <div>{children}</div>
     }
 

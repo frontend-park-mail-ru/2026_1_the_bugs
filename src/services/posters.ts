@@ -216,8 +216,6 @@ export async function updatePoster(alias: string, payload: CreatePosterPayload) 
     payload.features.forEach((feature) => {
         formData.append('features', feature);
     });
-    console.log( payload.images)
-
     payload.images.forEach((image, index) => {
         if (image.file instanceof File) {
             formData.append(`photos.${index}.file`, image.file, `img_${image.order}.jpg`);
@@ -229,8 +227,6 @@ export async function updatePoster(alias: string, payload: CreatePosterPayload) 
             console.warn('Фото без file и url пропущено', image);
         }
     });
-
-    console.log(formData)
 
    
     return await authService.WithRefresh(async () => {

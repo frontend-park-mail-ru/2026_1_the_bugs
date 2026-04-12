@@ -100,14 +100,12 @@ export const AddressSection = (props: Props) => {
       const normalizedCurrentAddress = normalizeAddressForCompare(address);
       const isLookupActual = !!addressLookupState && normalizeAddressForCompare(addressLookupState.query) === normalizedCurrentAddress;
       const hasAddressToConfirm = !!addressSuggestionCandidate && normalizeAddressForCompare(address) === normalizeAddressForCompare(addressSuggestionCandidate.typedAddress);
-      console.log({isLookupActual, hasAddressToConfirm, isAddressConfirmed, addressConfirmationError})
 
       if (!isLookupActual || !addressLookupState?.recognized) {
         addressError = 'Укажите корректный адрес';
       } else if (hasAddressToConfirm && !isAddressConfirmed) {
         addressError = 'Подтвердите адрес, чтобы перейти к следующему шагу';
       }
-      console.log(addressError)
 
       if (addressError) {
         setErrors({ ...errors, address: addressError });
