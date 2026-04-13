@@ -39,7 +39,7 @@ export function Modal({
   };
 
   return (
-    <div className={`modal ${isOpen ? 'active' : ''} ${overlayClassName}`.trim()} onClick={handleOverlayClick} style={style}>
+    <div className={`modal active ${overlayClassName}`.trim()} onClick={handleOverlayClick} style={style}>
       <div className={`modal-content ${contentClassName}`.trim()}>
         <button className={styles.close} onClick={onClose}>&times;</button>
           {children}
