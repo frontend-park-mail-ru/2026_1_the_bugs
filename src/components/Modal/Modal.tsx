@@ -1,13 +1,24 @@
-import { useEffect } from '@my-react/hooks';
+import { useEffect } from 'the-react/hooks';
+import styles from "./Modal.module.css";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  hisChildren: any;
+  children: any;
+  contentClassName?: string;
+  overlayClassName?: string;
+  style?: Record<string, any>
 }
 
 /** Универсальная модальная обёртка с затемнённым оверлеем; закрывается кликом по фону. */
-export function Modal({ isOpen, onClose, hisChildren}: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  children,
+  contentClassName = '',
+  overlayClassName = '',
+  style
+}: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -28,10 +39,10 @@ export function Modal({ isOpen, onClose, hisChildren}: ModalProps) {
   };
 
   return (
-    <div className={`modal ${isOpen ? 'active' : ''}`} onClick={handleOverlayClick}>
-      <div className="modal-content">
-          <button className="close-button" onClick={onClose}></button>
-          {hisChildren}
+    <div className={`modal active ${overlayClassName}`.trim()} onClick={handleOverlayClick} style={style}>
+      <div className={`modal-content ${contentClassName}`.trim()}>
+        <button className={styles.close} onClick={onClose}>&times;</button>
+          {children}
       </div>
     </div>
   );

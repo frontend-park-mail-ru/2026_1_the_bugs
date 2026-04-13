@@ -1,0 +1,810 @@
+.container {
+  background: var(--card);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.progressStep {
+  border: 1px solid #e7e7e7;
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--muted);
+  background: #fafafa;
+}
+
+.progressStepActive {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.progressStepDone {
+  color: #177a35;
+  border-color: #bce8c8;
+  background: #eaf9ef;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.stepTwoRow {
+  grid-template-columns: repeat(5, 1fr);
+  justify-content: start;
+  align-items: end;
+}
+
+.stepTwoRow .input,
+.stepTwoRow .customSelectButton {
+  width: 100%;
+  max-width: none;
+}
+
+.stepThreeRow {
+  display: grid;
+  grid-template-columns: max-content 220px;
+  justify-content: start;
+  align-items: end;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stepThreeRow .input,
+.stepThreeRow .select {
+  width: 100%;
+  max-width: none;
+}
+
+.stepThreeRow .roomCountGroup {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.stepSection + .stepSection {
+  margin-top: 40px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 13px;
+  color: #474747;
+}
+
+.input,
+.select {
+  width: min(100%, 360px);
+  max-width: 360px;
+  border-radius: 16px;
+  border: none;
+  padding: 11px 14px;
+  background: #fff;
+  color: var(--text);
+  font-size: 16px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 600;
+  outline: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.addressInput {
+  width: 100%;
+  max-width: none;
+}
+
+.textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: none;
+  padding: 11px 14px;
+  background: #fff;
+  color: var(--text);
+  font-size: 16px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 600;
+  outline: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.inputError,
+.textareaError,
+.selectError {
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.descTextarea {
+  resize: none;
+  overflow-y: hidden;
+}
+
+.error {
+  color: #d9363e;
+  font-size: 12px;
+}
+
+.choiceGroupError {
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+}
+
+.stepTitle {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.stepDescription {
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.nav {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nextButtonWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errorHintWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.errorHintIcon {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 999px;
+  background: rgba(255, 77, 79, 0.12);
+  color: #ff4d4f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: default;
+  box-shadow: 0 0 18px -6px rgba(0, 0, 0, 0.35);
+}
+
+.errorHintPopup {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  z-index: 5;
+  min-width: 220px;
+  max-width: 280px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  color: #d9363e;
+  box-shadow: 0 0 20px -8px rgba(0, 0, 0, 0.35);
+  border: 1px solid #ffd4d4;
+  font-size: 12px;
+  line-height: 1.35;
+  display: none;
+}
+
+.errorHintWrap:hover .errorHintPopup {
+  display: block;
+}
+
+.button {
+  margin: 0;
+  padding: 11px 20px;
+  min-width: 140px;
+  border: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.buttonSecondary {
+  color: var(--text);
+  background: #f1f1f1;
+}
+
+.buttonPrimary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.housingTypeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.housingTypeButton {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  padding: 8px 14px;
+  font-size: 16px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.housingTypeButton:hover {
+  transform: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.housingTypeButtonActive {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.housingTypeButtonActive:hover {
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.roomCountGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.roomCountButton {
+  margin: 0;
+  height: 44px;
+  min-width: 80px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  padding: 0;
+  font-size: 16px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.roomCountButton:hover {
+  transform: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.roomCountButtonActive {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.roomCountButtonActive:hover {
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.stepSelectGroup {
+  min-width: 0;
+}
+
+.customSelect {
+  position: relative;
+  width: 100%;
+}
+
+.customSelectButton {
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: none;
+  border-radius: 16px;
+  padding: 11px 44px 11px 14px;
+  background: #fff;
+  color: var(--text);
+  text-align: left;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  outline: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-radius 0.2s ease;
+}
+
+.customSelectValue {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customSelectButton:hover {
+  transform: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.customSelectButton:focus {
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.customSelectButton:disabled {
+  cursor: not-allowed;
+  color: #8a8a8a;
+  background: #f5f5f5;
+}
+
+.customSelectButtonOpen {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.customSelectPlaceholder {
+  color: #8a8a8a;
+}
+
+.stepSelectArrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7a7a7a;
+  font-size: 14px;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.customSelectButtonOpen .stepSelectArrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.customSelectMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 0 30px -10px rgba(0, 0, 0, 0.35);
+}
+
+.customSelectOption {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--text);
+  text-align: left;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.customSelectOption:hover {
+  transform: none;
+  box-shadow: none;
+  background: #f7f7f7;
+}
+
+.customSelectOptionActive {
+  background: #f1f1f1;
+}
+
+.customSelectEmpty {
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.selectHint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.featureGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.uploadBox {
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.uploadBoxDragActive {
+  background: #fff4fb;
+  border-color: var(--accent);
+}
+
+.uploadControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: fit-content;
+  margin: 0 auto;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #ffe7f6;
+  color: #9b4e7f;
+  cursor: pointer;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-family: "Aqum Two", system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.uploadHint {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.photoThumbGrid {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.photoThumb {
+  width: 128px;
+  height: 128px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #f5f5f5;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+}
+
+.photoThumb:active {
+  cursor: grabbing;
+}
+
+.photoThumbDragging {
+  opacity: 0.65;
+}
+
+.photoOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  text-align: center;
+  padding: 10px;
+}
+
+.photoThumb:hover .photoOverlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.photoOverlayText {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.photoRemoveButton {
+  margin: 0;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: #111;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.photoRemoveButton:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.mainPhotoBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #fff;
+  background: #ff4da6;
+  box-shadow: 0 0 12px -4px rgba(0, 0, 0, 0.35);
+}
+
+.photoThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featureChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e4e4e4;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.featureChip input {
+  width: 16px;
+  height: 16px;
+}
+
+.featureChipActive {
+  border-color: var(--accent);
+  background: #fff2fa;
+}
+
+.preview {
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed #e6e6e6;
+  padding-bottom: 8px;
+}
+
+.previewRow:last-child {
+  border-bottom: none;
+}
+
+.previewKey {
+  color: var(--muted);
+}
+
+.submitError {
+  margin-top: 12px;
+  color: #d9363e;
+}
+
+.priceFieldWrap {
+  width: 220px;
+}
+
+.success {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+  padding: 24px 8px;
+}
+
+.successTitle {
+  font-size: 28px;
+}
+
+.addressSuggestion {
+  margin-top: 12px;
+  border: 1px solid #f2d7e9;
+  border-radius: 16px;
+  background: #fff7fc;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.addressSuggestionError {
+  border-color: transparent;
+  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.addressSuggestionTitle {
+  margin: 0;
+  color: #5c3650;
+  font-size: 13px;
+}
+
+.addressSuggestionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.addressSuggestionItem {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #ffeafb;
+  color: #8a4d72;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.addressSuggestionValue {
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #f3e3ee;
+  padding: 9px 11px;
+  font-size: 14px;
+  color: #3d3d3d;
+  word-break: break-word;
+}
+
+.addressSuggestionActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.addressSuggestionActions .button {
+  min-width: 0;
+}
+
+.addressConfirmButton {
+  padding: 8px 14px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.addressConfirmedBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #eaf9ef;
+  color: #177a35;
+  border: 1px solid #bce8c8;
+  padding: 7px 12px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 20px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stepTwoRow {
+    grid-template-columns: 1fr;
+  }
+
+  .stepThreeRow {
+    grid-template-columns: 1fr;
+  }
+
+  .progress {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .priceFieldWrap {
+    width: 100%;
+  }
+
+  .addressSuggestionActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addressSuggestionActions .button {
+    width: 100%;
+  }
+}
+

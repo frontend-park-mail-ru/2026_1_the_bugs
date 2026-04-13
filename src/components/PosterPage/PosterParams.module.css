@@ -1,0 +1,65 @@
+.card {
+  padding: 16px 18px;
+  gap: 10px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.params {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.param {
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.param:last-child {
+  border-bottom: none;
+}
+
+.paramLabel {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.paramValue {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.facilitiesWrap {
+  margin-top: 12px;
+}
+
+.facilitiesTitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.facilitiesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.facility {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #ececec;
+  font-size: 13px;
+}
+

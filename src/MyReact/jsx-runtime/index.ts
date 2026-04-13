@@ -14,13 +14,15 @@ import type {
  * @returns Нормализованный массив для reconciler'а.
  */
 const normalizedChildren = (children: ChildrenType): NormalizedChildrenType => {
-    if (children === undefined) {
-        return []
+   if (children === undefined || children === null) {
+        return [];
     }
     if (!Array.isArray(children)) {
-        return [children]
+        return [children];
     }
-    return children.flat()
+    return children.flat().filter(child => 
+        child !== null && child !== undefined
+    );
 }
 
 /**
@@ -73,9 +75,13 @@ function jsx<PropsType extends ComponentPropsType>(
             children: normalizedChildren(props.children)
         } as JSXElement
     } else {
-        // Создаем компонент
         if (key === undefined) {
             key = props.key as string
+        }
+        if (!key) {
+            const propsForHash = { ...props };
+            delete propsForHash.children;
+            key = `${type.name}_${stableHash(propsForHash)}`;
         }
         return {
             type: "component",
@@ -86,9 +92,24 @@ function jsx<PropsType extends ComponentPropsType>(
         }
     }
 }
+function stableHash(obj: any): string {
+    const computeHash = (str: string): string => {
+        let hash = 5381;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * 33) ^ str.charCodeAt(i);
+        }
+        return (hash >>> 0).toString(16).slice(0, 8);
+    };
 
-/** Экспорт JSX namespace для глобальной типизации */
+    try {
+        const json = JSON.stringify(obj, Object.keys(obj).sort());
+        return computeHash(json);
+    } catch (err) {
+        // fallback: строим строку из информации об ошибке и типа объекта
+        const fallbackStr = `error:${err ?? 'unknown'}:${typeof obj}:${String(obj)}`;
+        return computeHash(fallbackStr);
+    }
+}
+
 export type { JSX };
-
-/** Основная JSX функция и её алиас */
 export { jsx, jsx as jsxs };

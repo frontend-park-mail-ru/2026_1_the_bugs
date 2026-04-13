@@ -1,0 +1,36 @@
+.companyBlock {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+}
+
+.companyTitle {
+  color: var(--text);
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.2px currentColor;
+  margin: 0px;
+}
+
+.companyText {
+  color: var(--muted);
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.1px currentColor;
+  margin: 0px;
+  text-align: start;
+}
+
+.companyAvatar {
+  width: 100%;
+  max-width: 70px;
+  max-height: 70px;
+  border-radius: 12px;
+  margin: 0px;
+  height: 100%;
+}
+
+.companyAvatar {
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+

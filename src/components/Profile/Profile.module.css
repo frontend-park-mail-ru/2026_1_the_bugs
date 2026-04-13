@@ -1,0 +1,245 @@
+.profilePage {
+	width: 100%;
+	max-width: 520px;
+	margin: 10px auto 0;
+	display: flex;
+	flex-direction: column;
+	gap: 26px;
+}
+
+.status {
+	text-align: center;
+	font-size: 14px;
+	color: var(--muted);
+}
+
+.profileCard {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	background: var(--card);
+	border-radius: 18px;
+	box-shadow: var(--shadow);
+	padding: 18px;
+}
+
+.avatarWrap {
+	width: 88px;
+	height: 88px;
+	border-radius: 50%;
+	background: linear-gradient(145deg, #f8f8f8 0%, #ebebeb 100%);
+	box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08);
+	flex-shrink: 0;
+	overflow: hidden;
+}
+
+.avatar {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	padding: 0;
+	transform: scale(1.08);
+	transform-origin: center;
+}
+
+.profileMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.fullName {
+	font-size: 34px;
+	line-height: 1;
+	letter-spacing: 0.2px;
+	font-weight: 400;
+	font-family: "Hero", system-ui, sans-serif;
+}
+
+.contactRow {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--muted);
+	font-size: 13px;
+}
+
+.contactRow img {
+	width: 14px;
+	height: 14px;
+	opacity: 0.7;
+}
+
+.tabs {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	flex-wrap: nowrap;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.tabDivider {
+	font-size: 24px;
+	line-height: 1;
+	color: var(--text);
+	opacity: 0.8;
+}
+
+.tab {
+	background: transparent;
+	box-shadow: none;
+	margin: 0;
+	border-radius: 0;
+	text-transform: none;
+	color: var(--text);
+	opacity: 0.8;
+	font-size: 24px;
+	line-height: 1;
+	padding: 0;
+    box-shadow: none !important;
+}
+
+.activeTab {
+	color: var(--accent);
+	opacity: 1;
+}
+
+.profileForm {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.label {
+	font-size: 24px;
+	line-height: 1;
+	font-family: "Hero", system-ui, sans-serif;
+}
+
+.fileInput {
+	display: none;
+}
+
+.ghostAction {
+	width: 100%;
+	margin: 0;
+	min-height: 48px;
+	color: var(--accent);
+	text-transform: uppercase;
+	font-size: 18px;
+}
+
+.input {
+	width: 100%;
+	font-size: 24px;
+}
+
+.errorOverlay {
+	min-height: 20px;
+	color: #ff4d4f;
+	text-align: center;
+	font-weight: 700;
+	font-size: 14px;
+	font-family: 'Zen Kaku Gothic Antique', system-ui, sans-serif;
+}
+
+.passwordWrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.passwordWrapper input {
+	flex: 1;
+	padding-right: 40px;
+}
+
+.eyeIcon {
+	position: absolute;
+	right: 16px;
+	top: 52%;
+	transform: translateY(-50%);
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	opacity: 0.6;
+	object-fit: contain;
+}
+
+.eyeIcon:hover {
+	opacity: 0.8;
+}
+
+.eyeIconActive {
+	opacity: 1 !important;
+	filter: grayscale(0) !important;
+}
+
+
+.saveBtn {
+	margin-top: 14px;
+	width: 52%;
+	min-height: 58px;
+	color: var(--card);
+	background: var(--accent);
+	text-transform: uppercase;
+	font-size: 24px;
+}
+
+
+@media (max-width: 720px) {
+	.profilePage {
+		max-width: 100%;
+		padding: 0 4px;
+		gap: 18px;
+	}
+
+	.profileCard {
+		padding: 14px;
+		gap: 12px;
+	}
+
+	.avatarWrap {
+		width: 68px;
+		height: 68px;
+	}
+
+	.fullName {
+		font-size: 22px;
+	}
+
+	.contactRow {
+		font-size: 11px;
+	}
+
+	.tab {
+		font-size: 26px;
+	}
+
+	.label {
+		font-size: 19px;
+	}
+
+	.photoButtons {
+		gap: 10px;
+	}
+
+	.ghostAction {
+		min-height: 42px;
+		font-size: 14px;
+	}
+
+	.input {
+		min-height: 48px;
+		font-size: 21px;
+		margin-bottom: 6px;
+	}
+
+	.saveBtn {
+		width: 72%;
+		min-height: 50px;
+		font-size: 21px;
+	}
+}

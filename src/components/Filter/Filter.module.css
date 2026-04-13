@@ -1,0 +1,162 @@
+.panel {
+  position: relative;
+  width: 100%;
+  text-align: left;
+  background: var(--bg);
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 24px 60px rgba(15, 15, 15, 0.18);
+  padding: 28px;
+}
+
+.section + .section {
+  margin-top: 18px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  line-height: 1;
+  text-align: left;
+  font-family: "Hero", system-ui, sans-serif;
+  margin-bottom: 10px;
+}
+
+.chips,
+.rooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  margin: 0;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.priceRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  background: var(--card);
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 99px;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.06);
+}
+
+.field:focus-within {
+  box-shadow: var(--shadow-accent);
+}
+
+.field span,
+.field strong {
+  color: #8e8e8e;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.input {
+  background: none;
+  padding: 4px 0;
+  font-size: 20px;
+  box-shadow: none;
+  border-radius: 0px;
+}
+.input:focus {
+  box-shadow: none;
+}
+
+.roomChip {
+  margin: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.chipActive {
+  background: var(--card);
+  color: var(--accent);
+  box-shadow: 0 0 18px 0 rgba(240, 141, 204, 0.35);
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.resetWrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveBtn {
+  margin: 0;
+  min-width: 240px;
+  height: 44px;
+  padding: 0 24px;
+}
+
+.advancedBtn {
+  margin: 0;
+  color: var(--accent);
+  height: 44px;
+  font-size: 20px;
+  padding: 0;
+  border-radius: 0;
+}
+
+.advancedBtn:hover,
+.advancedBtn:active,
+.advancedBtn:active:not(:disabled),
+.advancedBtn:focus-visible {
+  box-shadow: none;
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .panel {
+    border-radius: 20px;
+    padding: 18px 14px 16px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+
+  .saveBtn,
+  .advancedBtn {
+    width: 100%;
+  }
+
+  .resetWrap {
+    justify-content: stretch;
+  }
+
+  .resetWrap button {
+    width: 100%;
+  }
+
+  .saveBtn {
+    min-width: 0;
+  }
+}

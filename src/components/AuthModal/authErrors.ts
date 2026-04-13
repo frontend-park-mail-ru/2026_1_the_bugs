@@ -1,5 +1,3 @@
-import type { AuthField } from "./AuthModal";
-
 export const ERROR_MESSAGES: Record<number, string> = {
   400: 'Введен неверный email или пароль',
   401: 'Введен неверный email или пароль',
@@ -10,12 +8,12 @@ export const ERROR_MESSAGES: Record<number, string> = {
 };
 
 
-export const LOGIN_ERROR_FIELDS: Partial<Record<number, AuthField[]>> = {
+export const ERROR_FIELDS: Partial<Record<number, string[]>> = {
   400: ['email', 'password'],
   401: ['email', 'password'],
   404: ['email'],
   409: ['email'],
-  429: ['password']
+  429: ['email','password']
 };
 
 
@@ -28,3 +26,5 @@ export const getHighlightStyle = (isHighlighted?: boolean) =>
     border: '1px solid #ff4d4f',
     boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.25)'
   } : undefined;
+
+

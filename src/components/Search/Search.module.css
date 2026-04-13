@@ -1,13 +1,26 @@
+.searchWrap {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .search {
+  position: relative;
+  z-index: 6;
   display: grid;
   grid-template-columns: 1fr auto auto;
   background: var(--card);
   border-radius: 999px;
   padding: 8px;
   box-shadow: var(--shadow);
-  width: min(520px, 100%);
+  width: 100%;
+  max-width: 520px;
   gap: 8px;
   transition: box-shadow 0.3s ease;
+  min-width: 0;
 }
 
 .search:focus-within {
@@ -16,23 +29,70 @@
 
 .input {
   border: none;
-  background: transparent;
+  background: none;
   padding: 10px 16px;
   font-size: 14px;
   outline: none;
   color: var(--text);
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: none;
 }
-
+.input:focus{
+  box-shadow: none;
+}
 .btn {
   width: 40px;
   height: 40px;
+  min-height: 40px;
   border: none;
-}
-
-.accent {
-  background: var(--accent);
+  padding: 0;
+  border-radius: var(--radius-L);
+  display: grid;
+  place-items: center;
 }
 
 .dark {
   background: var(--dark);
+}
+
+.menuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 4;
+}
+
+.filterMenu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(860px, calc(100vw - 24px));
+  z-index: 7;
+}
+
+.moreModalContent {
+  --modal-width: min(860px, calc(100vw - 24px));
+  --modal-max-width: min(860px, calc(100vw - 24px));
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 18px;
+}
+
+@media (max-width: 600px) {
+  .filterMenu {
+    top: calc(100% + 10px);
+    width: calc(100vw - 12px);
+  }
+
+  .moreModalContent {
+    --modal-width: calc(100vw - 12px);
+    --modal-max-width: calc(100vw - 12px);
+    padding: 14px;
+  }
 }

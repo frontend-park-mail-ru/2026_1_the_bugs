@@ -1,0 +1,116 @@
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 44px;
+	padding: 8px;
+	border-radius: var(--radius-L);
+	font-family: "Aqum Two", system-ui, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1;
+	border: 1px solid transparent;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.label {
+	display: inline-flex;
+	align-items: center;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.primary {
+    background: var(--card);
+	box-shadow: var(--shadow);
+}
+
+.primary:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.accent {
+  background-color: var(--accent);
+  color: white;
+}
+
+.accent:hover:not(:disabled) {
+	background: var(--accent-hover);
+}
+
+.secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.secondary:hover:not(:disabled) {
+	background: #f2f2f0;
+	border-color: rgba(0, 0, 0, 0.12);
+}
+
+.button:active:not(:disabled) {
+	transform: scale(0.96);
+	opacity: 0.96;
+}
+
+.round:active:not(:disabled) {
+	transform: scale(0.96);
+    opacity: 0.96;
+}
+
+.button:disabled {
+	transform: none;
+	box-shadow: none;
+}
+
+.round {
+	width: 36px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.none {
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    color: #222;
+    font-family: inherit;
+    box-shadow: none;
+}
+
+.menu {
+	background: none;
+	border: none;
+	width: 100%;
+	min-height: 0;
+	padding: 12px 16px;
+	border-radius: 0;
+	justify-content: center;
+	gap: 2px;
+	font-size: 15px;
+	text-align: center;
+	cursor: pointer;
+	color: #222;
+	font-family: inherit;
+	box-shadow: none;
+}
+
+.menu:hover:not(:disabled) {
+	box-shadow: none;
+	color: var(--accent);
+}

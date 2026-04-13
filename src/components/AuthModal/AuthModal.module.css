@@ -1,20 +1,6 @@
 /* Используем глобальные .modal и .modal-content из index.css */
 /* Здесь только специфичные стили для AuthModal */
 
-/* Кнопка закрытия */
-.close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 40px !important;
-  color: #999;
-  background: none;
-  border: none;
-  padding: 0;
-  line-height: 1;
-  box-shadow: none !important;
-}
-
 /* Стили для форм авторизации */
 .title {
   margin: 0 0 30px 0;
@@ -95,35 +81,6 @@
   filter: grayscale(0) !important;
 }
 
-/* МОДИФИКАТОРЫ - переопределяют только цвета и нужные свойства */
-.primary {
-  width: 60%;
-  border: none;
-  padding: 12px;
-  background-color: var(--accent);
-  color: white;
-}
-
-.primary:hover:not(:disabled) {
-  background-color: var(--accent-hover);
-}
-
-.secondary {
-  width: 60%;
-  padding: 12px;
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.secondary:hover:not(:disabled) {
-  background-color: #e8e8e8;
-  border-color: #999;
-}
-
 @media (max-width: 768px) {
   .modal-content {
     width: 90%;
@@ -131,5 +88,57 @@
     margin-top: 30px;
     margin-bottom: 30px;
     max-height: calc(100vh - 60px);
+  }
+}
+
+.oauthDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 20px;
+  position: relative;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.dividerText {
+  color: #8e8e93;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+.oauthContainer {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.oauthContainer > * {
+  max-width: 300px;
+  min-width: 200px;
+  height: 44px; 
+  border-radius: 8px;
+}
+
+
+@media (max-width: 480px) {
+  .oauthDivider {
+    gap: 8px;
+  }
+  .oauthContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .dividerText {
+    font-size: 13px;
+    padding: 0 8px;
   }
 }

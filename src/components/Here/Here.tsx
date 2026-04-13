@@ -1,18 +1,20 @@
 import { Search } from '../Search/Search';
 import style from './Here.module.css';
+import type { IFilters } from 'src/types';
 
 interface HeroProps {
   searchValue: string;
-  onSearchInput: (value: string) => void;
-  onSearch: () => void;
+  filters: IFilters;
+  onSearch: (value: string, filters: IFilters) => void;
+  setFilters: (f: IFilters)=>void;
 }
 
 /** Hero-секция главной страницы с заголовком и строкой поиска. */
-export function Hero({ searchValue, onSearchInput, onSearch }: HeroProps) {
+export function Hero({ searchValue, filters, onSearch, setFilters }: HeroProps) {
   return (
     <section className={style['hero']}>
       <h1>КОМФОРТНОЕ ЖИЛЬЁ<br />БЕЗ ПЕРЕПЛАТЫ<br />ЗА ОДИНОЧЕСТВО</h1>
-      <Search key="search" value={searchValue} onInput={onSearchInput} onSearch={onSearch} />
+      <Search selectedFilters={filters}  key="search" value={searchValue} filters={filters} setFilters={setFilters}onSearch={onSearch} />
     </section>
   );
 }

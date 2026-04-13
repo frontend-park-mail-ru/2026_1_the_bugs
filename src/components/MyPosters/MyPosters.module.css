@@ -1,0 +1,147 @@
+.menuOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    background: transparent;
+}
+.nothing {
+    text-align: center;
+    margin: 32px 0 24px;
+}
+
+.main {
+    text-align: center;
+    margin: 32px 0 24px;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.cardsGrid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 300px));
+    gap: 18px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: repeat(1, minmax(180px, 1fr));
+    justify-items: center; 
+    align-items: center; 
+  }
+}
+
+.myCard {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.menuBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    color: #222;
+    font-family: "Hero", system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+
+.menuBtn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    background: #eaeaea;
+}
+
+.menuBtn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.menuBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Активная кнопка меню (когда открыто) */
+.menuBtn.menuBtnActive {
+    background: #eaeaea;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    transform: scale(1.04);
+}
+
+.menuDotsCircle {
+    width: 6px;
+    height: 6px;
+    background: #888;
+    border-radius: 50%;
+    margin: 0 1.5px;
+    display: inline-block;
+}
+
+
+.menuPopup {
+    position: absolute;
+    top: 56px;
+    right: 16px;
+    background: #fff;
+    border-radius: var(--radius-S);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+    padding: 8px 0;
+    min-width: 148px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid #f0f0f0;
+}
+
+.menuSeparator {
+    height: 1px;
+    background: #979797;
+    margin: 2px 10%;
+    border: none;
+}
+
+
+.menuItemDelete {
+    color: #cb2d2d;
+}
+
+
+.center {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.error {
+    text-align: center;
+    color: #e00;
+    margin-top: 40px;
+}
+
+.createBtn{
+    margin-bottom: 20px;
+}

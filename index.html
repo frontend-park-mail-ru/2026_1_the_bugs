@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/svg/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; 
+                script-src 'self' 'unsafe-eval' https://yastatic.net  https://unpkg.com; 
+                connect-src 'self' http://localhost:8000  https://nominatim.openstreetmap.org https://dom-deli.ru http://dom-deli.ru;
+                style-src 'self' 'unsafe-inline' https://unpkg.com;
+                img-src 'self' data: http: blob:;
+                frame-src 'self' https://www.openstreetmap.org"
+                >
     <title>Домдели</title>
   </head>
   <body>

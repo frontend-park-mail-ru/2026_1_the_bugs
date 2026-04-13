@@ -23,7 +23,6 @@ import {
  * @param newAttrs - Новые атрибуты из JSX-дерева.
  */
 const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>) => {
-    // Удаляем старые атрибуты, которых нет в новых
     repr.attrs.forEach((_, k) => {
         if (!newAttrs.has(k)) {
             repr.attrs.delete(k);
@@ -31,33 +30,26 @@ const patchAttributes = (repr: DOMElement, newAttrs: Map<string, any>) => {
         }
     })
 
-    // Обновляем измененные атрибуты
     repr.attrs.forEach((v, k) => {
         if (newAttrs.get(k) !== v) {
             repr.attrs.set(k, newAttrs.get(k))
             repr.elem.setAttribute(k, newAttrs.get(k));
         }
     })
-
-    // Очищаем старые обработчики событий
     repr.eventListeners.forEach((l) => {
         repr.elem.removeEventListener(l.type, l.callback)
     })
     repr.eventListeners = []
 
-    // Применяем новые атрибуты
     newAttrs.forEach((v, k) => {
         if (k.startsWith("on") && k[2] == k[2].toUpperCase()) {
-            // Обработчики событий (onClick, onChange)
             const typeEvent = k.slice("on".length).toLocaleLowerCase()
             repr.elem.addEventListener(typeEvent, v as () => void);
             repr.eventListeners.push({type: typeEvent, callback: v})
         } else if (k === "value" && repr.elem instanceof HTMLInputElement) {
-            // Специальная обработка value для input
             repr.elem.value = v;
             repr.attrs.set(k, v)
         } else if (k === "style" && typeof v === "object" && v !== null) {
-            // Обработка CSS стилей как объекта
             const oldStyle = repr.attrs.get("style") || {};
             for (const prop in oldStyle) {
                 if (!(prop in v)) {
@@ -215,9 +207,14 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
     /** Полный цикл обновления компонента */
     update() {
         this.updateVTree();
-        this.patchInstances();
-        this.patchDOMNodes();
-        this.flushEffects();
+        if (this.vTree !== null){
+            this.patchInstances();
+            this.patchDOMNodes();
+            this.flushEffects();
+        }else{
+            this.destroy()
+        }
+
     }
 
     /** Пересоздает виртуальное дерево JSX */
@@ -274,7 +271,7 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             const newProps = (newInstanceMap.get(k) as JSXComponent<any>).props
             if (!deepEqual(v.props, newProps)) {
                 v.props = newProps
-                markDirty(v);
+                v.update();
             }
         });
 
@@ -326,8 +323,8 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
                 eventListeners: [],
             };
             
-            if (parentElem != null && prevChild !== undefined) {
-                parentElem?.replaceChild(this.domElement.elem, prevChild);
+            if (parentElem) {
+                parentElem.replaceChild(this.domElement.elem, prevChild as Node);
             }
         }
         patchAttributes(this.domElement, this.vTree.attributes)
@@ -354,6 +351,10 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             }
          
             const vNode = branch[branchIndex];
+            if (vNode === null || vNode === undefined) {
+                branchIndex++;
+                continue;
+            }
             if (typeof vNode !== "string" && vNode?.type === undefined) {
                 branchIndex++;
                 continue
@@ -362,7 +363,10 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             if (typeof vNode !== "string" && vNode.type === "component") {
                 const compInstance = this.instanceMap.get(vNode.key) as ComponentInstance<any>;
                 const compDom = compInstance.domElement;
-                if (!compDom) throw new Error("Component has no DOM element");
+                if (!compDom) { 
+                    branchIndex++;
+                    continue
+                }
 
                 if (domReprIndex >= domRepr.length) {
                     domRepr.push(compDom);
@@ -403,21 +407,18 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
 
             const domNode = domRepr[domReprIndex];
             
-            // Заменяем DOM-элемент на текст
             if (typeof vNode === "string" && domNode.type === "element") {
                 domNode.elem.parentElement?.removeChild(domNode.elem);
                 domRepr.splice(domReprIndex, 1);
                 continue;
             }
             
-            // Заменяем текст на DOM-элемент
             if (typeof vNode !== "string" && domNode.type === "textNode") {
                 domNode.node.parentElement?.removeChild(domNode.node);
                 domRepr.splice(domReprIndex, 1)
                 continue;
             }
 
-            // Обновляем текстовый узел
             if (typeof vNode === "string" && domNode.type === "textNode") {
                 domNode.node.textContent = vNode;
                 const refNode = parentElement.childNodes[domReprIndex];
@@ -431,7 +432,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
                 continue;
             }
 
-            // Патчим DOM-элемент
             if (typeof vNode !== "string" && domNode.type !== "textNode") {
                 let elemRepr = domNode
                 if (domNode.elem.tagName.toLowerCase() !== vNode.tagName) {
@@ -466,7 +466,6 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
             }
         }
 
-        // Удаляем лишние DOM-узлы
         while(domRepr.length > domReprIndex) {
             const r = domRepr[domReprIndex]
             if (r.type === "element") {
@@ -480,9 +479,15 @@ export class ComponentInstance<PropsType extends ComponentPropsType> {
 
     /** Разрушает компонент и все дочерние */
     destroy() {
+        for (const eff of this.effects) {
+            if (eff?.cleanup) {
+                eff.cleanup();
+            }
+        }
         this.instanceMap.forEach((v) => {
             v.destroy();
         });
+        this.instanceMap.clear()
         if (this.domElement?.elem.parentElement !== null) {
             this.domElement?.elem.parentElement.removeChild(this.domElement.elem);
         }

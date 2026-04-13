@@ -1,0 +1,44 @@
+@font-face{
+  font-family: "Yandex Sans";
+  src: local("Yandex Sans"), url("/font/YandexSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.yandex-id-button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1px solid #0b0b0b2c;
+  gap: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 44px;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+}
+
+.yandex-id-button img,
+.yandex-id-button svg{
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 0;
+  flex: 0 0 28px;
+}
+
+.yandex-id-button > span{
+  display: inline-block;
+  font-family: "Yandex Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  color: #0b0b0b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
