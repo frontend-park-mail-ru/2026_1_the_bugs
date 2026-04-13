@@ -1,7 +1,7 @@
 import { Card } from '../Card/Card';
 import type { Apartment } from '../../types';
 import style from './CardList.module.css';
-import { useEffect, useState } from 'the-react/hooks';
+import { useEffect } from 'the-react/hooks';
 import { Button } from '../Button/Button';
 import { useNavigate } from '@router-dom';
 
