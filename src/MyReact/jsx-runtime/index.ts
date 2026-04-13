@@ -78,7 +78,7 @@ function jsx<PropsType extends ComponentPropsType>(
         if (key === undefined) {
             key = props.key as string
         }
-        if (!key || key === null) {
+        if (!key) {
             const propsForHash = { ...props };
             delete propsForHash.children;
             key = `${type.name}_${stableHash(propsForHash)}`;
