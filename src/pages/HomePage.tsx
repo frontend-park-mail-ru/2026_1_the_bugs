@@ -117,7 +117,7 @@ export function HomePage({search_query}: Props) {
         
       
       setApartments(newApartments);
-      setHasMore(newApartments.length < (postersResp.len || 0));
+      setHasMore((newApartments.length < (postersResp.len || 0)) && postersResp.posters.length > 0);
     }catch{
       setHasMore(false);
     } finally {
