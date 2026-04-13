@@ -135,11 +135,12 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
             </section>
 
             <div className={style.actions}>
-                <Button type="button" variant="accent" className={style.saveBtn} onClick={handleSave} text="Сохранить" />
+                <button type="button" variant="accent" className={style.saveBtn} onClick={handleSave}>Сохранить</button>
                 или
                 <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
 
             </div>
+            <br/>
 
             <div className={style.resetWrap}>
                 <Button

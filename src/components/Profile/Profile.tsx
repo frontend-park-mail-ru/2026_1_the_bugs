@@ -1,7 +1,7 @@
 import { useEffect, useState } from "the-react/hooks";
 import style from './Profile.module.css';
 import { authService } from '../../services/auth';
-import type { Profile } from 'src/types';
+import type { Profile, UserResponse } from '../../types';
 import {
     validateName,
     validatePhone,
@@ -17,7 +17,11 @@ type ProfileField =
     | 'lastname'
     | 'phone';
 
-export function Profile() {
+interface Prop{
+    setCurrentUser: (u: UserResponse)=>void
+}
+
+export function Profile({setCurrentUser}: Prop) {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -217,6 +221,7 @@ export function Profile() {
                 URL.revokeObjectURL(avatarPreview);
                 setAvatarPreview(null);
             }
+            setCurrentUser(updated)
 
             setAvatarFile(null);
             resetAvatarInput();

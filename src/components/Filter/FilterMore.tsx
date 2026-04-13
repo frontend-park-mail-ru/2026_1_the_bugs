@@ -173,14 +173,15 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
         <h3 className={style.title}>Удобства</h3>
         <div className={style.chips}>
           {amenities.map(({ label, alias }) => (
-            <Button
+            <button
               key={alias}
               type="button"
               data-amenity-alias={alias}
               className={`${style.chip} ${selectedAmenities.includes(alias) ? style.chipActive : ''}`}
               onClick={() => toggleAmenity(alias)}
-              text={label}
-            />
+            >
+              {label}
+            </button>
           ))}
         </div>
       </section>
@@ -199,15 +200,16 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           </label>
 
           {floorFlags.map((item) => (
-            <Button
+            <button
               key={item}
               variant='none'
               type="button"
               data-floor-flag={item === 'Не первый' ? 'not_first_floor' : 'not_last_floor'}
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
               onClick={() => toggleFloorFlag(item)}
-              text={item}
-            />
+            >
+              {item}
+              </button>
           ))}
         </div>
       </section>
@@ -228,7 +230,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       </section>
 
       <div className={style.actions}>
-        <Button variant="accent" type="button" className={style.saveBtn} onClick={handleSave} text="Сохранить" />
+        <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave}>Cохранить</button>
       </div>
     </section>
   );

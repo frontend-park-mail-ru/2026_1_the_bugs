@@ -88,7 +88,7 @@ export function App() {
                 </Router>
                 <Router currentPath={currentPath} path="/profile">
                   <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">
-                      <Profile alias="{alias}" key="ProfilePage" />
+                      <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
                 </Router>
               </Switch>
