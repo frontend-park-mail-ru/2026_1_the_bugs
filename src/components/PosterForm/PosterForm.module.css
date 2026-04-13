@@ -242,6 +242,7 @@
 }
 
 .buttonSecondary {
+  color: var(--text);
   background: #f1f1f1;
 }
 
@@ -301,7 +302,7 @@
 .roomCountButton {
   margin: 0;
   height: 44px;
-  min-width: 44px;
+  min-width: 80px;
   border-radius: 999px;
   border: none;
   background: #fff;

@@ -28,7 +28,7 @@
 
 .primary {
     background: var(--card);
-	box-shadow: 0 10px 24px rgba(18, 18, 18, 0.18);
+	box-shadow: var(--shadow);
 }
 
 .primary:hover:not(:disabled) {

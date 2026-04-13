@@ -107,7 +107,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           {propertyTypes.map(({ label, alias }) => (
             <Button
               key={alias}
-              variant='none'
+              variant='primary'
               type="button"
               data-type-alias={alias}
               className={`${style.chip} ${selectedType === alias ? style.chipActive : ''}`}
@@ -141,7 +141,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           {roomOptions.map((room) => (
             <Button
               key={room}
-              variant='none'
+              variant='primary'
               type="button"
               data-room={room}
               className={`${style.roomChip} ${selectedRooms === room ? style.chipActive : ''}`}
@@ -202,7 +202,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
           {floorFlags.map((item) => (
             <button
               key={item}
-              variant='none'
+              variant='primary'
               type="button"
               data-floor-flag={item === 'Не первый' ? 'not_first_floor' : 'not_last_floor'}
               className={`${style.chip} ${selectedFloorFlags.includes(item) ? style.chipActive : ''}`}
