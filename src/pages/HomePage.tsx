@@ -96,7 +96,7 @@ export function HomePage({search_query}: Props) {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const fetchData = async (searchVal: string, currentFilters: IFilters, append = false) => {
-    if (isLoading) return;
+    if (isLoading || !hasMore) return;
     if (append && !hasMore) return;
     
     setIsLoading(true);

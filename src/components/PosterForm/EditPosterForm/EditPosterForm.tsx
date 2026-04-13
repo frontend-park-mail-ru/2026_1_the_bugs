@@ -465,9 +465,6 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
   }
 
   // ---- основной рендер (все шаги видны) ----
-  const addressFieldErrors = addressConfirmationError === 'Укажите корректный адрес'
-    ? { ...errors, address: addressConfirmationError }
-    : errors;
 
   // собираем ошибки для текущего шага (всех)
   const cumulativeErrors = collectErrorsUpToStep(visibleSteps, formDraft);
@@ -527,7 +524,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
               field="address"
               label="Адрес"
               value={form.address}
-              errors={addressFieldErrors}
+              errors={errors}
               onChange={(_, value) => onAddressInput(value)}
               showErrorText={false}
               placeholder="Например: Москва, ул. Ленина, 10"
