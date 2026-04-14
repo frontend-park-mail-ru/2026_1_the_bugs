@@ -19,7 +19,7 @@ export interface ValidationResult {
   fieldsToHighlight: Partial<Record<keyof AuthFormState, boolean>>;
 }
 
-const MAX_EMAIL_LENGTH = 254;
+const MAX_EMAIL_LENGTH = 255;
 const MIN_PWD_LEN = 8;
 const MAX_PWD_LEN = 64;
 
