@@ -1,6 +1,5 @@
 const STATIC_CACHE = "domdeli-static-v1";
 const API_CACHE = "domdeli-api-v1";
-const API_TTL = 1 * 60 * 1000;
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
