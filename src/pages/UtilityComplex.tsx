@@ -70,12 +70,14 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			{utilityCompany && (<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany as UtilityCompany} />)}
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
-				<div>
-					<br/>
-					<h2 className="fontHero">Объявления в этом ЖК</h2>
-				</div>
+				
 				{apartments && (
-					<CardList key="card_list_utility" apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
+					<div>
+						<br/>
+						<h2 className="fontHero">Объявления в этом ЖК</h2>
+						<CardList key="card_list_utility" styles={{'justify-content': 'start'}}apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
+					</div>
+					
 				)}
 			</section>
 		</div>

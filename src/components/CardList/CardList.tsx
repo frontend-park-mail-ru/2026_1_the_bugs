@@ -11,6 +11,7 @@ interface CardListProps {
   hasMore: boolean;
   onLoadMore: () => void;
   pageSize: number;
+  styles?:Record<string, any>
 }
 
 export function CardList({ 
@@ -19,6 +20,7 @@ export function CardList({
   hasMore, 
   onLoadMore, 
   pageSize,
+  styles,
 }: CardListProps) {
   const navigate = useNavigate()
   useEffect(() => {
@@ -52,8 +54,10 @@ export function CardList({
 
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
+  styles = {'align-items':'center', ...styles}
+
   return (
-    <div style={{'align-items':'center'}}>
+    <div style={styles}>
         <section className={style.cards}>
           {((apartments.length==0) && !isFetchingMore) && (
             <div style={{'display': 'flex', 'flex-direction': 'column', 'gap':'10px', 'align-items': 'center'}}>
