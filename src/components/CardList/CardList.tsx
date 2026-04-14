@@ -54,11 +54,11 @@ export function CardList({
 
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
-  styles = {'align-items':'center', ...styles}
+  
 
   return (
-    <div style={styles}>
-        <section className={style.cards}>
+    <div style={{'align-items':'center'}}>
+        <section className={style.cards} style={styles}>
           {((apartments.length==0) && !isFetchingMore) && (
             <div style={{'display': 'flex', 'flex-direction': 'column', 'gap':'10px', 'align-items': 'center'}}>
               <p>Ничего не найдено</p>
