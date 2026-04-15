@@ -54,6 +54,7 @@
 	letter-spacing: 0.2px;
 	font-weight: 400;
 	font-family: "Hero", system-ui, sans-serif;
+	overflow-wrap: anywhere;
 }
 
 .contactRow {

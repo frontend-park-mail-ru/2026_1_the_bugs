@@ -9,7 +9,6 @@ import {
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { ProfileSetAvatar } from './ProfileSetAvatar';
 import { ProfilePassword } from './ProfilePassword';
-import { ProfileCreatePassword } from './ProfileCreatePassword';
 
 type ProfileTab = 'main' | 'password';
 type ProfileField =
