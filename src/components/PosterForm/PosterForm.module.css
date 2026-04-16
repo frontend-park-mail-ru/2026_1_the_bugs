@@ -136,7 +136,13 @@
 .inputError,
 .textareaError,
 .selectError {
-  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.2), 0 0 24px -10px rgba(217, 54, 62, 0.45), 0 0 30px -12px rgba(0, 0, 0, 0.2);
+}
+
+.inputError:focus,
+.textareaError:focus,
+.selectError:focus {
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.26), 0 0 26px -10px rgba(217, 54, 62, 0.5), 0 0 30px -12px rgba(0, 0, 0, 0.2);
 }
 
 .textarea {
@@ -155,7 +161,7 @@
 }
 
 .choiceGroupError {
-  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.2), 0 0 24px -10px rgba(217, 54, 62, 0.45), 0 0 30px -12px rgba(0, 0, 0, 0.2);
   border-radius: 16px;
 }
 
@@ -378,6 +384,11 @@
 
 .customSelectButton:focus {
   box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.customSelectButton.selectError:hover,
+.customSelectButton.selectError:focus {
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.26), 0 0 26px -10px rgba(217, 54, 62, 0.5), 0 0 30px -12px rgba(0, 0, 0, 0.2);
 }
 
 .customSelectButton:disabled {
