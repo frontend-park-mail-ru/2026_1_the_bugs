@@ -71,7 +71,9 @@ export function App() {
                   <UtilityComplex alias="{alias}" key="CompanyPage" />
                 </Router>
                 <Router currentPath={currentPath} path="/posters/create">
-                  <CreatePosterPage key="CreatePosterPage" />
+                  <ProtectedLayout path="/posters/create" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout">
+                      <CreatePosterPage key="CreatePosterPage" />
+                  </ProtectedLayout>
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}/edit">
                   <EditPosterPage alias="{alias}" key="EditPosterPage" />
