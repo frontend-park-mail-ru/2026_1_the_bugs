@@ -55,8 +55,6 @@ function normalizeAddressForCompare(value: string) {
 export function CreatePosterForm() {
   const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
   const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
-  const [complexesError, setComplexesError] = useState<string | null>(null);
-  const [loadedComplexesDeveloperId, setLoadedComplexesDeveloperId] = useState<number | null>(null);
   const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
 
   // Загрузка ЖК при выборе застройщика
@@ -65,31 +63,25 @@ export function CreatePosterForm() {
 
     if (selectedDeveloperId == null) {
       setComplexes([]);
-      setComplexesError(null);
-      setLoadedComplexesDeveloperId(null);
       setIsLoadingComplexes(false);
       return;
     }
 
     setIsLoadingComplexes(true);
-    setComplexesError(null);
     setComplexes([]);
-    setLoadedComplexesDeveloperId(null);
 
     getComplexesByDeveloper(selectedDeveloperId)
       .then((data) => {
         if (isCancelled) return;
         setComplexes(data.utility_companies || []);
-        setComplexesError(null);
       })
       .catch(() => {
         if (isCancelled) return;
-        setComplexesError('Ошибка загрузки списка ЖК');
+        setComplexes([]);
       })
       .finally(() => {
         if (isCancelled) return;
         setIsLoadingComplexes(false);
-        setLoadedComplexesDeveloperId(selectedDeveloperId);
       });
 
     return () => {
@@ -617,13 +609,15 @@ export function CreatePosterForm() {
               </button>
               {isComplexMenuOpen && (
                 <div className={styles.customSelectMenu}>
-                  <button
-                    type="button"
-                    className={`${styles.customSelectOption} ${!selectedComplexName ? styles.customSelectOptionActive : ''}`}
-                    onClick={() => onSelectComplex('')}
-                  >
-                    {selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК'}
-                  </button>
+                  {form.complex && (
+                    <button
+                      type="button"
+                      className={styles.customSelectServiceAction}
+                      onClick={() => onSelectComplex('')}
+                    >
+                      Сбросить выбор ЖК
+                    </button>
+                  )}
                   {complexes.map((complex) => (
                     <button
                       key={complex.id}
@@ -634,17 +628,15 @@ export function CreatePosterForm() {
                       {complex.company_name}
                     </button>
                   ))}
-                  {!isLoadingComplexes && selectedDeveloperId != null && loadedComplexesDeveloperId === selectedDeveloperId && complexes.length === 0 && (
-                    <div className={styles.customSelectEmpty}>Для этого застройщика пока нет ЖК</div>
+                  {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && (
+                    <div className={styles.customSelectEmpty}>
+                      У этого застройщика пока нет ЖК.
+                    </div>
                   )}
                 </div>
               )}
             </div>
             {isLoadingComplexes && <span className={styles.selectHint}>Загружаем список ЖК...</span>}
-            {!isLoadingComplexes && selectedDeveloperId != null && loadedComplexesDeveloperId === selectedDeveloperId && complexes.length === 0 && !complexesError && (
-              <span className={styles.selectHint}>Для этого застройщика пока нет ЖК</span>
-            )}
-            {complexesError && <span className={styles.error}>{complexesError}</span>}
             {errors.complex && <span className={styles.error}>{errors.complex}</span>}
           </div>
         </div>

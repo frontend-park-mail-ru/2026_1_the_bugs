@@ -443,6 +443,29 @@
   box-shadow: none;
 }
 
+.customSelectServiceAction {
+  width: 100%;
+  margin: 0 0 4px;
+  border: none;
+  padding: 6px 12px 10px;
+  border-bottom: 1px solid #ececec;
+  background: transparent;
+  color: #8a8a8a;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.customSelectServiceAction:hover {
+  transform: none;
+  box-shadow: none;
+  color: #666;
+}
+
 .customSelectOption:hover {
   transform: none;
   box-shadow: none;
@@ -456,9 +479,10 @@
 .customSelectEmpty {
   padding: 10px 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Hero", system-ui, sans-serif;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .selectHint {
