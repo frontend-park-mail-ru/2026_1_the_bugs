@@ -63,6 +63,7 @@
 	gap: 8px;
 	color: var(--muted);
 	font-size: 13px;
+	overflow-wrap: anywhere;
 }
 
 .contactRow img {
