@@ -146,7 +146,9 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         if (!mapElement) return;
         if (mapElement.innerHTML.trim()) return;
 
-        const map = L.map(MAP_ELEMENT_ID).setView([55.751244, 37.618423], 12);
+        const map = L.map(MAP_ELEMENT_ID, {
+          attributionControl: false
+        }).setView([55.751244, 37.618423], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
