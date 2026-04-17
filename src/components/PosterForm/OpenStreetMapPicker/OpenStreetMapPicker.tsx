@@ -133,6 +133,26 @@ interface OpenStreetMapPickerProps {
   onResolveTypedAddress?: (query: string, suggestion: LeafletAddressSuggestion | null) => void;
 }
 
+function createPinkMarkerIcon(L: any) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41" fill="none">
+      <path d="M12.5 0C5.59644 0 0 5.59644 0 12.5C0 22 12.5 41 12.5 41C12.5 41 25 22 25 12.5C25 5.59644 19.4036 0 12.5 0Z" fill="#f08dcc"/>
+      <circle cx="12.5" cy="12" r="4" fill="#ffffff"/>
+    </svg>
+  `;
+
+  const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  return L.icon({
+    iconUrl,
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41]
+  });
+}
+
 export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates, onResolveTypedAddress }: OpenStreetMapPickerProps) {
   const [mapController, setMapController] = useState<MapController | null>(null);
 
@@ -149,6 +169,8 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         const map = L.map(MAP_ELEMENT_ID, {
           attributionControl: false
         }).setView([55.751244, 37.618423], 12);
+        map.zoomControl.setPosition('topleft');
+        const markerIcon = createPinkMarkerIcon(L);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
@@ -176,7 +198,7 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
           if (!localController) return;
 
           if (!localController.marker) {
-            localController.marker = L.marker([lat, lon]).addTo(map);
+            localController.marker = L.marker([lat, lon], { icon: markerIcon }).addTo(map);
           } else {
             localController.marker.setLatLng([lat, lon]);
           }
@@ -210,8 +232,9 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
 
     const lat = raw.lat;
     const lon = raw.lon;
+    const markerIcon = createPinkMarkerIcon(mapController.L);
     if (!mapController.marker) {
-      mapController.marker = mapController.L.marker([lat, lon]).addTo(mapController.map);
+      mapController.marker = mapController.L.marker([lat, lon], { icon: markerIcon }).addTo(mapController.map);
     } else {
       mapController.marker.setLatLng([lat, lon]);
     }
@@ -221,7 +244,7 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         const address = await reverseGeocode(lat, lon);
         onPickAddress(address);
         onPickCoordinates(lat, lon);
-      } catch (err) {
+      } catch {
         // ignore
       }
     })();
@@ -247,8 +270,9 @@ export function OpenStreetMapPicker({ address, onPickAddress, onPickCoordinates,
         }
 
         const { lat, lon, suggestion } = point;
+        const markerIcon = createPinkMarkerIcon(mapController.L);
         if (!mapController.marker) {
-          mapController.marker = mapController.L.marker([lat, lon]).addTo(mapController.map);
+          mapController.marker = mapController.L.marker([lat, lon], { icon: markerIcon }).addTo(mapController.map);
         } else {
           mapController.marker.setLatLng([lat, lon]);
         }

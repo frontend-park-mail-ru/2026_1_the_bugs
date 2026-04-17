@@ -5,6 +5,7 @@
 .header {
   display: grid;
   gap: 8px;
+  margin-bottom: 20px;
 }
 
 .title {

@@ -19,18 +19,6 @@ interface PosterPageProps {
 
 const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
 
-const MAP_ZOOM = 16;
-const MAP_DELTA = 0.004;
-
-function getMapEmbedUrl(lat: number, lon: number) {
-  const left = lon - MAP_DELTA;
-  const right = lon + MAP_DELTA;
-  const top = lat + MAP_DELTA;
-  const bottom = lat - MAP_DELTA;
-
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${left.toFixed(6)}%2C${bottom.toFixed(6)}%2C${right.toFixed(6)}%2C${top.toFixed(6)}&layer=mapnik&marker=${lat.toFixed(6)}%2C${lon.toFixed(6)}&zoom=${MAP_ZOOM.toString()}`;
-}
-
 /**
  * Страница конкретного объявления.
  * Загружает данные по alias из маршрута `/posters/{alias}`
@@ -80,7 +68,6 @@ export function PosterPage({ alias }: PosterPageProps) {
   } else {
     const description = poster.description?.trim() || 'Описание отсутствует';
     const { lat, lon } = poster.building_geo;
-    const mapUrl = getMapEmbedUrl(lat, lon);
 
     mainContent = (
       <div className={layout.layout}>
@@ -93,7 +80,7 @@ export function PosterPage({ alias }: PosterPageProps) {
 
         <aside className={layout.rightColumn}>
           <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} />
-          <PosterMap key="poster_map" mapUrl={mapUrl} address={poster.address} />
+          <PosterMap key="poster_map" latitude={lat} longitude={lon} address={poster.address} />
           <PosterSeller key="poster_seller" poster={poster} />
           {poster.company && (
             <button onClick={()=>{handelCompanyClick()}}>
