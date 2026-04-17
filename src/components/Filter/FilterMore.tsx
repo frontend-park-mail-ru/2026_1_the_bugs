@@ -230,7 +230,7 @@ export function FilterMore({ onClose, onApply, initialFilters }: FilterMoreProps
       </section>
 
       <div className={style.actions}>
-        <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave}>Cохранить</button>
+        <button variant="accent" type="button" className={style.saveBtn} onClick={handleSave}>Cохранить</button> {/*тут короче просто кнопку сделал Button обратно просто button*/}
       </div>
     </section>
   );

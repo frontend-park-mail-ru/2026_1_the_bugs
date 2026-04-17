@@ -2,6 +2,7 @@ import { useState } from 'the-react/hooks';
 import { Button } from '../Button/Button';
 import style from './Filter.module.css';
 import type { IFilters } from 'src/types';
+import { useNavigate } from '../../RouterDOM/hooks';
 
 interface FilterProps {
     onClose: () => void;
@@ -19,6 +20,7 @@ const propertyTypes: { label: string; alias: string }[] = [
 const roomOptions = ['0','1', '2', '3', '4', '5', '6+'];
 
 export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilters }: FilterProps) {
+    const navigate = useNavigate();
     const [selectedType, setSelectedType] = useState(initialFilters?.category ?? '');
     const [selectedRoom, setSelectedRoom] = useState(
         initialFilters?.room_count != null
@@ -53,6 +55,7 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
             not_first_floor: undefined,
             not_last_floor: undefined,
         });
+        navigate("/");
     };
 
     const toNumberOrUndefined = (value: string): number | undefined => {
@@ -135,12 +138,11 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
             </section>
 
             <div className={style.actions}>
-                <button type="button" variant="accent" className={style.saveBtn} onClick={handleSave}>Сохранить</button>
+                <button type="button" className={style.saveBtn} onClick={handleSave}>Сохранить</button>
                 или
                 <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
 
             </div>
-            <br/>
 
             <div className={style.resetWrap}>
                 <Button

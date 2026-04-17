@@ -98,6 +98,12 @@
   border-radius: 999px;
   padding: 0 28px;
   font-size: 20px;
+  background-color: var(--accent);
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: var(--accent-hover);
 }
 
 @media (max-width: 900px) {
