@@ -265,6 +265,10 @@ export function CreatePosterForm() {
       return;
     }
 
+    if (validFiles.length !== files.length) {
+      setErrors({ ...errors, images: 'Некоторые файлы не загружены: только JPEG/PNG до 10 Мб' });
+    }
+
     const uploaded: UploadedImage[] = [];
     for (const file of validFiles) {
       uploaded.push({
@@ -691,6 +695,7 @@ export function CreatePosterForm() {
               <button type="button" className={styles.uploadButton} onClick={openPhotoDialog}>Загрузите фото</button>
               <span className={styles.uploadHint}>или перетащите JPEG, PNG до 10 Мб каждый</span>
             </div>
+            {errors.images && <span className={styles.error}>{errors.images}</span>}
 
             {form.images.length > 0 && (
               <div className={styles.photoThumbGrid}>
