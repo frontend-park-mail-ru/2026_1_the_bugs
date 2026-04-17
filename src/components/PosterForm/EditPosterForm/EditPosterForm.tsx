@@ -309,6 +309,11 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
     formDraft.images = [...formDraft.images, ...uploaded];
     setForm({ ...formDraft });
 
+    if (validFiles.length !== files.length) {
+      setErrors({ ...errors, images: 'Некоторые файлы не загружены: только JPEG/PNG до 10 Мб' });
+      return;
+    }
+
     const nextErrors = { ...errors };
     delete nextErrors.images;
     setErrors(nextErrors);
@@ -693,6 +698,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
             <button type="button" className={styles.uploadButton} onClick={openPhotoDialog}>Загрузите фото</button>
             <span className={styles.uploadHint}>или перетащите JPEG, PNG до 10 Мб каждый</span>
           </div>
+          {errors.images && <span className={styles.error}>{errors.images}</span>}
           {form.images.length > 0 && (
             <div className={styles.photoThumbGrid}>
               {form.images.map((image, idx) => (
