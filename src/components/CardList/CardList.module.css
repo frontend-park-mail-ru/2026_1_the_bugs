@@ -5,6 +5,32 @@
   gap: 18px;
   justify-content: center;
 }
+
+.emptyState {
+  width: 100%;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 12px;
+}
+
+.emptyTitle {
+  font-size: 28px;
+  line-height: 1.1;
+  text-align: center;
+  font-family: "Hero", system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.emptyResetBtn {
+  min-width: 240px;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 20px;
+}
 @media (max-width: 850px) {
   .page {
     padding: 24px;
@@ -25,6 +51,15 @@
   .cards {
     grid-template-columns: repeat(1, minmax(180px, 1fr));
      width: auto;
+  }
+
+  .emptyTitle {
+    font-size: 24px;
+  }
+
+  .emptyResetBtn {
+    width: 100%;
+    min-width: 0;
   }
 }
 

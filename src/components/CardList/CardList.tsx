@@ -60,9 +60,9 @@ export function CardList({
     <div style={{'align-items':'center'}}>
         <section className={style.cards} style={styles}>
           {((apartments.length==0) && !isFetchingMore) && (
-            <div style={{'display': 'flex', 'flex-direction': 'column', 'gap':'10px', 'align-items': 'center'}}>
-              <p>Ничего не найдено</p>
-              <Button variant="secondary" type="button" className={style.advancedBtn} onClick={()=>{navigate("/")}} text="Сбросить фильтры" />
+            <div className={style.emptyState}>
+              <p className={style.emptyTitle}>Ничего не найдено</p>
+              <Button variant="accent" type="button" className={style.emptyResetBtn} onClick={()=>{navigate("/")}} text="Сбросить фильтры" />
             </div>
             
           )}
