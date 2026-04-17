@@ -136,7 +136,13 @@
 .inputError,
 .textareaError,
 .selectError {
-  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.2), 0 0 24px -10px rgba(217, 54, 62, 0.45), 0 0 30px -12px rgba(0, 0, 0, 0.2);
+}
+
+.inputError:focus,
+.textareaError:focus,
+.selectError:focus {
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.26), 0 0 26px -10px rgba(217, 54, 62, 0.5), 0 0 30px -12px rgba(0, 0, 0, 0.2);
 }
 
 .textarea {
@@ -155,7 +161,7 @@
 }
 
 .choiceGroupError {
-  box-shadow: 0 0 0 1px #ff4d4f, 0 0 30px -8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.2), 0 0 24px -10px rgba(217, 54, 62, 0.45), 0 0 30px -12px rgba(0, 0, 0, 0.2);
   border-radius: 16px;
 }
 
@@ -254,7 +260,8 @@
 .housingTypeGroup {
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   justify-content: flex-start;
   gap: 12px;
 }
@@ -379,6 +386,11 @@
   box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
 }
 
+.customSelectButton.selectError:hover,
+.customSelectButton.selectError:focus {
+  box-shadow: 0 0 0 2px rgba(217, 54, 62, 0.26), 0 0 26px -10px rgba(217, 54, 62, 0.5), 0 0 30px -12px rgba(0, 0, 0, 0.2);
+}
+
 .customSelectButton:disabled {
   cursor: not-allowed;
   color: #8a8a8a;
@@ -443,6 +455,29 @@
   box-shadow: none;
 }
 
+.customSelectServiceAction {
+  width: 100%;
+  margin: 0 0 4px;
+  border: none;
+  padding: 6px 12px 10px;
+  border-bottom: 1px solid #ececec;
+  background: transparent;
+  color: #8a8a8a;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.customSelectServiceAction:hover {
+  transform: none;
+  box-shadow: none;
+  color: #666;
+}
+
 .customSelectOption:hover {
   transform: none;
   box-shadow: none;
@@ -456,9 +491,10 @@
 .customSelectEmpty {
   padding: 10px 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Hero", system-ui, sans-serif;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .selectHint {

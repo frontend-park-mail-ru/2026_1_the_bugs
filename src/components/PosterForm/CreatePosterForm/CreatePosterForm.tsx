@@ -55,26 +55,38 @@ function normalizeAddressForCompare(value: string) {
 export function CreatePosterForm() {
   const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
   const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
-  const [complexesError, setComplexesError] = useState<string | null>(null);
   const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
 
   // Загрузка ЖК при выборе застройщика
   useEffect(() => {
+    let isCancelled = false;
+
     if (selectedDeveloperId == null) {
       setComplexes([]);
-      setComplexesError(null);
+      setIsLoadingComplexes(false);
       return;
     }
+
     setIsLoadingComplexes(true);
+    setComplexes([]);
+
     getComplexesByDeveloper(selectedDeveloperId)
       .then((data) => {
+        if (isCancelled) return;
         setComplexes(data.utility_companies || []);
-        setComplexesError(null);
       })
       .catch(() => {
-        setComplexesError('Ошибка загрузки списка ЖК');
+        if (isCancelled) return;
+        setComplexes([]);
       })
-      .finally(() => setIsLoadingComplexes(false));
+      .finally(() => {
+        if (isCancelled) return;
+        setIsLoadingComplexes(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [selectedDeveloperId]);
       const [developers, setDevelopers] = useState<{ developer_id: number; developer_name: string }[]>([]);
       const [isLoadingDevelopers, setIsLoadingDevelopers] = useState(false);
@@ -135,7 +147,15 @@ export function CreatePosterForm() {
     ? complexes.find((complex) => complex.id === Number(form.complex))?.company_name || ''
     : '';
 
+  const clearFieldError = (field: CreatePosterField) => {
+    if (!errors[field]) return;
+    const nextErrors = { ...errors };
+    delete nextErrors[field];
+    setErrors(nextErrors);
+  };
+
   const onSelectDeveloper = (developerId: number | null) => {
+    clearFieldError('complexName');
     setSelectedDeveloperId(developerId);
     updateField('complexName', developerId == null
       ? ''
@@ -147,6 +167,7 @@ export function CreatePosterForm() {
   };
 
   const onSelectComplex = (complexId: string) => {
+    clearFieldError('complex');
     updateField('complex', complexId);
     setIsComplexMenuOpen(false);
   };
@@ -154,11 +175,7 @@ export function CreatePosterForm() {
   const updateField = (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => {
     formDraft[field] = value;
     setForm({ ...formDraft });
-    if (errors[field]) {
-      const nextErrors = { ...errors };
-      delete nextErrors[field];
-      setErrors(nextErrors);
-    }
+    clearFieldError(field);
   };
 
   const onAddressInput = (value: string) => {
@@ -223,6 +240,7 @@ export function CreatePosterForm() {
   };
 
   const toggleFeature = (featureValue: string) => {
+    clearFieldError('features');
     const hasFeature = formDraft.features.includes(featureValue);
     const nextFeatures = hasFeature
       ? formDraft.features.filter((value) => value !== featureValue)
@@ -230,14 +248,10 @@ export function CreatePosterForm() {
 
     formDraft.features = nextFeatures;
     setForm({ ...formDraft });
-    if (errors.features) {
-      const nextErrors = { ...errors };
-      delete nextErrors.features;
-      setErrors(nextErrors);
-    }
   };
 
   const appendPhotos = async (files: File[]) => {
+    clearFieldError('images');
     if (files.length === 0) return;
 
     const validFiles = files.filter((file) => {
@@ -249,6 +263,10 @@ export function CreatePosterForm() {
     if (validFiles.length === 0) {
       setErrors({ ...errors, images: 'Можно загрузить только JPEG/PNG до 10 Мб' });
       return;
+    }
+
+    if (validFiles.length !== files.length) {
+      setErrors({ ...errors, images: 'Некоторые файлы не загружены: только JPEG/PNG до 10 Мб' });
     }
 
     const uploaded: UploadedImage[] = [];
@@ -263,9 +281,6 @@ export function CreatePosterForm() {
     formDraft.images = [...formDraft.images, ...uploaded];
     setForm({ ...formDraft });
 
-    const nextErrors = { ...errors };
-    delete nextErrors.images;
-    setErrors(nextErrors);
   };
 
   const onPhotoInput = async (e: any) => {
@@ -276,6 +291,7 @@ export function CreatePosterForm() {
 
   const onUploadDragEnter = (e: any) => {
     e.preventDefault();
+    clearFieldError('images');
     setIsUploadDragActive(true);
   };
 
@@ -337,6 +353,7 @@ export function CreatePosterForm() {
   };
 
   const openPhotoDialog = () => {
+    clearFieldError('images');
     const input = document.getElementById('photoUpload') as HTMLInputElement | null;
     input?.click();
   };
@@ -478,6 +495,7 @@ export function CreatePosterForm() {
               value={form.address}
               errors={errors}
               onChange={(_, value) => onAddressInput(value)}
+              onInteract={clearFieldError}
               showErrorText={false}
               placeholder="Например: Москва, ул. Ленина, 10"
             />
@@ -516,9 +534,9 @@ export function CreatePosterForm() {
           <div className={styles.fullWidth}>
             <h3 className={styles.sectionTitle}>{`Шаг 2: ${STEP_TITLES[1]}`}</h3>
           </div>
-          <Field key="field-floor" field="floor" label="Этаж квартиры" value={form.floor} errors={errors} onChange={updateField} showErrorText={false} />
-          <Field key="field-floor-count" field="floorCount" label="Этажей в доме" value={form.floorCount} errors={errors} onChange={updateField} showErrorText={false} />
-          <Field key="field-flat-number" field="flatNumber" label="Номер квартиры" value={form.flatNumber} errors={errors} onChange={updateField} showErrorText={false} />
+          <Field key="field-floor" field="floor" label="Этаж квартиры" value={form.floor} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
+          <Field key="field-floor-count" field="floorCount" label="Этажей в доме" value={form.floorCount} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
+          <Field key="field-flat-number" field="flatNumber" label="Номер квартиры" value={form.flatNumber} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
           <div className={`${styles.group} ${styles.stepSelectGroup}`}>
              <label className={styles.label} htmlFor="complexName">Застройщик</label>
              <div className={styles.customSelect} data-custom-select="developer">
@@ -527,7 +545,10 @@ export function CreatePosterForm() {
                  type="button"
                  className={`${styles.customSelectButton} ${errors.complexName ? styles.selectError : ''} ${isDeveloperMenuOpen ? styles.customSelectButtonOpen : ''}`}
                  disabled={isLoadingDevelopers}
-                 onClick={() => setIsDeveloperMenuOpen(!isDeveloperMenuOpen)}
+                 onClick={() => {
+                   clearFieldError('complexName');
+                   setIsDeveloperMenuOpen(!isDeveloperMenuOpen);
+                 }}
                >
                  <span
                    className={`${styles.customSelectValue} ${selectedDeveloperName ? '' : styles.customSelectPlaceholder}`}
@@ -577,7 +598,10 @@ export function CreatePosterForm() {
                 type="button"
                 className={`${styles.customSelectButton} ${errors.complex ? styles.selectError : ''} ${isComplexMenuOpen ? styles.customSelectButtonOpen : ''}`}
                 disabled={isLoadingComplexes || selectedDeveloperId == null}
-                onClick={() => setIsComplexMenuOpen(!isComplexMenuOpen)}
+                onClick={() => {
+                  clearFieldError('complex');
+                  setIsComplexMenuOpen(!isComplexMenuOpen);
+                }}
               >
                 <span
                   className={`${styles.customSelectValue} ${selectedComplexName ? '' : styles.customSelectPlaceholder}`}
@@ -589,13 +613,15 @@ export function CreatePosterForm() {
               </button>
               {isComplexMenuOpen && (
                 <div className={styles.customSelectMenu}>
-                  <button
-                    type="button"
-                    className={`${styles.customSelectOption} ${!selectedComplexName ? styles.customSelectOptionActive : ''}`}
-                    onClick={() => onSelectComplex('')}
-                  >
-                    {selectedDeveloperId == null ? 'Сначала выберите застройщика' : 'Выберите ЖК'}
-                  </button>
+                  {form.complex && (
+                    <button
+                      type="button"
+                      className={styles.customSelectServiceAction}
+                      onClick={() => onSelectComplex('')}
+                    >
+                      Сбросить выбор ЖК
+                    </button>
+                  )}
                   {complexes.map((complex) => (
                     <button
                       key={complex.id}
@@ -607,16 +633,14 @@ export function CreatePosterForm() {
                     </button>
                   ))}
                   {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && (
-                    <div className={styles.customSelectEmpty}>Для этого застройщика пока нет ЖК</div>
+                    <div className={styles.customSelectEmpty}>
+                      У этого застройщика пока нет ЖК.
+                    </div>
                   )}
                 </div>
               )}
             </div>
             {isLoadingComplexes && <span className={styles.selectHint}>Загружаем список ЖК...</span>}
-            {!isLoadingComplexes && selectedDeveloperId != null && complexes.length === 0 && !complexesError && (
-              <span className={styles.selectHint}>Для этого застройщика пока нет ЖК</span>
-            )}
-            {complexesError && <span className={styles.error}>{complexesError}</span>}
             {errors.complex && <span className={styles.error}>{errors.complex}</span>}
           </div>
         </div>
@@ -645,7 +669,7 @@ export function CreatePosterForm() {
               })}
             </div>
           </div>
-          <Field key="field-area" field="area" label="Площадь (м2)" value={form.area} errors={errors} onChange={updateField} showErrorText={false} />
+          <Field key="field-area" field="area" label="Площадь (м2)" value={form.area} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
         </div>
       )}
 
@@ -671,6 +695,7 @@ export function CreatePosterForm() {
               <button type="button" className={styles.uploadButton} onClick={openPhotoDialog}>Загрузите фото</button>
               <span className={styles.uploadHint}>или перетащите JPEG, PNG до 10 Мб каждый</span>
             </div>
+            {errors.images && <span className={styles.error}>{errors.images}</span>}
 
             {form.images.length > 0 && (
               <div className={styles.photoThumbGrid}>
@@ -730,6 +755,7 @@ export function CreatePosterForm() {
             className={errors.description ? `${styles.textarea} ${styles.descTextarea} ${styles.textareaError}` : `${styles.textarea} ${styles.descTextarea}`}
             placeholder="Опишите преимущества квартиры, инфраструктуру и условия сделки"
             value={form.description}
+            onFocus={() => clearFieldError('description')}
             onInput={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
               target.style.height = 'auto';
@@ -739,7 +765,7 @@ export function CreatePosterForm() {
           />
 
           <div className={styles.priceFieldWrap}>
-            <Field key="field-price" field="price" label="Цена (руб)" value={form.price} errors={errors} onChange={updateField} showErrorText={false} />
+            <Field key="field-price" field="price" label="Цена (руб)" value={form.price} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
           </div>
           {submitError && <div className={styles.submitError}>{submitError}</div>}
         </div>
