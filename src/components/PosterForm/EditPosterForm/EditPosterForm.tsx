@@ -771,7 +771,7 @@ export function EditPosterForm({ poster }: EditPosterFormProps) {
               >
                 {isSubmitting ? 'Сохранияем...' : 'Сохранить'}
               </button>
-              <button onClick={() => navigate(`/myposters`)} className={`${styles.button}`} type="button">
+              <button onClick={() => navigate(`/my-posters`)} className={`${styles.button}`} type="button">
                 Назад
               </button>
               {hasCurrentStepErrors && (
