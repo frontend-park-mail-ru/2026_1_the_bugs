@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'the-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import '../../../index.css'
 import './PosterMap.css'
+import { useNavigate } from '@router-dom';
 
 type FeatureProps = {
   cluster?: boolean;
@@ -85,6 +85,7 @@ function clusterIcon(count?: number, minPrice?: number) {
 }
 
 export default function PostersMap() {
+  const navigate = useNavigate()
   const [mapReady, setMapReady] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<{ lat: number; lng: number } | null>(null);
   const [posters, setPosters] = useState<Poster[]>([]);
@@ -197,7 +198,7 @@ export default function PostersMap() {
 
   return (
     <div>
-      <div id="map" style={{ height: '100vh', width: '100%' }} />
+      <div id="map" style={{ position: 'absolute', left: '0px', height: '85vh', width: '100%' }} />
       
       {/* Выдвижная панель */}
       <div className={`poster-panel ${isPanelOpen ? 'open' : ''}`}>
@@ -214,7 +215,7 @@ export default function PostersMap() {
           ) : (
             <div className="posters-list">
               {posters.map((poster) => (
-                <div key={poster.id} className="poster-card">
+                <div key={poster.id} className="poster-card" onClick={()=>navigate(`/posters/${poster.alias}`)}>
                   {poster.avatar_url && (
                     <img 
                       src={poster.avatar_url} 
@@ -230,7 +231,7 @@ export default function PostersMap() {
                       <span className="poster-price">{poster.price.toString()} руб./мес</span>
                     </div>
                   </div>
-                </div>
+                </div >
               ))}
             </div>
           )}
