@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+    }
+
+    .cian-marker {
+      background: transparent;
+      border: none;
+    }
+
+    .marker-wrap {
+      width: 96px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .marker-price {
+      color: #ff3b30;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 1px 2px rgba(255,255,255,.9);
+      white-space: nowrap;
+      background: rgba(255,255,255,.92);
+      padding: 4px 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    }
+
+    .cluster-wrap {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 59, 48, 0.92);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2);
+      border: 2px solid #fff;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    const API_BASE = 'http://localhost:8000/api';
+    const map = L.map('map').setView([55.751244, 37.618423], 11);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const markersLayer = L.layerGroup().addTo(map);
+
+    function addPriceMarker(lat, lng, price) {
+      L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: 'cian-marker',
+          html: `<div class="marker-wrap"><div class="marker-price">${price}</div></div>`,
+          iconSize: [96, 40],
+          iconAnchor: [48, 20]
+        })
+      }).addTo(markersLayer);
+    }
+
+    function addClusterMarker(lat, lng, count) {
+      L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: 'cian-marker',
+          html: `<div class="cluster-wrap">${count}</div>`,
+          iconSize: [44, 44],
+          iconAnchor: [22, 22]
+        })
+      }).addTo(markersLayer);
+    }
+
+    async function loadPosters() {
+      const bounds = map.getBounds();
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+      const zoom = map.getZoom();
+
+      const url = new URL(`${API_BASE}/posters/geo`);
+      url.searchParams.set('sw_lat', sw.lat);
+      url.searchParams.set('sw_lon', sw.lng);
+      url.searchParams.set('ne_lat', ne.lat);
+      url.searchParams.set('ne_lon', ne.lng);
+      url.searchParams.set('zoom', zoom);
+
+      const res = await fetch(url.toString());
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      markersLayer.clearLayers();
+
+      (data.features || []).forEach(item => {
+        const coords = item.geometry?.coordinates || [];
+        const lng = coords[0];
+        const lat = coords[1];
+        const props = item.properties || item.propertiese || {};
+
+        if (typeof lat !== 'number' || typeof lng !== 'number') return;
+
+        if (props.cluster) {
+          addClusterMarker(lat, lng, props.count || 1);
+        } else {
+          addPriceMarker(lat, lng, props.price || '');
+        }
+      });
+    }
+
+    let timer;
+    function scheduleLoad() {
+      clearTimeout(timer);
+      timer = setTimeout(loadPosters, 250);
+    }
+
+    map.on('moveend zoomend', scheduleLoad);
+    map.whenReady(loadPosters);
+  </script>
+</body>
+</html>
