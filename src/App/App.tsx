@@ -13,6 +13,7 @@ import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
 import { apiService } from '../services/apiClass';
+import PostersMap from '../components/PosterMap/PosterMap';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -90,6 +91,9 @@ export function App() {
                   <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">
                       <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
+                </Router>
+                <Router  currentPath={currentPath} path="/map">
+                  <PostersMap/>
                 </Router>
               </Switch>
             </Layout>

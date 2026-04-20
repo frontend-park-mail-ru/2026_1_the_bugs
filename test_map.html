@@ -19,44 +19,59 @@
     }
 
     .marker-wrap {
-      width: 96px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: auto;
-      user-select: none;
+      width: 1px;
+      height: 1px;
+      overflow: visible;
+      position: relative;
     }
 
-    .marker-price {
-      color: #ff3b30;
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 1;
-      font-family: Arial, sans-serif;
-      text-shadow: 0 1px 2px rgba(255,255,255,.9);
+    .marker-bubble {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #3d4b6b;
+      font: 700 13px/1.1 Arial, sans-serif;
+      padding: 6px 8px;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.18);
       white-space: nowrap;
-      background: rgba(255,255,255,.92);
-      padding: 4px 8px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+      border: 1px solid rgba(0,0,0,.08);
+      letter-spacing: -0.1px;
     }
 
-    .cluster-wrap {
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .marker-bubble::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -4px;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      background: #fff;
+      border-right: 1px solid rgba(0,0,0,.08);
+      border-bottom: 1px solid rgba(0,0,0,.08);
+      transform-origin: center;
+      rotate: 45deg;
+    }
+
+    .marker-dot {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 10px;
+      height: 10px;
+      transform: translateX(-50%);
       border-radius: 50%;
-      background: rgba(255, 59, 48, 0.92);
-      color: white;
-      font-weight: 700;
-      font-size: 14px;
-      font-family: Arial, sans-serif;
-      box-shadow: 0 2px 10px rgba(0,0,0,.2);
-      border: 2px solid #fff;
-      user-select: none;
+      background: #1f6fff;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.95), 0 1px 2px rgba(0,0,0,.15);
+    }
+
+    .marker-dot.cluster {
+      width: 9px;
+      height: 9px;
+      background: #1f6fff;
     }
   </style>
 </head>
@@ -74,24 +89,33 @@
 
     const markersLayer = L.layerGroup().addTo(map);
 
+    function makeMarkerHtml(text, isCluster) {
+      return `
+        <div class="marker-wrap">
+          <div class="marker-bubble">${text}</div>
+          <div class="marker-dot ${isCluster ? 'cluster' : ''}"></div>
+        </div>
+      `;
+    }
+
     function addPriceMarker(lat, lng, price) {
       L.marker([lat, lng], {
         icon: L.divIcon({
           className: 'cian-marker',
-          html: `<div class="marker-wrap"><div class="marker-price">${price}</div></div>`,
-          iconSize: [96, 40],
-          iconAnchor: [48, 20]
+          html: makeMarkerHtml(`${price / 1000} тыс./мес`, false),
+          iconSize: [1, 1],
+          iconAnchor: [0, 0]
         })
       }).addTo(markersLayer);
     }
 
-    function addClusterMarker(lat, lng, count) {
+    function addClusterMarker(lat, lng, count, minPrice) {
       L.marker([lat, lng], {
         icon: L.divIcon({
           className: 'cian-marker',
-          html: `<div class="cluster-wrap">${count}</div>`,
-          iconSize: [44, 44],
-          iconAnchor: [22, 22]
+          html: makeMarkerHtml(count + ` от ${minPrice / 1000} тыс./мес`, true),
+          iconSize: [1, 1],
+          iconAnchor: [0, 0]
         })
       }).addTo(markersLayer);
     }
@@ -113,7 +137,6 @@
       if (!res.ok) return;
 
       const data = await res.json();
-
       markersLayer.clearLayers();
 
       (data.features || []).forEach(item => {
@@ -125,7 +148,7 @@
         if (typeof lat !== 'number' || typeof lng !== 'number') return;
 
         if (props.cluster) {
-          addClusterMarker(lat, lng, props.count || 1);
+          addClusterMarker(lat, lng, props.count || 1, props.priceMin);
         } else {
           addPriceMarker(lat, lng, props.price || '');
         }
