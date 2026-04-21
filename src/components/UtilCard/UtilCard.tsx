@@ -1,6 +1,7 @@
 import type { UtilityCompany } from "src/types";
 import style from "./UtilCard.module.css"
 import { UtilGallery } from "./UtilGallery";
+import { UtilMap } from "./UtilMap";
 
 interface UtilCardProps {
     alias: string;
@@ -20,9 +21,7 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
                 <p className="fontHero">
                     {utilityCompany?.description}
                 </p>
-
             </article>
-
             <aside className={style.sideInfo}>
                 <article className={`${style.sideCard} ${style.companyCard}`}>
                     <img
@@ -46,6 +45,8 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
                 </article>
             </aside>
         </div>
+                    
+            <UtilMap latitude={utilityCompany.geo.lat} longitude={utilityCompany.geo.lon} />
         </div>
     )
 }
