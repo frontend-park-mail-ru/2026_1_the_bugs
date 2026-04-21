@@ -14,6 +14,10 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
+  if (event.request.url.includes("c.tile.openstreetmap.org")){
+    return
+  }
+
   if (/\.(js|css|png|jpg|svg|ico|woff2)$/.test(url.pathname)) {
     event.respondWith(
       caches.match(event.request).then((cached) => {

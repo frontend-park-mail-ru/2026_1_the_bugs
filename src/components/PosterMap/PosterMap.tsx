@@ -1,8 +1,51 @@
 import { useEffect, useState } from 'the-react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import './PosterMap.css'
+import './PosterMap.css';
 import { useNavigate } from '@router-dom';
+import { Search } from '../Search/Search';
+import type { IFilters } from '../../types';
+
+const MAP_ELEMENT_ID = 'posters-map-osm';
+
+let leafletLoader: Promise<any> | null = null;
+
+function getLeafletGlobal() {
+  return (window as any).L;
+}
+
+function loadLeaflet() {
+  if (getLeafletGlobal()) return Promise.resolve(getLeafletGlobal());
+  if (leafletLoader) return leafletLoader;
+
+  leafletLoader = new Promise((resolve, reject) => {
+    const cssId = 'leaflet-css';
+    const scriptId = 'leaflet-js';
+
+    if (!document.getElementById(cssId)) {
+      const link = document.createElement('link');
+      link.id = cssId;
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(getLeafletGlobal()));
+      existingScript.addEventListener('error', () => reject(new Error('Leaflet load failed')));
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.async = true;
+    script.onload = () => resolve(getLeafletGlobal());
+    script.onerror = () => reject(new Error('Leaflet load failed'));
+    document.body.appendChild(script);
+  });
+
+  return leafletLoader;
+}
 
 type FeatureProps = {
   cluster?: boolean;
@@ -66,7 +109,7 @@ function makeMarkerHtml(text: string) {
   `;
 }
 
-function priceIcon(price?: number) {
+function priceIcon(L: any, price?: number) {
   return L.divIcon({
     className: 'cian-marker',
     html: makeMarkerHtml(formatPrice(price)),
@@ -75,7 +118,7 @@ function priceIcon(price?: number) {
   });
 }
 
-function clusterIcon(count?: number, minPrice?: number) {
+function clusterIcon(L: any, count?: number, minPrice?: number) {
   return L.divIcon({
     className: 'cian-marker',
     html: makeMarkerHtml(formatCluster(count, minPrice)),
@@ -85,8 +128,7 @@ function clusterIcon(count?: number, minPrice?: number) {
 }
 
 export default function PostersMap() {
-  const navigate = useNavigate()
-  const [mapReady, setMapReady] = useState(false);
+  const navigate = useNavigate();
   const [selectedPoint, setSelectedPoint] = useState<{ lat: number; lng: number } | null>(null);
   const [posters, setPosters] = useState<Poster[]>([]);
   const [loading, setLoading] = useState(false);
@@ -113,94 +155,105 @@ export default function PostersMap() {
     }
   };
 
-  // Закрытие панели
   const closePanel = () => {
     setIsPanelOpen(false);
-    setSelectedPoint(null);
-    setPosters([]);
+    
   };
 
   useEffect(() => {
-    if (!mapReady) return;
+    let mapController: { map: any; markersLayer: any } | null = null;
 
-    const map = L.map('map', { zoomControl: true }).setView([55.751244, 37.618423], 11);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map);
-
-    const markersLayer = L.layerGroup().addTo(map);
-
-    const loadPosters = async () => {
-      const bounds = map.getBounds();
-      const sw = bounds.getSouthWest();
-      const ne = bounds.getNorthEast();
-      const zoom = map.getZoom();
-
-      const url = new URL(`${API_BASE}/posters/geo`);
-      url.searchParams.set('sw_lat', String(sw.lat));
-      url.searchParams.set('sw_lon', String(sw.lng));
-      url.searchParams.set('ne_lat', String(ne.lat));
-      url.searchParams.set('ne_lon', String(ne.lng));
-      url.searchParams.set('zoom', String(zoom));
-
+    const init = async () => {
       try {
-        const res = await fetch(url.toString());
-        if (!res.ok) return;
+        const L = await loadLeaflet();
+        const mapElement = document.getElementById(MAP_ELEMENT_ID);
+        if (!mapElement) return;
+        if (mapElement.innerHTML.trim()) return;
 
-        const data: ApiResponse = await res.json();
-        const items = data.features || data.posters || [];
+        const map = L.map(MAP_ELEMENT_ID, { 
+          attributionControl: false, 
+          zoomControl: true 
+        }).setView([55.751244, 37.618423], 11);
+        
+        map.zoomControl.setPosition('topright');
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-        markersLayer.clearLayers();
+        const markersLayer = L.layerGroup().addTo(map);
 
-        items.forEach((item) => {
-          const coords = item.geometry?.coordinates;
-          if (!coords) return;
+        const loadPosters = async () => {
+          const bounds = map.getBounds();
+          const sw = bounds.getSouthWest();
+          const ne = bounds.getNorthEast();
+          const zoom = map.getZoom();
 
-          const [lng, lat] = coords;
-          if (typeof lat !== 'number' || typeof lng !== 'number') return;
+          const url = new URL(`${API_BASE}/posters/geo`);
+          url.searchParams.set('sw_lat', String(sw.lat));
+          url.searchParams.set('sw_lon', String(sw.lng));
+          url.searchParams.set('ne_lat', String(ne.lat));
+          url.searchParams.set('ne_lon', String(ne.lng));
+          url.searchParams.set('zoom', String(zoom));
 
-          const props = item.properties || item.propertiese || {};
-          const icon = props.cluster
-            ? clusterIcon(props.count, props.priceMin)
-            : priceIcon(props.price);
+          try {
+            const res = await fetch(url.toString());
+            if (!res.ok) return;
 
-          const marker = L.marker([lat, lng], { icon });
-          
-          // Добавляем обработчик клика на маркер
-          marker.on('click', () => {
-            setSelectedPoint({ lat, lng });
-            loadPostersByPoint(lat, lng);
-          });
-          
-          marker.addTo(markersLayer);
-        });
+            const data: ApiResponse = await res.json();
+            const items = data.features || data.posters || [];
+
+            markersLayer.clearLayers();
+
+            items.forEach((item) => {
+              const coords = item.geometry?.coordinates;
+              if (!coords) return;
+
+              const [lng, lat] = coords;
+              if (typeof lat !== 'number' || typeof lng !== 'number') return;
+
+              const props = item.properties || item.propertiese || {};
+              const icon = props.cluster
+                ? clusterIcon(L, props.count, props.priceMin)
+                : priceIcon(L, props.price);
+
+              const marker = L.marker([lat, lng], { icon });
+              
+              marker.on('click', () => {
+                setSelectedPoint({ lat, lng });
+                loadPostersByPoint(lat, lng);
+              });
+              
+              marker.addTo(markersLayer);
+            });
+          } catch (error) {
+            console.error('Error loading posters:', error);
+          }
+        };
+
+        map.on('moveend', loadPosters);
+        map.on('zoomend', loadPosters);
+        map.whenReady(loadPosters);
+
+        mapController = { map, markersLayer };
       } catch (error) {
-        console.error('Error loading posters:', error);
+        console.warn('Posters map init failed', error);
       }
     };
 
-    map.on('moveend', loadPosters);
-    map.on('zoomend', loadPosters);
-    map.whenReady(loadPosters);
+    init();
 
     return () => {
-      map.off('moveend', loadPosters);
-      map.off('zoomend', loadPosters);
-      map.remove();
+      if (mapController?.map) {
+        mapController.map.remove();
+      }
     };
-  }, [mapReady]);
-
-  useEffect(() => {
-    setMapReady(true);
   }, []);
 
   return (
     <div>
-      <div id="map" style={{ position: 'absolute', left: '0px', height: '85vh', width: '100%' }} />
+      <div id={MAP_ELEMENT_ID} style={{ position: 'absolute', left: '0px', height: '85vh', width: '100%' }} />
       
-      {/* Выдвижная панель */}
       <div className={`poster-panel ${isPanelOpen ? 'open' : ''}`}>
         <div className="panel-header">
           <h3>Объявления</h3>
@@ -215,7 +268,7 @@ export default function PostersMap() {
           ) : (
             <div className="posters-list">
               {posters.map((poster) => (
-                <div key={poster.id} className="poster-card" onClick={()=>navigate(`/posters/${poster.alias}`)}>
+                <div key={poster.id} className="poster-card" onClick={() => navigate(`/posters/${poster.alias}`)}>
                   {poster.avatar_url && (
                     <img 
                       src={poster.avatar_url} 
@@ -231,7 +284,7 @@ export default function PostersMap() {
                       <span className="poster-price">{poster.price.toString()} руб./мес</span>
                     </div>
                   </div>
-                </div >
+                </div>
               ))}
             </div>
           )}

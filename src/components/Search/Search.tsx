@@ -10,7 +10,7 @@ interface SearchProps {
   value: string;
   filters: IFilters;
   onSearch: (value: string, filters: IFilters) => void;
-   setFilters: (filters: IFilters) => void;
+  setFilters: (filters: IFilters) => void;
 }
 
 export function Search({ value, filters, onSearch, setFilters }: SearchProps) {

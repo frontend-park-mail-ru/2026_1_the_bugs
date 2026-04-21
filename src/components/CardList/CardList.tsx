@@ -58,7 +58,7 @@ export function CardList({
 
   return (
     <div style={{'align-items':'center'}}>
-        <section className={style.cards} style={styles}>
+        <section className={style.cards}>
           {((apartments.length==0) && !isFetchingMore) && (
             <div className={style.emptyState}>
               <p className={style.emptyTitle}>Ничего не найдено</p>
