@@ -66,6 +66,10 @@
   box-shadow: var(--shadow);
 }
 
+.field:focus-within {
+  box-shadow: var(--shadow-accent);
+}
+
 .field span,
 .field strong {
   color: #8e8e8e;

@@ -28,6 +28,7 @@
 
 .primary {
     background: var(--card);
+	color: var(--text);
 	box-shadow: var(--shadow);
 }
 

@@ -85,6 +85,7 @@
   height: 38px;
   border-radius: 999px;
   background: var(--card);
+  box-shadow: var(--shadow);
   color: var(--text);
   font-size: 15px;
 }

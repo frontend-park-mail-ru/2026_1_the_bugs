@@ -84,9 +84,17 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
 
     return (
         <section className={style.panel}>
-            
             <section className={style.section}>
-                <h3 className={style.sectionTitle}>Тип объекта</h3>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <h3 className={style.sectionTitle} style={{ margin: 0, flexGrow: 1 }}>Тип объекта</h3>
+                    <Button
+                        variant="secondary"
+                        style={{ padding: '0px 10px', fontSize: '14px', marginTop: '4px' }}
+                        type="button"
+                        onClick={handleReset}
+                        text="Сбросить"
+                    />
+                </div>
                 <div className={style.chips}>
                     {propertyTypes.map(({ label, alias }) => (
                         <Button
@@ -142,15 +150,6 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
                 или
                 <Button variant="none" type="button" className={style.advancedBtn} onClick={onOpenMore} text="расширенные фильтры" />
 
-            </div>
-
-            <div className={style.resetWrap}>
-                <Button
-                    variant="secondary"
-                    type="button"
-                    onClick={handleReset}
-                    text="Сбросить фильтры"
-                />
             </div>
         </section>
     );
