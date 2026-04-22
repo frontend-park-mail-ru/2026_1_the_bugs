@@ -1,4 +1,5 @@
 import type { Apartment } from '../../types';
+import { Button } from '../Button/Button';
 import style from './Card.module.css';
 import { useNavigate } from '@router-dom';
 
@@ -20,6 +21,18 @@ export function Card({ apartment }: CardProps) {
     <article className={style.card} data-title={apartment.metro} onClick={onOpenPoster}>
       <div className={style.image}>                         
         <img src={apartment.imageUrl} alt="Интерьер" draggable="false"/>
+        <Button 
+          id="like" 
+          variant='primary' 
+          style={{position: 'absolute', left: '12px', bottom: '12px'}}
+          shape='round' 
+          icon={<img src="/svg/heart.svg" alt="" aria-hidden="true" draggable={false} />}
+          onClick={e => {
+            e.stopPropagation();
+            alert('presed');
+          }}
+        >
+        </Button>
       </div>
       <div className={style.info}>                          
         <div className={style.meta}>                        
