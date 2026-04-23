@@ -45,8 +45,8 @@ export function UtilCard ({ utilityCompany }: UtilCardProps) {
                 </article>
             </aside>
         </div>
-                    
-            <UtilMap latitude={utilityCompany.geo.lat} longitude={utilityCompany.geo.lon} />
+                <UtilMap latitude={utilityCompany.geo.lat} longitude={utilityCompany.geo.lon} additionalStyles={{'max-height': '200px'}} />
+            
         </div>
     )
 }
