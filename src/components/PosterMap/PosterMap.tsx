@@ -90,14 +90,16 @@ type PostersByPointResponse = {
 
 const API_BASE = 'http://localhost:8000/api';
 
+
 function formatPrice(price?: number) {
   if (!price) return '';
+  if (price < 1000) return `${price} /мес`;
   return `${Math.round(price / 1000)} тыс./мес`;
 }
 
 function formatCluster(count?: number, minPrice?: number) {
   if (!count) return '';
-  return minPrice ? `${count} от ${Math.round(minPrice / 1000)} тыс./мес` : `${count}`;
+  return minPrice ? `${count} шт. от ${formatPrice(minPrice)}` : `${count} шт.`;
 }
 
 function makeMarkerHtml(text: string) {
@@ -105,6 +107,13 @@ function makeMarkerHtml(text: string) {
     <div class="marker-wrap">
       <div class="marker-bubble">${text}</div>
       <div class="marker-dot"></div>
+    </div>
+  `;
+}
+function makeClusterHtml(text: string) {
+  return `
+    <div class="marker-wrap">
+      <div class="marker-dot"> <div class="marker-bubble">${text}</div></div>
     </div>
   `;
 }
@@ -121,7 +130,7 @@ function priceIcon(L: any, price?: number) {
 function clusterIcon(L: any, count?: number, minPrice?: number) {
   return L.divIcon({
     className: 'cian-marker',
-    html: makeMarkerHtml(formatCluster(count, minPrice)),
+    html: makeClusterHtml(formatCluster(count, minPrice)),
     iconSize: [1, 1],
     iconAnchor: [0, 0],
   });
