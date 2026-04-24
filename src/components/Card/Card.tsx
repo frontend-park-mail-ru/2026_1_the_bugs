@@ -7,11 +7,12 @@ import { useNavigate } from '@router-dom';
 
 interface CardProps {
   apartment: Apartment;
+  isFavorite?: boolean;
 }
 
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
-export function Card({ apartment }: CardProps) {
-  const [liked, setLiked] = useState(-1);
+export function Card({ apartment, isFavorite }: CardProps) {
+  const [liked, setLiked] = useState<number>(typeof isFavorite === 'boolean' ? (isFavorite ? 1 : -1) : -1);
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :
     apartment.rating >= 6 ? 'mid' :

@@ -1,3 +1,18 @@
+import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
+import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
+import {apiService} from "./apiClass";
+import { authService } from "./auth";
+
+export async function getFavorites(): Promise<IPostersResponse> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get('/posters/favorites', {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
+    });
+}
+
 /**
  * Удаляет постер из избранного пользователя.
  * @param alias - alias постера
@@ -35,10 +50,6 @@ export async function addPosterToFavorites(alias: string): Promise<void> {
         );
     });
 }
-import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
-import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
-import {apiService} from "./apiClass";
-import { authService } from "./auth";
 
 /**
  * Структура ответа для пагинированного списка объявлений о квартирах.

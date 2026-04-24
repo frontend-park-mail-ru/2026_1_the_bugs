@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
-import { getPosters } from '../services/posters';
+import { getPosters, getFavorites } from '../services/posters';
 import { type Apartment, type IFilters} from '../types';
 import { useNavigate } from '@router-dom';
 
@@ -94,6 +94,13 @@ export function HomePage({search_query}: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [favoriteAliases, setFavoriteAliases] = useState<Set<string>>(new Set());
+  // Загрузка избранных постеров при монтировании
+  useEffect(() => {
+    getFavorites()
+      .then(res => setFavoriteAliases(new Set(res.posters.map(f => f.alias))))
+      .catch(() => setFavoriteAliases(new Set()));
+  }, []);
 
   const fetchData = async (searchVal: string, currentFilters: IFilters, append = false) => {
     if (isLoading || !hasMore) return;
@@ -149,10 +156,11 @@ export function HomePage({search_query}: Props) {
       
       <CardList
         pageSize={pageSize}
-        apartments={apartments} 
+        apartments={apartments}
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}
         onLoadMore={() => fetchData(searchQuery, filters, true)}
+        favoritesIds={favoriteAliases}
       />
     </div>
   );

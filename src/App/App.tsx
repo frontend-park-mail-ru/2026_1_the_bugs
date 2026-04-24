@@ -13,7 +13,7 @@ import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
 import { apiService } from '../services/apiClass';
-import { Likes } from '../components/Likes/Likes';
+import { Favorites } from '../components/Favorites/Favorites';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -92,9 +92,9 @@ export function App() {
                       <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
                 </Router>
-                <Router currentPath={currentPath} path="/profile/likes">
-                  <ProtectedLayout path="/profile/likes" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutLikes">
-                      <Likes key="LikesPage" />
+                <Router currentPath={currentPath} path="/profile/favorites">
+                  <ProtectedLayout path="/profile/favorites" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutLikes">
+                      <Favorites key="FavoritesPage" />
                   </ProtectedLayout>
                 </Router>
               </Switch>
