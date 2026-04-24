@@ -11,9 +11,20 @@ interface SearchProps {
   filters: IFilters;
   onSearch: (value: string, filters: IFilters) => void;
   setFilters: (filters: IFilters) => void;
+  filterMenuPlacement?: 'bottom' | 'top';
+  moreFiltersFullscreen?: boolean;
+  onMoreOpenChange?: (isOpen: boolean) => void;
 }
 
-export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
+export function Search({
+  value,
+  filters,
+  onSearch,
+  setFilters,
+  filterMenuPlacement = 'bottom',
+  moreFiltersFullscreen = false,
+  onMoreOpenChange,
+}: SearchProps) {
   const [search, setSearch] = useState(value);
   const [selectedFilters, setSelectedFilters] = useState<IFilters>(filters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -26,6 +37,10 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
   useEffect(() => {
     setSelectedFilters(filters);
   }, [filters]);
+
+  useEffect(() => {
+    onMoreOpenChange?.(isMoreOpen);
+  }, [isMoreOpen, onMoreOpenChange]);
 
   const handleInput = (e: any) => {
     setSearch(e.target.value);
@@ -89,7 +104,10 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
       </div>
 
       {isFilterOpen && (
-        <div className={style.filterMenu} onClick={(e: MouseEvent) => e.stopPropagation()}>
+        <div
+          className={`${style.filterMenu} ${filterMenuPlacement === 'top' ? style.filterMenuTop : ''}`}
+          onClick={(e: MouseEvent) => e.stopPropagation()}
+        >
           <Filter
             setFilters={setFilters}
             onClose={() => setIsFilterOpen(false)}
@@ -106,7 +124,8 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
       <Modal
         isOpen={isMoreOpen}
         onClose={() => setIsMoreOpen(false)}
-        contentClassName={style.moreModalContent}
+        overlayClassName={moreFiltersFullscreen ? style.moreModalOverlayFullscreen : ''}
+        contentClassName={`${style.moreModalContent} ${moreFiltersFullscreen ? style.moreModalContentFullscreen : ''}`.trim()}
       >
         <FilterMore
           onClose={() => setIsMoreOpen(false)}

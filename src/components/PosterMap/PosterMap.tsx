@@ -2,6 +2,7 @@ import { useEffect, useState } from 'the-react';
 import './PosterMap.css';
 import { useNavigate } from '@router-dom';
 import { Search } from '../Search/Search';
+import { Button } from '../Button/Button';
 import type { IFilters } from '../../types';
 
 const MAP_ELEMENT_ID = 'posters-map-osm';
@@ -90,6 +91,79 @@ type PostersByPointResponse = {
 
 const API_BASE = 'http://localhost:8000/api';
 
+const parseNum = (value: string | null): number | undefined => {
+  if (!value) return undefined;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+};
+
+const parseBool = (value: string | null): boolean | undefined => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return undefined;
+};
+
+const parseFiltersFromSearch = (params: URLSearchParams): IFilters => {
+  const facilities = params.get('facilities')
+    ?.split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return {
+    category: params.get('category') || undefined,
+    room_count: parseNum(params.get('room_count')),
+    min_price: parseNum(params.get('min_price')),
+    max_price: parseNum(params.get('max_price')),
+    min_square: parseNum(params.get('min_square')),
+    max_square: parseNum(params.get('max_square')),
+    min_flat_floor: parseNum(params.get('min_flat_floor')),
+    max_flat_floor: parseNum(params.get('max_flat_floor')),
+    min_building_floor: parseNum(params.get('min_building_floor')),
+    max_building_floor: parseNum(params.get('max_building_floor')),
+    facilities: facilities && facilities.length > 0 ? facilities : undefined,
+    not_first_floor: parseBool(params.get('not_first_floor')),
+    not_last_floor: parseBool(params.get('not_last_floor')),
+  };
+};
+
+const syncQueryParams = (searchVal: string, filters: IFilters): string => {
+  const params = new URLSearchParams();
+
+  if (searchVal) params.set('search_query', searchVal);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.room_count != null) params.set('room_count', String(filters.room_count));
+  if (filters.min_price != null) params.set('min_price', String(filters.min_price));
+  if (filters.max_price != null) params.set('max_price', String(filters.max_price));
+  if (filters.min_square != null) params.set('min_square', String(filters.min_square));
+  if (filters.max_square != null) params.set('max_square', String(filters.max_square));
+  if (filters.min_flat_floor != null) params.set('min_flat_floor', String(filters.min_flat_floor));
+  if (filters.max_flat_floor != null) params.set('max_flat_floor', String(filters.max_flat_floor));
+  if (filters.min_building_floor != null) params.set('min_building_floor', String(filters.min_building_floor));
+  if (filters.max_building_floor != null) params.set('max_building_floor', String(filters.max_building_floor));
+  if (filters.facilities && filters.facilities.length > 0) params.set('facilities', filters.facilities.join(','));
+  if (filters.not_first_floor) params.set('not_first_floor', 'true');
+  if (filters.not_last_floor) params.set('not_last_floor', 'true');
+
+  return params.toString();
+};
+
+const appendFiltersToParams = (params: URLSearchParams, searchVal: string, filters: IFilters) => {
+  if (searchVal) params.set('search_query', searchVal);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.room_count != null) params.set('room_count', String(filters.room_count));
+  if (filters.min_price != null) params.set('min_price', String(filters.min_price));
+  if (filters.max_price != null) params.set('max_price', String(filters.max_price));
+  if (filters.min_square != null) params.set('min_square', String(filters.min_square));
+  if (filters.max_square != null) params.set('max_square', String(filters.max_square));
+  if (filters.min_flat_floor != null) params.set('min_flat_floor', String(filters.min_flat_floor));
+  if (filters.max_flat_floor != null) params.set('max_flat_floor', String(filters.max_flat_floor));
+  if (filters.min_building_floor != null) params.set('min_building_floor', String(filters.min_building_floor));
+  if (filters.max_building_floor != null) params.set('max_building_floor', String(filters.max_building_floor));
+  if (filters.facilities && filters.facilities.length > 0) params.set('facilities', filters.facilities.join(','));
+  if (filters.not_first_floor) params.set('not_first_floor', 'true');
+  if (filters.not_last_floor) params.set('not_last_floor', 'true');
+};
+
 
 function formatPrice(price?: number) {
   if (!price) return '';
@@ -137,11 +211,26 @@ function clusterIcon(L: any, count?: number, minPrice?: number) {
 }
 
 export default function PostersMap() {
+  const initialParams = new URLSearchParams(window.location.search);
+  const initialSearch = initialParams.get('search_query') || '';
+  const initialFilters = parseFiltersFromSearch(initialParams);
+
   const navigate = useNavigate();
   const [selectedPoint, setSelectedPoint] = useState<{ lat: number; lng: number } | null>(null);
   const [posters, setPosters] = useState<Poster[]>([]);
   const [loading, setLoading] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [filters, setFilters] = useState<IFilters>(initialFilters);
+  const [mapController, setMapController] = useState<{ map: any; markersLayer: any } | null>(null);
+
+  const handleSearch = (searchVal: string, nextFilters: IFilters) => {
+    setSearchQuery(searchVal);
+    setFilters(nextFilters);
+    const query = syncQueryParams(searchVal, nextFilters);
+    navigate(`${window.location.pathname}${query ? `?${query}` : ''}`);
+  };
 
   const loadPostersByPoint = async (lat: number, lng: number) => {
     setLoading(true);
@@ -149,6 +238,7 @@ export default function PostersMap() {
       const url = new URL(`${API_BASE}/posters/by-point`);
       url.searchParams.set('lat', String(lat));
       url.searchParams.set('lon', String(lng));
+      appendFiltersToParams(url.searchParams, searchQuery, filters);
 
       const response = await fetch(url.toString());
       if (!response.ok) throw new Error('Failed to load posters');
@@ -169,8 +259,57 @@ export default function PostersMap() {
     
   };
 
+  const loadPosters = async (map: any, markersLayer: any, searchVal: string, currentFilters: IFilters) => {
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const zoom = map.getZoom();
+
+    const url = new URL(`${API_BASE}/posters/geo`);
+    url.searchParams.set('sw_lat', String(sw.lat));
+    url.searchParams.set('sw_lon', String(sw.lng));
+    url.searchParams.set('ne_lat', String(ne.lat));
+    url.searchParams.set('ne_lon', String(ne.lng));
+    url.searchParams.set('zoom', String(zoom));
+    appendFiltersToParams(url.searchParams, searchVal, currentFilters);
+
+    try {
+      const res = await fetch(url.toString());
+      if (!res.ok) return;
+
+      const data: ApiResponse = await res.json();
+      const items = data.features || data.posters || [];
+
+      markersLayer.clearLayers();
+
+      items.forEach((item) => {
+        const coords = item.geometry?.coordinates;
+        if (!coords) return;
+
+        const [lng, lat] = coords;
+        if (typeof lat !== 'number' || typeof lng !== 'number') return;
+
+        const props = item.properties || item.propertiese || {};
+        const icon = props.cluster
+          ? clusterIcon(getLeafletGlobal(), props.count, props.priceMin)
+          : priceIcon(getLeafletGlobal(), props.price);
+
+        const marker = getLeafletGlobal().marker([lat, lng], { icon });
+
+        marker.on('click', () => {
+          setSelectedPoint({ lat, lng });
+          loadPostersByPoint(lat, lng);
+        });
+
+        marker.addTo(markersLayer);
+      });
+    } catch (error) {
+      console.error('Error loading posters:', error);
+    }
+  };
+
   useEffect(() => {
-    let mapController: { map: any; markersLayer: any } | null = null;
+    let controller: { map: any; markersLayer: any } | null = null;
 
     const init = async () => {
       try {
@@ -191,60 +330,8 @@ export default function PostersMap() {
         }).addTo(map);
 
         const markersLayer = L.layerGroup().addTo(map);
-
-        const loadPosters = async () => {
-          const bounds = map.getBounds();
-          const sw = bounds.getSouthWest();
-          const ne = bounds.getNorthEast();
-          const zoom = map.getZoom();
-
-          const url = new URL(`${API_BASE}/posters/geo`);
-          url.searchParams.set('sw_lat', String(sw.lat));
-          url.searchParams.set('sw_lon', String(sw.lng));
-          url.searchParams.set('ne_lat', String(ne.lat));
-          url.searchParams.set('ne_lon', String(ne.lng));
-          url.searchParams.set('zoom', String(zoom));
-
-          try {
-            const res = await fetch(url.toString());
-            if (!res.ok) return;
-
-            const data: ApiResponse = await res.json();
-            const items = data.features || data.posters || [];
-
-            markersLayer.clearLayers();
-
-            items.forEach((item) => {
-              const coords = item.geometry?.coordinates;
-              if (!coords) return;
-
-              const [lng, lat] = coords;
-              if (typeof lat !== 'number' || typeof lng !== 'number') return;
-
-              const props = item.properties || item.propertiese || {};
-              const icon = props.cluster
-                ? clusterIcon(L, props.count, props.priceMin)
-                : priceIcon(L, props.price);
-
-              const marker = L.marker([lat, lng], { icon });
-              
-              marker.on('click', () => {
-                setSelectedPoint({ lat, lng });
-                loadPostersByPoint(lat, lng);
-              });
-              
-              marker.addTo(markersLayer);
-            });
-          } catch (error) {
-            console.error('Error loading posters:', error);
-          }
-        };
-
-        map.on('moveend', loadPosters);
-        map.on('zoomend', loadPosters);
-        map.whenReady(loadPosters);
-
-        mapController = { map, markersLayer };
+        controller = { map, markersLayer };
+        setMapController(controller);
       } catch (error) {
         console.warn('Posters map init failed', error);
       }
@@ -253,15 +340,54 @@ export default function PostersMap() {
     init();
 
     return () => {
-      if (mapController?.map) {
-        mapController.map.remove();
+      if (controller?.map) {
+        controller.map.remove();
+        setMapController(null);
       }
     };
   }, []);
 
+  useEffect(() => {
+    if (!mapController) return;
+
+    const handler = () => {
+      loadPosters(mapController.map, mapController.markersLayer, searchQuery, filters);
+    };
+
+    mapController.map.on('moveend', handler);
+    mapController.map.on('zoomend', handler);
+    mapController.map.whenReady(handler);
+    handler();
+
+    return () => {
+      mapController.map.off('moveend', handler);
+      mapController.map.off('zoomend', handler);
+    };
+  }, [mapController, searchQuery, filters]);
+
   return (
-    <div>
-      <div id={MAP_ELEMENT_ID} style={{ position: 'absolute', left: '0px', height: '85vh', width: '100%' }} />
+    <div className="map-page">
+      <div id={MAP_ELEMENT_ID} style={{ position: 'absolute', left: '0px', height: '100vh', width: '100%' }} />
+      <Button
+        variant="primary"
+        shape="round"
+        type="button"
+        className="map-close-button"
+        aria-label="Закрыть карту"
+        onClick={() => navigate('/')}
+        icon={<img src="/svg/cross.svg" alt="Закрыть" aria-hidden="true" draggable="false" />}
+      />
+      <div className={`map-search-floating ${isMoreFiltersOpen ? 'more-open' : ''}`.trim()}>
+        <Search
+          value={searchQuery}
+          filters={filters}
+          setFilters={setFilters}
+          onSearch={handleSearch}
+          filterMenuPlacement="top"
+          moreFiltersFullscreen
+          onMoreOpenChange={setIsMoreFiltersOpen}
+        />
+      </div>
       
       <div className={`poster-panel ${isPanelOpen ? 'open' : ''}`}>
         <div className="panel-header">

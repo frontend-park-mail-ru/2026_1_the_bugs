@@ -1,3 +1,72 @@
+.map-page {
+  position: relative;
+  height: 100vh;
+}
+
+.map-search-floating {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 24px;
+  width: min(860px, calc(100vw - 24px));
+  margin: 0 auto;
+  z-index: 1001;
+}
+
+.map-search-floating.more-open {
+  z-index: 12000;
+}
+
+.map-close-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2003;
+}
+
+.map-page .leaflet-top.leaflet-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.map-page .leaflet-top.leaflet-right .leaflet-control {
+  margin-top: 0;
+}
+
+.map-page .leaflet-control-zoom {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.2);
+  backdrop-filter: blur(6px);
+}
+
+.map-page .leaflet-control-zoom a {
+  width: 36px;
+  height: 36px;
+  line-height: 34px;
+  border: 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.92);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+}
+
+.map-page .leaflet-control-zoom a:hover {
+  background: #fce6f4;
+  color: #be4f96;
+}
+
+.map-page .leaflet-control-zoom a:active {
+  transform: scale(0.97);
+}
+
+.map-page .leaflet-control-zoom a:first-child {
+  border-bottom: 1px solid rgba(240, 141, 204, 0.35);
+}
+
 .cian-marker {
   background: transparent;
   border: none;
@@ -68,6 +137,18 @@
   left: 0;
 }
 @media (max-width: 600px) {
+  .map-close-button {
+    top: 12px;
+    right: 12px;
+  }
+
+  .map-search-floating {
+    bottom: 12px;
+    left: 6px;
+    right: 6px;
+    width: calc(100vw - 12px);
+  }
+
   .poster-panel.open {
   left: 0;
   width: 100%;

@@ -15,6 +15,7 @@ interface LayoutProps {
 
 export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser }: LayoutProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
+  const isMapPage = currentPath === '/map';
 
   const onLogoutClick = () => {
     setIsAuthenticate(false);
@@ -42,6 +43,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
         isAutenticated={isAuthenticate} 
         onLogoutClick={onLogoutClick} 
         onAuthorizeClick={openAuthModal} 
+        isMapPage={isMapPage}
         key="Header"
       />
       {children}
