@@ -135,13 +135,14 @@ class ApiService {
      */
 
     async handleResponse(response: Response) {
-        if (response.status == 204) {
+        if (response.status === 204) {
             return null;
         }
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null;
 
         if (!response.ok) {
-            const error = new Error(data.message || 'API error') as ErrorResponse;
+            const error = new Error(data?.message || 'API error') as ErrorResponse;
             error.status = response.status;
             error.data = data;
             throw error;

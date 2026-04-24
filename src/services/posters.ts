@@ -1,3 +1,40 @@
+/**
+ * Удаляет постер из избранного пользователя.
+ * @param alias - alias постера
+ * @returns Promise<void>
+ */
+export async function removePosterFromFavorites(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.delete(
+            `/posters/${encodedAlias}/favorites`,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
+}
+/**
+ * Добавляет постер в избранное пользователя.
+ * @param alias - alias постера
+ * @returns Promise<void>
+ */
+export async function addPosterToFavorites(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/posters/${encodedAlias}/favorites`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
+}
 import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";

@@ -22,6 +22,7 @@ interface ButtonProps {
     disabled?: boolean
     type?: ButtonType
     onClick?: (e: any) => void
+    liked?: boolean // новое свойство для глобального состояния лайка
     [key: string]: any
 }
 
@@ -42,11 +43,18 @@ export const Button = ({
     disabled = false,
     type = 'button',
     onClick,
+    liked = false,
     ...restProps
 }: ButtonProps) => {
     const content = children ?? text
     const isMenuVariant = variant === 'menu'
-    const classes = [styles.button, styles[variant], shape === 'round' ? styles.round : '', className].filter(Boolean).join(' ')
+    const classes = [
+        styles.button,
+        styles[variant],
+        shape === 'round' ? styles.round : '',
+        liked ? styles.liked : '',
+        className
+    ].filter(Boolean).join(' ')
 
     return (
         <button

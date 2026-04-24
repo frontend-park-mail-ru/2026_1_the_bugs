@@ -1,5 +1,7 @@
 import type { Apartment } from '../../types';
 import { Button } from '../Button/Button';
+import { addPosterToFavorites, removePosterFromFavorites } from '../../services/posters';
+import { useState } from 'the-react';
 import style from './Card.module.css';
 import { useNavigate } from '@router-dom';
 
@@ -9,6 +11,7 @@ interface CardProps {
 
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
 export function Card({ apartment }: CardProps) {
+  const [liked, setLiked] = useState(-1);
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :
     apartment.rating >= 6 ? 'mid' :
@@ -26,10 +29,24 @@ export function Card({ apartment }: CardProps) {
           variant='primary' 
           style={{position: 'absolute', left: '12px', bottom: '12px'}}
           shape='round' 
-          icon={<img src="/svg/heart.svg" alt="" aria-hidden="true" draggable={false} />}
-          onClick={e => {
+          liked={liked === 1}
+          icon={
+            liked === 1
+              ? <img src="/svg/hearted.svg" alt="" aria-hidden="true" draggable={false} />
+              : <img src="/svg/heart.svg" alt="" aria-hidden="true" draggable={false} />
+          }
+          onClick={async e => {
             e.stopPropagation();
-            alert('presed');
+            try {
+              if (liked === -1) {
+                await addPosterToFavorites(apartment.alias);
+              } else {
+                await removePosterFromFavorites(apartment.alias);
+              }
+              setLiked(liked * -1);
+            } catch (err) {
+              alert('Ошибка при изменении избранного');
+            }
           }}
         >
         </Button>
