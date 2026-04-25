@@ -52,7 +52,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
             <div className={style.supportFrameWrap}>
               <Button variant="none" shape='round' style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setIsSupportOpen(false)}>&times;</Button>
               <iframe
-                src="https://dom-deli.ru/support"
+                src="https://dom-deli.ru/support/support.html"
                 title="Поддержка"
                 width="300"
                 height="500"
