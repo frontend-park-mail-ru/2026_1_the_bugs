@@ -13,6 +13,8 @@ import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
 import { apiService } from '../services/apiClass';
+import { AdminPage } from '../pages/AdminPage';
+import { AdminReportPage } from '../pages/AdminReportPage';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -90,6 +92,12 @@ export function App() {
                   <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">
                       <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
+                </Router>
+                <Router currentPath={currentPath} path="/admin/reports/{id}">
+                  <AdminReportPage id="{id}" key="AdminReportPage" />
+                </Router>
+                <Router currentPath={currentPath} path="/admin/reports">
+                  <AdminPage key="AdminPage" />
                 </Router>
               </Switch>
             </Layout>
