@@ -3,6 +3,8 @@ import { AuthModal } from '../../components/AuthModal/AuthModal';
 import { useState } from "the-react/hooks";
 import { authService } from '../../services/auth';
 import type { UserResponse } from 'src/types';
+import style from "./Layout.module.css"
+import { Button } from '../Button/Button';
 
 interface LayoutProps {
   children: any;
@@ -15,7 +17,7 @@ interface LayoutProps {
 
 export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser }: LayoutProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
-
+  const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const onLogoutClick = () => {
     setIsAuthenticate(false);
     authService.logout();
@@ -34,7 +36,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
   };
 
   return (
-    <div>
+    <div className={style.layout}>
       <Header 
         currentPath={currentPath}
         currentUser={currentUser}
@@ -44,6 +46,32 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
         onAuthorizeClick={openAuthModal} 
         key="Header"
       />
+      <div className={style.supportLayer}>
+        <div className={style.supportDock}>
+          {isSupportOpen && (
+            <div className={style.supportFrameWrap}>
+              <Button variant="none" shape='round' style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setIsSupportOpen(false)}>&times;</Button>
+              <iframe
+                src="http://localhost:5173/support.html"
+                title="Поддержка"
+                width="300"
+                height="500"
+                className={style.supportFrame}
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </div>
+          )}
+          <button 
+            className={`${style.button} ${style.round} ${style.accent}`}
+            style={{ marginRight: '5px', marginBottom: '10px' }}
+            type="button" 
+            aria-label="Поддержка" 
+            onClick={() => setIsSupportOpen(!isSupportOpen)}
+          >
+            <img src="/svg/message.svg" alt="Поддержка" aria-hidden="true" draggable="false" />
+          </button>
+        </div>
+      </div>
       {children}
       {isAuthModalOpen && (
         <AuthModal key="AuthModal" onSuccess={onSuccess} onClose={closeAuthModal} />

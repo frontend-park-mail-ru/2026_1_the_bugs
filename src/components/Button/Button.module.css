@@ -88,10 +88,14 @@
     background: none;
     border: none;
     text-align: left;
+	font-size: 40px;
     cursor: pointer;
-    color: #222;
+    color: #999;
     font-family: inherit;
     box-shadow: none;
+}
+.none:hover:not(:disabled) {
+	box-shadow: none;
 }
 
 .menu {
