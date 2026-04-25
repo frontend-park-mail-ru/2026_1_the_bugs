@@ -1,0 +1,92 @@
+.layout {
+	position: relative;
+	min-height: 100vh;
+}
+
+.supportLayer {
+	position: fixed;
+	top: 76px;
+	left: 0;
+	width: 100%;
+	height: calc(100vh - 76px);
+	pointer-events: none;
+	z-index: 30;
+}
+
+.supportDock {
+	position: relative;
+	max-width: calc(4 * 250px + 3 * 18px);
+	height: 100%;
+	margin: 0 auto;
+	padding-inline: 10px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+	pointer-events: none;
+}
+
+.supportDock > button,
+.supportFrameWrap {
+	pointer-events: auto;
+}
+
+.supportFrameWrap {
+	position: absolute;
+	right: 10px;
+	bottom: 48px;
+	border-radius: var(--radius-S);
+	overflow: hidden;
+	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.supportFrame {
+	display: block;
+	border: none;
+}
+
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 44px;
+	padding: 8px;
+	border-radius: var(--radius-L);
+	font-family: "Aqum Two", system-ui, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1;
+	border: 1px solid transparent;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.button:active:not(:disabled) {
+	transform: scale(0.96);
+	opacity: 0.96;
+}
+
+.round {
+	width: 36px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.round:active:not(:disabled) {
+	transform: scale(0.96);
+    opacity: 0.96;
+}
+
+.accent {
+  background-color: var(--accent);
+  color: white;
+}
+
+.accent:hover:not(:disabled) {
+	background: var(--accent-hover);
+}
