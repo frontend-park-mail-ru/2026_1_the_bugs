@@ -138,7 +138,12 @@ class ApiService {
         if (response.status == 204) {
             return null;
         }
-        const data = await response.json();
+        let data: any = null;
+        try {
+            data = await response.json();
+        } catch (e) {
+            return null;
+        }
 
         if (!response.ok) {
             const error = new Error(data.message || 'API error') as ErrorResponse;

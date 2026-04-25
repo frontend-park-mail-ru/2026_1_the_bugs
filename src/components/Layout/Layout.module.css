@@ -34,6 +34,7 @@
 	position: absolute;
 	right: 10px;
 	bottom: 48px;
+	background-color: var(--bg);
 	border-radius: var(--radius-S);
 	overflow: hidden;
 	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
@@ -42,6 +43,8 @@
 .supportFrame {
 	display: block;
 	border: none;
+	width: 300px;
+	height: 500px;
 }
 
 .button {
