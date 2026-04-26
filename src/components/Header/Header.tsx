@@ -34,20 +34,16 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
       {isMenuOpen && (
         <div className={style.menuOverlay} onClick={closeMenu} />
       )}
-      <Button
+      <div
         variant='primary'
-        style={{
-          'margin': '0',
-  'font-weight': '700',
-  'letter-spacing': '2px',
-  'font-size': '18px',
-  'display': 'inline-block',
-  'line-height': '1',}}
+        id="DomDeli"
+        key="DomDeli"
+        className={style['logo']}
         aria-label="Перейти на главную"
         onClick={() => navigate('/')}
       >
         ДОМДЕЛИ
-      </Button>
+      </div>
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (
