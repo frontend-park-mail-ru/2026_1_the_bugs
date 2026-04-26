@@ -4,6 +4,7 @@ import { useNavigate } from '@router-dom';
 import { Search } from '../Search/Search';
 import type { IFilters } from '../../types';
 import cardStyle from '../Card/Card.module.css';
+import { apiService } from '../../services/apiClass';
 
 const MAP_ELEMENT_ID = 'posters-map-osm';
 
@@ -87,8 +88,6 @@ type PostersByPointResponse = {
   len: number;
   posters: Poster[];
 };
-
-const API_BASE = 'http://localhost:8000/api';
 
 const parseNum = (value: string | null): number | undefined => {
   if (!value) return undefined;
@@ -252,12 +251,12 @@ export default function PostersMap() {
   const loadPostersByPoint = async (lat: number, lng: number) => {
     setLoading(true);
     try {
-      const url = new URL(`${API_BASE}/posters/by-point`);
-      url.searchParams.set('lat', String(lat));
-      url.searchParams.set('lon', String(lng));
-      appendFiltersToParams(url.searchParams, searchQuery, filters);
+      let searchParams = new URLSearchParams()
+      searchParams.set('lat', String(lat));
+      searchParams.set('lon', String(lng));
+      appendFiltersToParams(searchParams, searchQuery, filters);
 
-      const response = await fetch(url.toString());
+      const response = await apiService.get('/posters/by-point', searchParams);
       if (!response.ok) throw new Error('Failed to load posters');
 
       const data: PostersByPointResponse = await response.json();
@@ -281,17 +280,16 @@ export default function PostersMap() {
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
     const zoom = map.getZoom();
-
-    const url = new URL(`${API_BASE}/posters/geo`);
-    url.searchParams.set('sw_lat', String(sw.lat));
-    url.searchParams.set('sw_lon', String(sw.lng));
-    url.searchParams.set('ne_lat', String(ne.lat));
-    url.searchParams.set('ne_lon', String(ne.lng));
-    url.searchParams.set('zoom', String(zoom));
-    appendFiltersToParams(url.searchParams, searchVal, currentFilters);
+    let searchParams = new URLSearchParams()
+    searchParams.set('sw_lat', String(sw.lat));
+    searchParams.set('sw_lon', String(sw.lng));
+    searchParams.set('ne_lat', String(ne.lat));
+    searchParams.set('ne_lon', String(ne.lng));
+    searchParams.set('zoom', String(zoom));
+    appendFiltersToParams(searchParams, searchVal, currentFilters);
 
     try {
-      const res = await fetch(url.toString());
+      const res = await apiService.get('/posters/geo', searchParams);
       if (!res.ok) return;
 
       const data: ApiResponse = await res.json();
