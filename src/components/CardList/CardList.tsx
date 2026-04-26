@@ -14,6 +14,7 @@ interface CardListProps {
   styles?: Record<string, any>;
   favoritesIds?: Set<number | string>;
   hideEmptyState?: boolean;
+  isAuth: boolean
 }
 export function CardList(props: CardListProps) {
   const {
@@ -25,6 +26,7 @@ export function CardList(props: CardListProps) {
     styles,
     favoritesIds,
     hideEmptyState,
+    isAuth,
   } = props;
   const navigate = useNavigate()
   useEffect(() => {
@@ -77,6 +79,7 @@ export function CardList(props: CardListProps) {
         return (
           <Card
             key={apt.id.toString()}
+            isAuth={isAuth}
             apartment={apt}
             isFavorite={isFavorite}
           />

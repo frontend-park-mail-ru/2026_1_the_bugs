@@ -66,7 +66,7 @@ export function App() {
             < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/" currentSearch={currentSearch}>
-                  <HomePage search_query="" key="HomePage" />
+                  <HomePage search_query="" isAuth={isAuthenticate} key="HomePage" />
                 </Router>
                 <Router currentPath={currentPath} path="/company/{alias}">
                   <UtilityComplex alias="{alias}" key="CompanyPage" />

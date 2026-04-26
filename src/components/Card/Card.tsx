@@ -8,10 +8,11 @@ import { useNavigate } from '@router-dom';
 interface CardProps {
   apartment: Apartment;
   isFavorite?: boolean;
+  isAuth: boolean
 }
 
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
-export function Card({ apartment, isFavorite }: CardProps) {
+export function Card({ apartment, isFavorite, isAuth }: CardProps) {
   const [liked, setLiked] = useState<number>(typeof isFavorite === 'boolean' ? (isFavorite ? 1 : -1) : -1);
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :
@@ -25,10 +26,10 @@ export function Card({ apartment, isFavorite }: CardProps) {
     <article className={style.card} data-title={apartment.metro} onClick={onOpenPoster}>
       <div className={style.image}>                         
         <img src={apartment.imageUrl} alt="Интерьер" draggable="false"/>
-        <Button 
+        {isAuth && <Button 
           id="like" 
           variant='primary' 
-          style={{position: 'absolute', left: '12px', bottom: '12px'}}
+          style={{position: 'absolute', right: '12px', top: '12px'}}
           shape='round' 
           liked={liked === 1}
           icon={
@@ -46,11 +47,11 @@ export function Card({ apartment, isFavorite }: CardProps) {
               }
               setLiked(liked * -1);
             } catch (err) {
-              alert('Ошибка при изменении избранного');
+              console.error('Ошибка при изменении избранного');
             }
           }}
         >
-        </Button>
+        </Button>}
       </div>
       <div className={style.info}>                          
         <div className={style.meta}>                        

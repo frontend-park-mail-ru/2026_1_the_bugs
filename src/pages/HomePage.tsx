@@ -23,6 +23,7 @@ import { useNavigate } from '@router-dom';
 
 interface Props{
   search_query: string;
+  isAuth: boolean
 }
 
 const parseNum = (value: string | null): number | undefined => {
@@ -81,7 +82,7 @@ const syncQueryParams = (searchVal: string, filters: IFilters): string => {
   return params.toString();
 };
 
-export function HomePage({search_query}: Props) {
+export function HomePage({search_query, isAuth}: Props) {
   const initialParams = new URLSearchParams(window.location.search);
   const initialSearch = initialParams.get('search_query') || search_query || '';
   const initialFilters = parseFiltersFromSearch(initialParams);
@@ -99,13 +100,12 @@ export function HomePage({search_query}: Props) {
   const [isFavoritesLoading, setIsFavoritesLoading] = useState(true);
 
     useEffect(() => {
-        // Убираем условие isLoaded, просто делаем запрос при монтировании
         const f = async () => {
             try {
                 const res = await getFavorites();
                 setFavoriteAliases(new Set(res.posters.map(f => f.alias)));
             } finally {
-                setIsFavoritesLoading(false); // Загрузка завершена
+                setIsFavoritesLoading(false);
             }
         };
         f();
@@ -169,6 +169,7 @@ export function HomePage({search_query}: Props) {
         apartments={apartments}
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}
+        isAuth={isAuth}
         onLoadMore={() => fetchData(searchQuery, filters, true)}
         favoritesIds={isFavoritesLoading ? undefined : favoriteAliases} 
       />
