@@ -58,7 +58,7 @@ export function CardList(props: CardListProps) {
 
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
-  
+  console.log(favoritesIds)
 
   return (
     <div style={{'align-items':'center'}}>
@@ -72,9 +72,7 @@ export function CardList(props: CardListProps) {
       {apartments.map((apt) => {
         let isFavorite;
         if (favoritesIds) {
-          // If set contains string, check alias; if number, check id
-          const hasString = Array.from(favoritesIds)[0] && typeof Array.from(favoritesIds)[0] === 'string';
-          isFavorite = hasString ? favoritesIds.has(apt.alias) : favoritesIds.has(apt.id);
+          isFavorite =  favoritesIds.has(apt.alias);
         }
         return (
           <Card

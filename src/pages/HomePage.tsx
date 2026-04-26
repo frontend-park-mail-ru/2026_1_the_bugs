@@ -95,12 +95,22 @@ export function HomePage({search_query}: Props) {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [favoriteAliases, setFavoriteAliases] = useState<Set<string>>(new Set());
-  // Загрузка избранных постеров при монтировании
-  useEffect(() => {
-    getFavorites()
-      .then(res => setFavoriteAliases(new Set(res.posters.map(f => f.alias))))
-      .catch(() => setFavoriteAliases(new Set()));
-  }, []);
+
+  const [isFavoritesLoading, setIsFavoritesLoading] = useState(true);
+
+    useEffect(() => {
+        // Убираем условие isLoaded, просто делаем запрос при монтировании
+        const f = async () => {
+            try {
+                const res = await getFavorites();
+                setFavoriteAliases(new Set(res.posters.map(f => f.alias)));
+            } finally {
+                setIsFavoritesLoading(false); // Загрузка завершена
+            }
+        };
+        f();
+    }, []);
+
 
   const fetchData = async (searchVal: string, currentFilters: IFilters, append = false) => {
     if (isLoading || !hasMore) return;
@@ -160,7 +170,7 @@ export function HomePage({search_query}: Props) {
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}
         onLoadMore={() => fetchData(searchQuery, filters, true)}
-        favoritesIds={favoriteAliases}
+        favoritesIds={isFavoritesLoading ? undefined : favoriteAliases} 
       />
     </div>
   );

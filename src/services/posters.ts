@@ -20,11 +20,10 @@ export async function getFavorites(): Promise<IPostersResponse> {
  * @returns Promise<void>
  */
 export async function removePosterFromFavorites(alias: string): Promise<void> {
-    const encodedAlias = encodeURIComponent(alias);
     await authService.WithRefresh(async () => {
         const token = apiService.getToken();
         await apiService.delete(
-            `/posters/${encodedAlias}/favorites`,
+            `/posters/${alias}/favorites`,
             {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
