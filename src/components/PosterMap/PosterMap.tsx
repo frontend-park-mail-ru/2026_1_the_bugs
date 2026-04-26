@@ -2,8 +2,8 @@ import { useEffect, useState } from 'the-react';
 import './PosterMap.css';
 import { useNavigate } from '@router-dom';
 import { Search } from '../Search/Search';
-import { Button } from '../Button/Button';
 import type { IFilters } from '../../types';
+import cardStyle from '../Card/Card.module.css';
 
 const MAP_ELEMENT_ID = 'posters-map-osm';
 
@@ -172,7 +172,7 @@ function formatPrice(price?: number) {
 
 function formatCluster(count?: number, minPrice?: number) {
   if (!count) return '';
-  return minPrice ? `${count} шт. от ${formatPrice(minPrice)}` : `${count} шт.`;
+  return minPrice ? `${count} от ${formatPrice(minPrice)}` : `${count}`;
 }
 
 function makeMarkerHtml(text: string) {
@@ -410,6 +410,7 @@ export default function PostersMap() {
           filterMenuPlacement="top"
           moreFiltersFullscreen
           onMoreOpenChange={setIsMoreFiltersOpen}
+          isSearchVisible={false}
         />
       </div>
       
@@ -426,26 +427,34 @@ export default function PostersMap() {
             <div className="no-posters">Нет объявлений по данной точке</div>
           ) : (
             <div className="posters-list">
-              {posters.map((poster) => (
-                <div key={poster.id} className="poster-card" onClick={() => navigate(`/posters/${poster.alias}`)}>
-                  {poster.avatar_url && (
-                    <img 
-                      src={poster.avatar_url} 
-                      alt={poster.alias}
-                      className="poster-image"
-                    />
-                  )}
-                  <div className="poster-info">
-                    <div className="poster-category">{poster.category.name}</div>
-                    <div className="poster-address">{poster.address}</div>
-                    <div className="poster-details">
-                      <span className="poster-area">{poster.area.toString()} м²</span>
-                      <span className="poster-price">{poster.price.toString()} руб./мес</span>
-                    </div>
-                  </div>
+  {posters.map((apt) => (
+    <article
+                                key={apt.id}
+                                className={cardStyle.card + ' ' + "myCard"}
+                                data-title={apt.address}
+                                onClick={() => navigate(`/posters/${encodeURIComponent(apt.alias)}`)}
+                            >
+              <div className={cardStyle.image}>
+                <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
+              </div>
+
+              <div className={cardStyle.info}>
+                <div className={cardStyle.meta}>
+                  <span className={cardStyle.location}>
+                    <img src="/svg/location.svg" alt="" aria-hidden="true" draggable="false" />
+                    {apt.address}
+                  </span>
+                  <span>{apt.area.toString()} м²</span>
                 </div>
-              ))}
-            </div>
+
+                <div className={cardStyle.footer}>
+                  <span>{apt.category.name}</span>
+                  <strong>{apt.price.toLocaleString()} ₽</strong>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
           )}
         </div>
       </div>
