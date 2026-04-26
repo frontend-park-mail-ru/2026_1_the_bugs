@@ -16,7 +16,7 @@ export interface RecoverFormState {
 export type RecoverField = 'code';
 
 
-export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
+export default function EmailVerification({onSuccess, onToggleMode }: AuthModalChildProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<RecoverFormState>({
     code: '',
@@ -26,6 +26,7 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
   const [isSendActive, setIsSendActive] = useState<boolean>(false)
   const [sendEmail, setSendEmail] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null);
+  const email = sessionStorage.getItem("email") || ""
 
   useEffect(() => {
     let currentTick = 60;
@@ -74,9 +75,14 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
     setFieldHighlights({});
 
     try {
-      await authService.verifyCode(formData.code);
+      await authService.verifyEmail(formData.code);
+      await authService.login({
+        "email": email, 
+        "password": sessionStorage.getItem("password") || ""
+        });
       sessionStorage.removeItem("email")
-      toggleMode('update_pwd');
+      sessionStorage.removeItem("password")
+      onSuccess();
     } catch (error: any) {
       handleError(error as ErrorResponse);
     } finally {
@@ -87,7 +93,7 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
       e.preventDefault();
       const email = sessionStorage.getItem("email")
       if (email === null){
-        toggleMode('recover')
+        toggleMode('register')
         return
       }
   
@@ -96,9 +102,7 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
       setFieldHighlights({});
   
       try {
-        await authService.sendCode({
-          email: email,
-        });
+        await authService.sendEmailVerification(email);
         setSendEmail(true)
       } catch (error: any) {
         handleError(error as ErrorResponse);
@@ -109,7 +113,7 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
 
   return(<div>
           <h2 className={style.title}>
-            Смена пароля
+            Подтверждение почты
           </h2>
 
           <form 
@@ -154,25 +158,6 @@ export default function VerifyCode({onToggleMode }: AuthModalChildProps) {
               {!isSendActive ? `Отправить ${tick} сек.` :  'Отправить еще раз' }
             </Button>
 
-          
-           <div style={{ textAlign: 'center', margin: '10px 0' }}>
-                <a
-                  href="#"
-                  onClick={(e: any) => {
-                    e.preventDefault();
-                    if (!isLoading) toggleMode('recover');
-                  }}
-                  style={{
-                    color: '#000',
-                    textDecoration: 'underline',
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
-                    pointerEvents: isLoading ? 'none' : 'auto',
-                    fontSize: '14px'
-                  }}
-                >
-                  Изменить почту
-                </a>
-            </div>
         </div>
         );
 }

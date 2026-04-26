@@ -5,13 +5,14 @@ import ResetCode from './SendCode';
 import VerifyCode from './VerifyCode';
 import UpdatePwd from './UpdatePwd';
 import { Modal } from '../Modal/Modal';
+import EmailVerification from './EmailVerification';
 
 interface AuthModalProps {
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export type ToggleModeType = 'login' | 'register'| 'recover' | 'code_verify' | 'update_pwd'
+export type ToggleModeType = 'login' | 'register'| 'recover' | 'code_verify' | 'update_pwd' | 'email_verify';
 
 
 export interface AuthModalChildProps {
@@ -52,6 +53,9 @@ export function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             )}
             {mode === 'update_pwd' && (
               <UpdatePwd key="update_pwd" onSuccess={onSuccess} onToggleMode={toggleMode} />
+            )}
+            {mode === 'email_verify' && (
+              <EmailVerification key="email_verify" onSuccess={onSuccess} onToggleMode={toggleMode} />
             )}
           </div>
       </Modal>

@@ -77,13 +77,9 @@ class AuthService {
             params.toString(),
             { "Content-Type": "application/x-www-form-urlencoded" }
         );
-
-        const cred: LoginResponse = await apiService.post(
-            "/auth/login",
-            params.toString(),
-            { "Content-Type": "application/x-www-form-urlencoded" }
-        );
-        apiService.setToken(cred.access_token);
+        await authService.sendEmailVerification(data.email);
+        sessionStorage.setItem("email", data.email);
+        sessionStorage.setItem("password", data.password);
     }
 
     /**
@@ -200,6 +196,22 @@ class AuthService {
             { "Content-Type": "application/json" }
         );
     }
+
+    async sendEmailVerification(email: string){
+          await apiService.post(
+            "/auth/email",
+            JSON.stringify({"email": email}),
+            { "Content-Type": "application/json" }
+        );
+    }
+     async verifyEmail(code: string){
+          await apiService.post(
+            "/auth/email/verify",
+            JSON.stringify({"code": code}),
+            { "Content-Type": "application/json" }
+        );
+    }
+
 
     async resetPwd(pwd: string){
           await apiService.post(
