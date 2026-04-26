@@ -5,19 +5,34 @@ import { FilterMore } from '../Filter/FilterMore';
 import { Modal } from '../Modal/Modal';
 import style from './Search.module.css';
 import type { IFilters } from 'src/types';
+import { useNavigate } from '../../RouterDOM/hooks';
 
 interface SearchProps {
   value: string;
   filters: IFilters;
+  isSearchVisible?: boolean;
   onSearch: (value: string, filters: IFilters) => void;
-   setFilters: (filters: IFilters) => void;
+  setFilters: (filters: IFilters) => void;
+  filterMenuPlacement?: 'bottom' | 'top';
+  moreFiltersFullscreen?: boolean;
+  onMoreOpenChange?: (isOpen: boolean) => void;
 }
 
-export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
+export function Search({
+  value,
+  filters,
+  onSearch,
+  setFilters,
+  filterMenuPlacement = 'bottom',
+  moreFiltersFullscreen = false,
+  onMoreOpenChange,
+  isSearchVisible = true,
+}: SearchProps) {
   const [search, setSearch] = useState(value);
   const [selectedFilters, setSelectedFilters] = useState<IFilters>(filters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSearch(value);
@@ -26,6 +41,10 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
   useEffect(() => {
     setSelectedFilters(filters);
   }, [filters]);
+
+  useEffect(() => {
+    onMoreOpenChange?.(isMoreOpen);
+  }, [isMoreOpen, onMoreOpenChange]);
 
   const handleInput = (e: any) => {
     setSearch(e.target.value);
@@ -48,8 +67,33 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
   return (
     <div className={style.searchWrap}>
       {isFilterOpen && <div className={style.menuOverlay} onClick={() => setIsFilterOpen(false)} />}
-
-      <div className={style.search}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', 'justify-content': 'center', width: '100%' }}>
+         {isSearchVisible ? (
+          <Button
+            variant="accent"
+            className={style.btn}
+            type="button"
+            onClick={() => navigate('/map')}
+            aria-label="Карта"
+            style={{'margin': '0'}}
+          title="Карта"
+          icon={<img src="/svg/map.svg" alt="" aria-hidden="true" draggable={false} />}
+        />
+        ) : (
+          <Button
+            variant="accent"
+            className={style.btn}
+            type="button"
+            style={{'margin': '0'}}
+            onClick={() => navigate('/')}
+            aria-label="Списком"
+          title="Списком"
+          icon={<img src="/svg/list.svg" alt="" aria-hidden="true" draggable={false} />}
+        />)
+      }
+       
+        <div className={style.search}>
+        
         <input
           id="global-search-input"
           className={style.input}
@@ -72,6 +116,9 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
           onClick={() => setIsFilterOpen(!isFilterOpen)}
           icon={<img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />}
         />
+
+       
+        
        <button
         className={`${style.btn} ${style.dark}`}
         type="button"
@@ -87,9 +134,15 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
         />
     </button>
       </div>
+      </div>
+    
+      
 
       {isFilterOpen && (
-        <div className={style.filterMenu} onClick={(e: MouseEvent) => e.stopPropagation()}>
+        <div
+          className={`${style.filterMenu} ${filterMenuPlacement === 'top' ? style.filterMenuTop : ''}`}
+          onClick={(e: MouseEvent) => e.stopPropagation()}
+        >
           <Filter
             setFilters={setFilters}
             onClose={() => setIsFilterOpen(false)}
@@ -106,7 +159,8 @@ export function Search({ value, filters, onSearch, setFilters }: SearchProps) {
       <Modal
         isOpen={isMoreOpen}
         onClose={() => setIsMoreOpen(false)}
-        contentClassName={style.moreModalContent}
+        overlayClassName={moreFiltersFullscreen ? style.moreModalOverlayFullscreen : ''}
+        contentClassName={`${style.moreModalContent} ${moreFiltersFullscreen ? style.moreModalContentFullscreen : ''}`.trim()}
       >
         <FilterMore
           onClose={() => setIsMoreOpen(false)}

@@ -11,10 +11,11 @@ interface HeaderProps {
   onAuthorizeClick: ()=> void;
   isAutenticated: boolean;
   currentUser?: UserResponse | null;
+  isMapPage?: boolean;
 }
 
 /** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
-export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser }: HeaderProps) {
+export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser, isMapPage = false }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
@@ -29,18 +30,20 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
   };
 
   return (
-    <header className={style['header']}>
+    <header className={`${style.header} ${isMapPage ? style.headerMap : ''}`}>
       {isMenuOpen && (
         <div className={style.menuOverlay} onClick={closeMenu} />
       )}
-      <button
+      <div
+        variant='primary'
+        id="DomDeli"
+        key="DomDeli"
         className={style['logo']}
-        type="button"
         aria-label="Перейти на главную"
         onClick={() => navigate('/')}
       >
         ДОМДЕЛИ
-      </button>
+      </div>
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (
