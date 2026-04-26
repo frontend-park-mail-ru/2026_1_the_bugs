@@ -2,6 +2,54 @@ import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
+import type { PosterViews } from "src/types/api";
+
+export async function getFavorites(): Promise<IPostersResponse> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get('/posters/favorites', {}, {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+        });
+    });
+}
+
+/**
+ * Удаляет постер из избранного пользователя.
+ * @param alias - alias постера
+ * @returns Promise<void>
+ */
+export async function removePosterFromFavorites(alias: string): Promise<void> {
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.delete(
+            `/posters/${alias}/favorites`,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
+}
+/**
+ * Добавляет постер в избранное пользователя.
+ * @param alias - alias постера
+ * @returns Promise<void>
+ */
+export async function addPosterToFavorites(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/posters/${encodedAlias}/favorites`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
+}
 
 /**
  * Структура ответа для пагинированного списка объявлений о квартирах.
@@ -242,4 +290,54 @@ export async function updatePoster(alias: string, payload: CreatePosterPayload) 
         );
         return resp
     });
+}
+
+
+
+export async function addView(alias: string) {
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        const resp: CreatePosterResponse = await apiService.post(
+            `/posters/${alias}/views`,
+            {},
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    });
+}
+
+
+export async function getViews(alias: string) {
+    const resp: PosterViews = await apiService.get(
+        `/posters/${alias}/views`,
+        {},
+        {
+            'Accept': 'application/json',
+        },
+    );
+    return resp
+}
+
+export async function generateDescription(data: {
+    category: string;
+    area: number;
+    flat_category: string;
+    city: string;
+    features: string[];
+}): Promise<string> {
+    const resp: { description: string } = await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.post(
+            `/posters/generate-description`,
+            JSON.stringify(data),
+             {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+    });
+    return resp.description;
 }

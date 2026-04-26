@@ -51,7 +51,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
             {/* <Button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
               <img src="/svg/message.svg" alt="Сообщение" aria-hidden="true" draggable="false"/>
             </Button> */}
-            <Button variant='primary' shape="round" type="button" aria-label="Избранное">
+            <Button variant='primary' shape="round" type="button" aria-label="Избранное" onClick={() => navigate('/profile/favorites')}>
               <img src="/svg/heart.svg" alt="Лайки" aria-hidden="true" draggable="false"/>
             </Button>
             {/* <Button className={style.btn} type="button" id="openAuth" aria-label="Профиль">

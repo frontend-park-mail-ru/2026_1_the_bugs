@@ -75,7 +75,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 					<div>
 						<br/>
 						<h2 className="fontHero">Объявления в этом ЖК</h2>
-						<CardList key="card_list_utility" styles={{'justify-content': 'start'}}apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
+						<CardList isAuth={false} key="card_list_utility" styles={{'justify-content': 'start'}}apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
 					</div>
 					
 				)}
