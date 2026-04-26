@@ -98,6 +98,7 @@ export function App() {
                   <ProtectedLayout path="/profile/favorites" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutLikes">
                       <Favorites key="FavoritesPage" />
                   </ProtectedLayout>
+                </Router>
                 <Router  currentPath={currentPath} path="/map">
                   <PostersMap/>
                 </Router>
