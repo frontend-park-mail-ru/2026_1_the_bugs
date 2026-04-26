@@ -256,10 +256,7 @@ export default function PostersMap() {
       searchParams.set('lon', String(lng));
       appendFiltersToParams(searchParams, searchQuery, filters);
 
-      const response = await apiService.get('/posters/by-point', searchParams);
-      if (!response.ok) throw new Error('Failed to load posters');
-
-      const data: PostersByPointResponse = await response.json();
+      const data: PostersByPointResponse = await apiService.get('/posters/by-point', searchParams);
       setPosters(data.posters || []);
       setIsPanelOpen(true);
     } catch (error) {
@@ -289,10 +286,8 @@ export default function PostersMap() {
     appendFiltersToParams(searchParams, searchVal, currentFilters);
 
     try {
-      const res = await apiService.get('/posters/geo', searchParams);
-      if (!res.ok) return;
-
-      const data: ApiResponse = await res.json();
+      const data: ApiResponse = await apiService.get('/posters/geo', searchParams);
+      console.log(data)
       const items = data.features || [];
 
       markersLayer.clearLayers();
