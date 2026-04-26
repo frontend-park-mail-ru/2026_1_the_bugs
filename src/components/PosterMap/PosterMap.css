@@ -112,12 +112,16 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   transform: translateX(-50%);
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 2px rgba(255,255,255,.95), 0 1px 2px rgba(0,0,0,.15);
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: smaller;
 }
 
 .poster-panel {
@@ -128,13 +132,15 @@
   background:  var(--bg);
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease-in-out;
-  z-index: 1000;
+  z-index: 3000;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  bottom: 0;
 }
 .poster-panel.open {
   left: 0;
+
 }
 @media (max-width: 600px) {
   .map-close-button {

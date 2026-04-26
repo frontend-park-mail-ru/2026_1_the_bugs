@@ -14,7 +14,7 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
-  if (event.request.url.includes("c.tile.openstreetmap.org")){
+  if (event.request.url.includes("tile.openstreetmap.org")){
     return
   }
 

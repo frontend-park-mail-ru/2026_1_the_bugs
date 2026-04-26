@@ -55,6 +55,7 @@ type FeatureProps = {
   priceMin?: number;
   priceMax?: number;
   alias?: string;
+  group?: boolean;
 };
 
 type GeoFeature = {
@@ -62,13 +63,11 @@ type GeoFeature = {
     type?: string;
     coordinates?: [number, number];
   };
-  properties?: FeatureProps;
   propertiese?: FeatureProps;
 };
 
 type ApiResponse = {
   features?: GeoFeature[];
-  posters?: GeoFeature[];
 };
 
 type Poster = {
@@ -179,18 +178,26 @@ function formatCluster(count?: number, minPrice?: number) {
 function makeMarkerHtml(text: string) {
   return `
     <div class="marker-wrap">
-      <div class="marker-bubble">${text}</div>
-      <div class="marker-dot"></div>
+      <div class="marker-dot"><div class="marker-bubble">${text}</div></div>
     </div>
   `;
 }
-function makeClusterHtml(text: string) {
+function makeClusterHtml(count?: number) {
+  return `
+    <div class="marker-wrap">
+      <div class="marker-dot">${count && count > 1 ? count : ''}</div>
+    </div>
+  `;
+}
+
+function makeGroupHtml(text: string) {
   return `
     <div class="marker-wrap">
       <div class="marker-dot"> <div class="marker-bubble">${text}</div></div>
     </div>
   `;
 }
+
 
 function priceIcon(L: any, price?: number) {
   return L.divIcon({
@@ -201,14 +208,24 @@ function priceIcon(L: any, price?: number) {
   });
 }
 
-function clusterIcon(L: any, count?: number, minPrice?: number) {
+function clusterIcon(L: any, count?: number) {
   return L.divIcon({
     className: 'cian-marker',
-    html: makeClusterHtml(formatCluster(count, minPrice)),
+    html: makeClusterHtml(count),
     iconSize: [1, 1],
     iconAnchor: [0, 0],
   });
 }
+
+function groupIcon(L: any, count?: number, minPrice?: number) {
+  return L.divIcon({
+    className: 'cian-marker',
+    html: makeGroupHtml(formatCluster(count, minPrice)),
+    iconSize: [1, 1],
+    iconAnchor: [0, 0],
+  });
+}
+
 
 export default function PostersMap() {
   const initialParams = new URLSearchParams(window.location.search);
@@ -278,7 +295,7 @@ export default function PostersMap() {
       if (!res.ok) return;
 
       const data: ApiResponse = await res.json();
-      const items = data.features || data.posters || [];
+      const items = data.features || [];
 
       markersLayer.clearLayers();
 
@@ -289,18 +306,34 @@ export default function PostersMap() {
         const [lng, lat] = coords;
         if (typeof lat !== 'number' || typeof lng !== 'number') return;
 
-        const props = item.properties || item.propertiese || {};
-        const icon = props.cluster
-          ? clusterIcon(getLeafletGlobal(), props.count, props.priceMin)
-          : priceIcon(getLeafletGlobal(), props.price);
+        const props = item.propertiese || {};
+
+        let icon
+        if (props.cluster){
+          icon = clusterIcon(getLeafletGlobal(), props.count)
+        } else if (props.group){
+          icon = groupIcon(getLeafletGlobal(), props.count, props.priceMin)
+        } else{
+          icon = priceIcon(getLeafletGlobal(), props.price)
+        }
 
         const marker = getLeafletGlobal().marker([lat, lng], { icon });
 
-        marker.on('click', () => {
-          setSelectedPoint({ lat, lng });
-          loadPostersByPoint(lat, lng);
+        marker.on('click', (e: any) => {
+            e.propagate = false;
+            e.originalEvent.stopPropagation();
+            
+            if (props.cluster) {
+                map.flyTo([lat, lng], zoom*1.5, {
+                    animate: true,
+                    duration: 0.5
+                });
+                
+            } else {
+                setSelectedPoint({ lat, lng });
+                loadPostersByPoint(lat, lng);
+            }
         });
-
         marker.addTo(markersLayer);
       });
     } catch (error) {
@@ -368,15 +401,6 @@ export default function PostersMap() {
   return (
     <div className="map-page">
       <div id={MAP_ELEMENT_ID} style={{ position: 'absolute', left: '0px', height: '100vh', width: '100%' }} />
-      <Button
-        variant="primary"
-        shape="round"
-        type="button"
-        className="map-close-button"
-        aria-label="Закрыть карту"
-        onClick={() => navigate('/')}
-        icon={<img src="/svg/cross.svg" alt="Закрыть" aria-hidden="true" draggable="false" />}
-      />
       <div className={`map-search-floating ${isMoreFiltersOpen ? 'more-open' : ''}`.trim()}>
         <Search
           value={searchQuery}
