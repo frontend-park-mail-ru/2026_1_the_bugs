@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'the-react/hooks';
 import { getDevelopers, getComplexesByDeveloper } from '../../../services/complex';
 import { useNavigate } from '@router-dom';
-import { createPoster } from '../../../services/posters';
+import { createPoster, generateDescription } from '../../../services/posters';
 import type { CreatePosterField, StepValidationResult } from '../validation';
 import { validateStep } from '../validation';
 import {
@@ -16,6 +16,7 @@ import { collectErrorsUpToStep, FEATURE_OPTIONS, HOUSING_OPTIONS, mapToPayload, 
 import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStreetMapPicker/OpenStreetMapPicker';
 import { Field } from '../Field/Field';
 import type { ErrorResponse } from 'src/types/api';
+import { Button } from '../../Button/Button';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
   return Math.min(step + 1, TOTAL_CREATE_POSTER_STEPS) as CreatePosterStep;
@@ -55,6 +56,7 @@ function normalizeAddressForCompare(value: string) {
 export function CreatePosterForm() {
   const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
   const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
 
   // Загрузка ЖК при выборе застройщика
@@ -107,7 +109,7 @@ export function CreatePosterForm() {
   const navigate = useNavigate();
   const [visibleSteps, setVisibleSteps] = useState<CreatePosterStep>(1);
   const [form, setForm] = useState<CreatePosterFormData>(INITIAL_CREATE_POSTER_FORM);
-  const [formDraft] = useState<CreatePosterFormData>({ ...INITIAL_CREATE_POSTER_FORM });
+  const [formDraft, setFormDraft] = useState<CreatePosterFormData>({ ...INITIAL_CREATE_POSTER_FORM });
   const [errors, setErrors] = useState<Partial<Record<CreatePosterField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -356,6 +358,25 @@ export function CreatePosterForm() {
     clearFieldError('images');
     const input = document.getElementById('photoUpload') as HTMLInputElement | null;
     input?.click();
+  };
+
+  const handleDescriptionGeneration = async () => {
+    setSubmitError(null);
+    try {
+      console.log('Generating description with data:',formDraft)
+      setIsGeneratingDescription(true);
+      const description = await generateDescription({
+        'area': Number(formDraft.area), 
+        'category': formDraft.housingType, 
+        'flat_category': formDraft.roomCount, 
+        'city': addressSuggestionCandidate?.suggestion.city || '', 
+        'features': formDraft.features
+      });
+      console.log('Received description:', description);
+      updateField('description', description);
+    } catch (error) {
+      setSubmitError('Не удалось сгенерировать описание');
+    } finally {setIsGeneratingDescription(false);}
   };
 
   const applyValidation = (validation: StepValidationResult) => {
@@ -749,12 +770,11 @@ export function CreatePosterForm() {
               );
             })}
           </div>
-          <label className={styles.label} htmlFor="description">Описание объявления</label>
+          <div><label className={styles.label} htmlFor="description">Описание объявления</label> <Button style={{'margin-left': '10px', 'font-weight': 'normal', 'font-size': 'medium', 'min-height': '0px'}} type='button' variant='accent' icon={<img src="/svg/stars.svg" alt="Сгенерировать" />}  disabled={isGeneratingDescription} onClick={handleDescriptionGeneration}> {isGeneratingDescription ? 'Генерация...' : 'Сгенерировать'}</Button></div>
           <textarea
             id="description"
             className={errors.description ? `${styles.textarea} ${styles.descTextarea} ${styles.textareaError}` : `${styles.textarea} ${styles.descTextarea}`}
             placeholder="Опишите преимущества квартиры, инфраструктуру и условия сделки"
-            value={form.description}
             onFocus={() => clearFieldError('description')}
             onInput={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
@@ -762,7 +782,9 @@ export function CreatePosterForm() {
               target.style.height = `${target.scrollHeight}px`;
               updateField('description', target.value);
             }}
-          />
+          >
+            {form.description}
+          </textarea>
 
           <div className={styles.priceFieldWrap}>
             <Field key="field-price" field="price" label="Цена (руб)" value={form.price} errors={errors} onChange={updateField} onInteract={clearFieldError} showErrorText={false} />
@@ -808,7 +830,7 @@ export function CreatePosterForm() {
                 onClick={onSubmit}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Публикация...' : 'Опубликовать'}
+                {isSubmitting ? 'Подождите...' : 'Опубликовать'}
               </button>
               {hasCurrentStepErrors && (
                 <div className={styles.errorHintWrap}>

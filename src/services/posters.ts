@@ -320,3 +320,24 @@ export async function getViews(alias: string) {
     );
     return resp
 }
+
+export async function generateDescription(data: {
+    category: string;
+    area: number;
+    flat_category: string;
+    city: string;
+    features: string[];
+}): Promise<string> {
+    const resp: { description: string } = await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.post(
+            `/posters/generate-description`,
+            JSON.stringify(data),
+             {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+    });
+    return resp.description;
+}
