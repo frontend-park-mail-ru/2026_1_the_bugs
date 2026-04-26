@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
-import { getPosterByAlias } from '../services/posters';
+import { addView, getPosterByAlias, getViews } from '../services/posters';
 import type { ApartmentDetails } from '../types';
 
 import layout from '../components/PosterPage/PosterPageLayout.module.css';
@@ -32,6 +32,7 @@ export function PosterPage({ alias }: PosterPageProps) {
   }
   const [poster, setPoster] = useState<ApartmentDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [views, setViews] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate()
 
@@ -52,6 +53,30 @@ export function PosterPage({ alias }: PosterPageProps) {
 
     loadPoster();
   }, [alias]);
+
+  useEffect(() => {
+    const loadPoster = async () => {
+      try {
+        await addView(alias);
+      } catch (e: any) {
+        console.error(e)
+      }
+    };
+    loadPoster();
+  }, []);
+
+  useEffect(() => {
+    const loadPoster = async () => {
+      try {
+        const resp = await getViews(alias);
+        setViews(resp.views)
+        console.log(resp)
+      } catch (e: any) {
+        console.error(e)
+      }
+    };
+    loadPoster();
+  }, []);
 
   const handelCompanyClick=()=>{
     navigate(`/company/${poster?.company?.alias}`)
@@ -79,7 +104,7 @@ export function PosterPage({ alias }: PosterPageProps) {
         </div>
 
         <aside className={layout.rightColumn}>
-          <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} />
+          <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} views={views} />
           <PosterMap key="poster_map" latitude={lat} longitude={lon} address={poster.address} />
           <PosterSeller key="poster_seller" poster={poster} />
           {poster.company && (

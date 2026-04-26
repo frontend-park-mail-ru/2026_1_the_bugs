@@ -2,6 +2,7 @@ import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
+import type { PosterViews } from "src/types/api";
 
 export async function getFavorites(): Promise<IPostersResponse> {
     return await authService.WithRefresh(async () => {
@@ -290,4 +291,33 @@ export async function updatePoster(alias: string, payload: CreatePosterPayload) 
         );
         return resp
     });
+}
+
+
+
+export async function addView(alias: string) {
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        const resp: CreatePosterResponse = await apiService.post(
+            `/posters/${alias}/views`,
+            {},
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp
+    });
+}
+
+
+export async function getViews(alias: string) {
+    const resp: PosterViews = await apiService.get(
+        `/posters/${alias}/views`,
+        {},
+        {
+            'Accept': 'application/json',
+        },
+    );
+    return resp
 }

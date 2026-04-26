@@ -15,3 +15,6 @@ export interface IOAuthFlow{
     device_id?: string
 }
 
+export interface PosterViews{
+    views: number;
+}
