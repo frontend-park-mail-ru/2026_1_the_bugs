@@ -177,6 +177,7 @@ export function CreatePosterForm() {
   const updateField = (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => {
     formDraft[field] = value;
     setForm({ ...formDraft });
+    console.log(formDraft)
     clearFieldError(field);
   };
 
@@ -374,6 +375,12 @@ export function CreatePosterForm() {
       });
       console.log('Received description:', description);
       updateField('description', description);
+      const textarea = document.getElementById('description') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.value = description;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
     } catch (error) {
       setSubmitError('Не удалось сгенерировать описание');
     } finally {setIsGeneratingDescription(false);}
@@ -770,20 +777,19 @@ export function CreatePosterForm() {
               );
             })}
           </div>
-          <div><label className={styles.label} htmlFor="description">Описание объявления</label> <Button style={{'margin-left': '10px', 'font-weight': 'normal', 'font-size': 'medium', 'min-height': '0px'}} type='button' variant='accent' icon={<img src="/svg/stars.svg" alt="Сгенерировать" />}  disabled={isGeneratingDescription} onClick={handleDescriptionGeneration}> {isGeneratingDescription ? 'Генерация...' : 'Сгенерировать'}</Button></div>
+          <div><label className={styles.label} htmlFor="description">Описание объявления</label> <Button style={{'margin-left': '10px', 'margin-top': '10px','font-weight': 'normal', 'font-size': 'medium', 'min-height': '0px'}} type='button' variant='accent' icon={<img src="/svg/stars.svg" alt="Сгенерировать" />}  disabled={isGeneratingDescription} onClick={handleDescriptionGeneration}> {isGeneratingDescription ? 'Генерация...' : 'Сгенерировать'}</Button></div>
           <textarea
             id="description"
             className={errors.description ? `${styles.textarea} ${styles.descTextarea} ${styles.textareaError}` : `${styles.textarea} ${styles.descTextarea}`}
             placeholder="Опишите преимущества квартиры, инфраструктуру и условия сделки"
             onFocus={() => clearFieldError('description')}
             onInput={(e: any) => {
-              const target = e.target as HTMLTextAreaElement;
-              target.style.height = 'auto';
-              target.style.height = `${target.scrollHeight}px`;
-              updateField('description', target.value);
+              updateField('description', e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = `${e.target.scrollHeight}px`;
             }}
+            value={form.description}
           >
-            {form.description}
           </textarea>
 
           <div className={styles.priceFieldWrap}>
