@@ -13,6 +13,8 @@ import { PosterMap } from '../components/PosterPage/PosterMap';
 import { PosterSeller } from '../components/PosterPage/PosterSeller';
 import { PosterCompany } from '../components/PosterPage/PosterCompany';
 
+import { PosterPageSkeleton } from '../components/PosterPage/PosterPageSkeleton';
+
 interface PosterPageProps {
   alias?: string;
 }
@@ -85,7 +87,7 @@ export function PosterPage({ alias }: PosterPageProps) {
   let mainContent;
 
   if (loading) {
-    mainContent = <div className={layout.status}>Загрузка объявления...</div>;
+    mainContent = <PosterPageSkeleton />;
   } else if (error) {
     mainContent = <div className={layout.status}>Ошибка: {error}</div>;
   } else if (!poster) {

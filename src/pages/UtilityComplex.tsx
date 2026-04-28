@@ -2,6 +2,7 @@ import { useEffect, useState } from 'the-react/hooks';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { UtilCard } from '../components/UtilCard/UtilCard';
+import { UtilCardSkeleton } from '../components/UtilCard/UtilCardSkeleton';
 import { getUtilityCompanyByAlias } from '../services/complex';
 import type { Apartment, UtilityCompany } from '../types';
 
@@ -58,11 +59,11 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 		}, []
 	)
 	if (isLoading){
-		return(
+		return (
 			<div>
-				<p className="fontHero">Загрузка ЖК...</p>
+				<UtilCardSkeleton />
 			</div>
-		)
+		);
 	}
 
 	return (
