@@ -30,6 +30,47 @@
   width: 100%;
 }
 
+.skeletonGallery, .skeletonMainInfo, .skeletonDescription, .skeletonParams, .skeletonSummary, .skeletonMap, .skeletonSeller, .skeletonCompany {
+  background: #e0e0e0;
+  border-radius: 16px;
+  min-height: 60px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonGallery {
+  min-height: 260px;
+}
+.skeletonMainInfo {
+  min-height: 80px;
+}
+.skeletonDescription {
+  min-height: 60px;
+}
+.skeletonParams {
+  min-height: 60px;
+}
+.skeletonSummary {
+  min-height: 80px;
+}
+.skeletonMap {
+  min-height: 180px;
+}
+.skeletonSeller {
+  min-height: 60px;
+}
+.skeletonCompany {
+  min-height: 60px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @media (max-width: 1120px) {
   .layout {
     grid-template-columns: 1fr;

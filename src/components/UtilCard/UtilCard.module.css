@@ -59,6 +59,34 @@
   flex-shrink: 0;
 }
 
+.skeletonGallery, .skeletonDescriptionCard, .skeletonSideCard, .skeletonMap {
+  background: #e0e0e0;
+  border-radius: 16px;
+  min-height: 60px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.skeletonGallery {
+  min-height: 180px;
+}
+.skeletonDescriptionCard {
+  min-height: 80px;
+}
+.skeletonSideCard {
+  min-height: 60px;
+}
+.skeletonMap {
+  min-height: 120px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .sideTitle {
   font-size: 14px;
   font-weight: 700;
