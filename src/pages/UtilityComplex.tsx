@@ -72,7 +72,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 			{utilityError && <p className="fontHero">{utilityError}</p>}
 			<section>
 				
-				{apartments && (
+				{utilityCompany && apartments && (
 					<div>
 						<br/>
 						<h2 className="fontHero">Объявления в этом ЖК</h2>
