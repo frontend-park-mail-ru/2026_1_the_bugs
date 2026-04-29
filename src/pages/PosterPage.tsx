@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
-import { addView, getPosterByAlias, getViews } from '../services/posters';
+import { addView, getFavoritesCount, getPosterByAlias, getViews, addPosterToFavorites, removePosterFromFavorites  } from '../services/posters';
 import type { ApartmentDetails } from '../types';
 
 import layout from '../components/PosterPage/PosterPageLayout.module.css';
@@ -17,6 +17,7 @@ import { PosterPageSkeleton } from '../components/PosterPage/PosterPageSkeleton'
 
 interface PosterPageProps {
   alias?: string;
+  isAuth: boolean;
 }
 
 const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
@@ -27,8 +28,9 @@ const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
  * и отображает состояние загрузки, ошибку или контент объявления.
  *
  * @param alias - Уникальный alias объявления из параметров роутера.
+ * @param isAuth - Флаг, указывающий, авторизован ли пользователь.
  */
-export function PosterPage({ alias }: PosterPageProps) {
+export function PosterPage({ alias, isAuth }: PosterPageProps) {
   if (alias === undefined){
     return null
   }
@@ -36,6 +38,8 @@ export function PosterPage({ alias }: PosterPageProps) {
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null);
+  const [favoritesCount, setFavoritesCount] = useState<number | null>(null);
+  const [isFavorite, setIsFavorite] = useState<boolean| null>(null);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -57,6 +61,24 @@ export function PosterPage({ alias }: PosterPageProps) {
   }, [alias]);
 
   useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        if (poster) {
+          const res = await getFavoritesCount(poster.alias);
+          setFavoritesCount(res.favorites);
+          setIsFavorite(res.is_favorite);
+        }
+      } catch (e: any) {
+        console.error(e);
+      }
+    };
+
+    loadFavorites();
+  }, [poster]);
+
+  
+
+  useEffect(() => {
     const loadPoster = async () => {
       try {
         await addView(alias);
@@ -66,6 +88,14 @@ export function PosterPage({ alias }: PosterPageProps) {
     };
     loadPoster();
   }, []);
+
+  const onLikeToggle=(alias: string, isLike: boolean) => {
+    if (isLike) {
+      addPosterToFavorites(alias);
+    } else {
+      removePosterFromFavorites(alias);
+    }
+  };
 
   useEffect(() => {
     const loadPoster = async () => {
@@ -106,7 +136,20 @@ export function PosterPage({ alias }: PosterPageProps) {
         </div>
 
         <aside className={layout.rightColumn}>
-          <PosterSummary key="poster_summary" poster={poster} price={formatPrice(poster.price)} views={views} />
+          {favoritesCount !== null && (
+            <PosterSummary 
+              key="poster_summary" 
+              poster={poster} 
+              price={formatPrice(poster.price)} 
+              views={views} 
+              countFavorites={favoritesCount} 
+              onLikeToggle={onLikeToggle} 
+              isAuth={isAuth} 
+              isFavorite={isFavorite} 
+              setFavoritesCount={setFavoritesCount} 
+              setIsFavorite={setIsFavorite}
+               />
+          )}
           <PosterMap key="poster_map" latitude={lat} longitude={lon} address={poster.address} />
           <PosterSeller key="poster_seller" poster={poster} />
           {poster.company && (

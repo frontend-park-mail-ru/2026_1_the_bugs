@@ -341,3 +341,18 @@ export async function generateDescription(data: {
     });
     return resp.description;
 }
+
+export async function getFavoritesCount(alias: string): Promise<{ favorites: number, is_favorite: boolean }> {
+    const resp: { favorites: number, is_favorite: boolean } = await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        return await apiService.get(
+            `/posters/${alias}/favorites`,
+            {},
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+    });
+    return resp;
+}

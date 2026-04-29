@@ -4,20 +4,39 @@ import { Button } from '../Button/Button';
 import shared from './PosterCard.module.css';
 import styles from './PosterSummary.module.css';
 
+
 interface PosterSummaryProps {
     poster: ApartmentDetails;
     price: string;
     views: number | null;
+    isFavorite: boolean | null;
+    countFavorites: number | null;
+    onLikeToggle?: (alias: string, isLike: boolean) => void;
+    setFavoritesCount: (count: number) => void;
+    setIsFavorite: (isFavorite: boolean) => void;
+    isAuth: boolean;
 }
 
-export function PosterSummary({poster, price, views}: PosterSummaryProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [favoritesCount, setFavoritesCount] = useState(0);
+function formatCount(count: number | null) {
+    if (count === null) return '0';
 
-    const handleFavoriteClick = () => {
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1).replace('.0', '') + 'M';
+    }
+    if (count >= 1000) {
+        return (count / 1000).toFixed(1).replace('.0', '') + 'K';
+    }
+    return count ? count.toString() : '0';
+}
+
+export function PosterSummary({poster, price, views, isFavorite, countFavorites, onLikeToggle, setFavoritesCount, setIsFavorite, isAuth}: PosterSummaryProps) {
+    console.log('PosterSummary render', {isFavorite, countFavorites})
+
+    const handleFavoriteClick = (isFavorite: boolean) => {
         const nextIsFavorite = !isFavorite;
         setIsFavorite(nextIsFavorite);
-        setFavoritesCount(nextIsFavorite ? favoritesCount + 1 : Math.max(0, favoritesCount - 1));
+        setFavoritesCount(nextIsFavorite ? (countFavorites || 0) + 1 : Math.max(0, (countFavorites || 0) - 1));
+        onLikeToggle?.(poster.alias, nextIsFavorite);
     };
 
     return (
@@ -25,14 +44,15 @@ export function PosterSummary({poster, price, views}: PosterSummaryProps) {
             <div className={styles.priceRow}>
                 <strong className={styles.price}>{price}</strong>
                 <div className={styles.favoriteWrap}>
-                    <span className={styles.favoritesCount}>{favoritesCount.toString()}</span>
+                    <span className={styles.favoritesCount}>{formatCount(countFavorites)}</span>
                     <Button
-                        aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
-                        onClick={handleFavoriteClick}
-                        type="button"
-                        variant="primary"
-                        shape="round"
-                        liked={isFavorite}
+                            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+                            onClick={() => handleFavoriteClick(isFavorite as boolean)}
+                            type="button"
+                            variant="primary"
+                            shape="round"
+                        liked={isFavorite as boolean && isAuth}
+                        disabled={!isAuth}
                         icon={
                             <img
                                 alt=""
@@ -53,8 +73,8 @@ export function PosterSummary({poster, price, views}: PosterSummaryProps) {
                     'gap': '6px',
                     'align-content': 'center'
                 }}>
-                    {views ? views.toString() : '0'}
-                    <img alt="" className={styles.icon} src="/svg/view.svg"></img>
+                    {formatCount(views)} просмотров
+                    {/* <img alt="" className={styles.icon} src="/svg/view.svg"></img> */}
                 </span>
             </div>
         </section>
