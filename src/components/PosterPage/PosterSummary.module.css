@@ -2,10 +2,36 @@
   gap: 18px;
 }
 
+.priceRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
 .price {
   font-size: 24px;
   line-height: 1.1;
   font-weight: 600;
+}
+
+.favoriteWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: end;
+}
+
+.heartIcon {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.favoritesCount {
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
 }
 
 .metaCompact {
