@@ -103,7 +103,7 @@ export function PosterPage({ alias }: PosterPageProps) {
           <PosterGallery key="poster_gallery" poster={poster} />
           <PosterMainInfo key="poster_main_info" poster={poster} />
           <PosterDescription key="poster_description" description={description} />
-          <PosterPriceHistory key="poster_price_history" />
+          <PosterPriceHistory key="poster_price_history" alias={alias} />
           <PosterParams key="poster_params" poster={poster} />
         </div>
 
