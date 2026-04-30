@@ -51,8 +51,8 @@ export function Profile({setCurrentUser}: Prop) {
                 }
                 const profileData = response as Profile;
                 setProfile(profileData);
-                setFirstName(profileData.first_name || '');
-                setLastName(profileData.last_name || '');
+                setFirstName(profileData.firstname || '');
+                setLastName(profileData.lastname || '');
                 setPhone(profileData.phone || '');
             } catch (e: any) {
                 if (!isMounted) {
@@ -145,8 +145,8 @@ export function Profile({setCurrentUser}: Prop) {
         setSaveMessage(null);
         setError(null);
 
-        const currentFirstName = profile?.first_name || '';
-        const currentLastName = profile?.last_name || '';
+        const currentFirstName = profile?.firstname || '';
+        const currentLastName = profile?.lastname || '';
         const currentPhone = profile?.phone || '';
 
         const isFirstNameChanged = firstName !== currentFirstName;
@@ -210,8 +210,8 @@ export function Profile({setCurrentUser}: Prop) {
             const updated = await authService.getMe() as Profile;
             const nextAvatarCacheBuster = avatarFile ? Date.now() : avatarCacheBuster;
             setProfile(updated);
-            setFirstName(updated.first_name || '');
-            setLastName(updated.last_name || '');
+            setFirstName(updated.firstname || '');
+            setLastName(updated.lastname || '');
             setPhone(updated.phone || '');
             setAvatarCacheBuster(nextAvatarCacheBuster);
             setSaveMessage('Данные профиля сохранены');
@@ -283,7 +283,7 @@ export function Profile({setCurrentUser}: Prop) {
     };
 
     const avatarSrc = getAvatarSrc();
-    const fullName = `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || 'Пользователь';
+    const fullName = `${profile?.firstname || ''} ${profile?.lastname || ''}`.trim() || 'Пользователь';
     const email = profile?.email || 'Не указан';
     const phoneLink = profile?.phone || '';
 

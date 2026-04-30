@@ -30,9 +30,9 @@ export interface Apartment {
 export interface Profile {
   avatar_url: string;
   email: string;
-  first_name: string;
+  firstname: string;
   id: number;
-  last_name: string;
+  lastname: string;
   phone: string;
   //has_password: boolean;
 }
@@ -143,8 +143,8 @@ export interface ErrorAlert{
 
 export interface UserResponse {
     id: number;
-    first_name: string;
-    last_name: string;
+    firstname: string;
+    lastname: string;
     phone: string;
     avatar_url: string | null;
 }
