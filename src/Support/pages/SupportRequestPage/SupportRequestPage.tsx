@@ -20,7 +20,7 @@ const SUPPORT_CATEGORIES = [
     { id: 8, label: "Технические сбои" },
 ];
 
-export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
+export function SupportRequestPageEntry() {
     // Проверка авторизации и origin для iframe
     const [iframeWarning, setIframeWarning] = useState<string | null>(null);
     useEffect(() => {
@@ -95,6 +95,10 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
             setError("Выберите тему и опишите проблему");
             return;
         }
+        if (!images.length) {
+            setError("Добавьте хотя бы один скриншот");
+            return;
+        }
         setLoading(true);
         setError(null);
         setSuccess(false);
@@ -142,17 +146,7 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
                 </div>
             )}
             <div className={styles.headerRow}>
-                <h2 className={`fontHero ${styles.title}`}>Новое обращение</h2>
-                {/* <Button
-                    type="button"
-                    variant="none"
-                    shape="round"
-                    className={styles.closeButton}
-                    onClick={onBack}
-                    aria-label="Назад"
-                >
-                    &times;
-                </Button> */}
+                <h2 className={`fontHero ${styles.title}`}>Поддержка</h2>
             </div>
 
             <form className={styles.form} onSubmit={(e: any) => { e.preventDefault(); handleSend(); }}>
@@ -242,18 +236,10 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
 
                 <div className={styles.actions}>
                     <Button
-                        type="button"
-                        variant="secondary"
-                        className={`${posterStyles.button} ${styles.actionButton}`}
-                        onClick={onBack}
-                    >
-                        Назад
-                    </Button>
-                    <Button
                         type="submit"
                         variant="accent"
                         className={`${posterStyles.button} ${posterStyles.buttonPrimary} ${styles.actionButton}`}
-                        disabled={loading || !categoryId || !message.trim()}
+                        disabled={loading || !categoryId || !message.trim() || !images.length}
                     >
                         {loading ? "Отправка..." : "Отправить"}
                     </Button>
