@@ -5,6 +5,7 @@ import { UtilCard } from '../components/UtilCard/UtilCard';
 import { UtilCardSkeleton } from '../components/UtilCard/UtilCardSkeleton';
 import { getUtilityCompanyByAlias } from '../services/complex';
 import type { Apartment, UtilityCompany } from '../types';
+import { ErrorView } from '../components/Errors/Errors';
 
 interface IUtilityComplex{
 	alias?: string;
@@ -17,7 +18,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	const [isLoading, setIsLoading] = useState(false)
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
-	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
+	const [utilityError, setUtilityError] = useState<unknown>(null);
 	const [isFetchingMore, setIsFetchingMore] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const pageSize = 12;
@@ -29,13 +30,13 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 
 	const handleUtilityByAlias = async () => {
 		setIsLoading(true)
-		setUtilityError(undefined);
+		setUtilityError(null);
 		try {
 			const utilityResp = await getUtilityCompanyByAlias({ alias });
 			setUtilityCompany(utilityResp);
 		} catch (error) {
 			console.error('Failed to load utility complex by alias:', error);
-			setUtilityError('Не удалось загрузить данные ЖК');
+			setUtilityError(error);
 		} finally{
 			setIsLoading(false)
 		}
@@ -69,7 +70,13 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	return (
 		<div>
 			{utilityCompany && (<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany as UtilityCompany} />)}
-			{utilityError && <p className="fontHero">{utilityError}</p>}
+			{utilityError && (
+				<ErrorView
+					error={utilityError}
+					fallbackMessage="Не удалось загрузить данные ЖК"
+					notFoundMessage="ЖК не найден"
+				/>
+			)}
 			<section>
 				
 				{utilityCompany && apartments && (

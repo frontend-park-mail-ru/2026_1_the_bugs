@@ -14,6 +14,7 @@ import { PosterSeller } from '../components/PosterPage/PosterSeller';
 import { PosterCompany } from '../components/PosterPage/PosterCompany';
 
 import { PosterPageSkeleton } from '../components/PosterPage/PosterPageSkeleton';
+import { ErrorView } from '../components/Errors/Errors';
 
 interface PosterPageProps {
   alias?: string;
@@ -37,7 +38,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
   const [poster, setPoster] = useState<ApartmentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [favoritesCount, setFavoritesCount] = useState<number | null>(null);
   const [isFavorite, setIsFavorite] = useState<boolean| null>(null);
   const navigate = useNavigate()
@@ -51,7 +52,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
         const data = await getPosterByAlias(alias);
         setPoster(data);
       } catch (e: any) {
-        setError(e?.message || 'Не удалось загрузить объявление');
+        setError(e);
       } finally {
         setLoading(false);
       }
@@ -119,9 +120,23 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
   if (loading) {
     mainContent = <PosterPageSkeleton />;
   } else if (error) {
-    mainContent = <div className={layout.status}>Ошибка: {error}</div>;
+    mainContent = (
+      <ErrorView
+        error={error}
+        fallbackMessage="Не удалось загрузить объявление"
+        notFoundMessage="Объявление не найдено"
+        className={layout.status}
+      />
+    );
   } else if (!poster) {
-    mainContent = <div className={layout.status}>Объявление не найдено</div>;
+    mainContent = (
+      <ErrorView
+        error="Объявление не найдено"
+        fallbackMessage="Не удалось загрузить объявление"
+        notFoundMessage="Объявление не найдено"
+        className={layout.status}
+      />
+    );
   } else {
     const description = poster.description?.trim() || 'Описание отсутствует';
     const { lat, lon } = poster.building_geo;
