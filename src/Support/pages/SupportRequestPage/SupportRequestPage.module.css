@@ -1,102 +1,161 @@
-/* Стили для поля выбора темы обращения */
-.support-request-field {
+.supportRequestPage {
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
+  padding: 2px 0 0;
 }
 
-.support-request-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: #222;
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.support-request-select {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d2d2d2;
-  font-size: 15px;
-  background: #fff;
-  color: #222;
-  outline: none;
-  transition: border 0.2s;
-}
-.support-request-select:focus {
-  border-color: #a0a0ff;
-}
-/* Узкие кнопки только для поддержки */
-.support-request-form button,
-.support-request-card button {
-  padding: 12px 0 !important;
-  min-width: 120px !important;
-}
-/* Стили для формы обращения в поддержку */
-.support-request-page {
-  min-height: calc(100vh - 40px);
-  display: grid;
-  place-items: center;
-  background: transparent;
-  box-shadow: none;
-}
-
-.support-request-card {
-  width: min(100%, 320px);
-  background: transparent;
-  box-shadow: none;
-  padding: 16px 10px 18px;
-  border-radius: var(--radius-S);
-  position: relative;
-  backdrop-filter: blur(12px);
-}
-@media (max-width: 500px) {
-  .support-request-card {
-    min-width: 0;
-    padding: 8px 2vw 12px;
-  }
-}
-
-.support-request-title {
-  font-size: clamp(18px, 2.6vw, 28px);
+.title {
+  margin: 0;
+  font-size: clamp(22px, 5.2vw, 30px);
   line-height: 1;
-  margin-bottom: 28px;
-  text-align: center;
   font-family: "Hero", system-ui, sans-serif;
 }
 
-.support-request-form {
+.closeButton {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  color: #111;
+  font-size: 42px;
+}
+
+.lead {
+  margin: 0;
+  max-width: 100%;
+}
+
+.form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-.support-request-textarea {
-  width: 100%;
-  min-height: 80px;
-  resize: vertical;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 10px 12px;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section :global(label) {
+  font-size: 12px;
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.1px currentColor;
+}
+
+.section :global(h3) {
   font-size: 16px;
-  font-family: inherit;
-  background: var(--card);
-  color: var(--text);
+  margin-bottom: 0;
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.1px currentColor;
 }
 
-.support-request-file {
-  
-    margin-bottom: 8px;
+.field,
+.messageField {
+  width: 100%;
+  max-width: 100%;
+  font-size: 10px;
+  padding: 9px 12px;
+  font-family: "Hero", system-ui, sans-serif;
 }
 
-.support-request-error {
-  color: #ff4d4f;
-  text-align: center;
-  font-weight: bold;
+.messageField {
+  min-height: 108px;
+}
+
+.messageField::placeholder {
+  font-family: "Hero", system-ui, sans-serif;
+  color: #999;
+}
+
+.supportRequestPage .field:focus,
+.supportRequestPage .messageField:focus,
+.supportRequestPage .field:focus-visible,
+.supportRequestPage .messageField:focus-visible {
+  box-shadow: var(--shadow-accent);
+}
+
+.uploadBox {
+  width: 100%;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px;
+}
+
+.uploadControls {
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.uploadControls :global(span) {
+  font-size: 12px;
+}
+
+.uploadControls :global(button) {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.uploadBox :global(.photoThumb) {
+  width: 88px;
+  height: 88px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.actionButton {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 12px;
   font-size: 14px;
 }
 
-.support-request-success {
+.banner {
+  margin-bottom: 0;
+}
+
+.successMessage {
+  font-size: 13px;
   color: #2ecc40;
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
+}
+
+@media (max-width: 560px) {
+  .supportRequestPage {
+    gap: 10px;
+  }
+
+  .title {
+    font-size: clamp(20px, 8vw, 26px);
+  }
+
+  .closeButton {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    font-size: 34px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
 }

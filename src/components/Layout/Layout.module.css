@@ -8,7 +8,7 @@
 	top: 76px;
 	left: 0;
 	width: 100%;
-	height: calc(100vh - 76px);
+	height: calc(100dvh - 76px);
 	pointer-events: none;
 	z-index: 30;
 }
@@ -38,13 +38,15 @@
 	border-radius: var(--radius-S);
 	overflow: hidden;
 	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+	width: min(300px, calc(100vw - 28px));
+	height: min(550px, calc(100dvh - 76px - 64px));
 }
 
 .supportFrame {
 	display: block;
 	border: none;
-	width: 300px;
-	height: 500px;
+	width: 100%;
+	height: 100%;
 }
 
 .button {

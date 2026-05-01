@@ -3,8 +3,10 @@
 import { useState, useEffect } from "the-react";
 import { apiService } from "../../../services/apiClass";
 import { authService } from "../../../services/auth";
+import { Button } from '../../../components/Button/Button';
 import styles from './SupportRequestPage.module.css';
-import uploadStyles from './SupportUpload.module.css';
+import posterStyles from '../../../components/PosterForm/PosterForm.module.css';
+import errorStyles from '../../../components/Errors/Errors.module.css';
 
 
 const SUPPORT_CATEGORIES = [
@@ -51,6 +53,11 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
+
+    const openPhotoDialog = () => {
+        const input = document.getElementById('support-photo-upload') as HTMLInputElement | null;
+        input?.click();
+    };
 
     // Добавление файлов
     const appendPhotos = (files: File[]) => {
@@ -127,23 +134,34 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
     };
 
     return (
-        <div className={styles["support-request-page"]}>
+        <section className={styles.supportRequestPage}>
             {iframeWarning && (
-                <div style={{background: '#fff3cd', color: '#856404', border: '1px solid #ffeeba', padding: 12, borderRadius: 8, marginBottom: 16, fontSize: 15}}>
-                    {iframeWarning}
+                <div className={`${errorStyles.banner} ${errorStyles.show} ${styles.banner}`}>
+                    <span className={errorStyles.icon}>!</span>
+                    <div className={errorStyles.text}>{iframeWarning}</div>
                 </div>
             )}
-            <div className={styles["support-request-card"]}>
-                <button type="button" onClick={onBack} style={{ marginBottom: 16 }}>Назад</button>
-                <h2 className={styles["support-request-title"]}>Новое обращение</h2>
-                <form className={styles["support-request-form"]} onSubmit={(e: any) => { e.preventDefault(); handleSend(); }}>
-                    <div className={styles["support-request-field"]} style={{ marginBottom: 16 }}>
-                        <label htmlFor="support-category" className={styles["support-request-label"]}>
-                            Тема обращения
-                        </label>
+            <div className={styles.headerRow}>
+                <h2 className={`fontHero ${styles.title}`}>Новое обращение</h2>
+                {/* <Button
+                    type="button"
+                    variant="none"
+                    shape="round"
+                    className={styles.closeButton}
+                    onClick={onBack}
+                    aria-label="Назад"
+                >
+                    &times;
+                </Button> */}
+            </div>
+
+            <form className={styles.form} onSubmit={(e: any) => { e.preventDefault(); handleSend(); }}>
+                <div className={styles.section}>
+                    <div className={posterStyles.group}>
+                        <label htmlFor="support-category" className={`fontHero ${posterStyles.label}`}>Тема обращения</label>
                         <select
                             id="support-category"
-                            className={styles["support-request-select"]}
+                            className={`fontHero ${posterStyles.select} ${styles.field}`}
                             value={categoryId}
                             onChange={(e: any) => setCategoryId(e.target.value ? Number(e.target.value) : "")}
                             disabled={loading}
@@ -155,96 +173,102 @@ export function SupportRequestPageEntry({ onBack }: { onBack: () => void }) {
                             ))}
                         </select>
                     </div>
-                    <textarea
-                        className={styles["support-request-textarea"]}
-                        value={message}
-                        onInput={(e: any) => setMessage(e.target.value)}
-                        disabled={loading}
-                        placeholder="Опишите вашу проблему..."
-                        required
-                    />
+
+                    <div className={posterStyles.group}>
+                        <label htmlFor="support-message" className={`fontHero ${posterStyles.label}`}>Описание проблемы</label>
+                        <textarea
+                            id="support-message"
+                            className={`fontHero ${posterStyles.textarea} ${styles.messageField}`}
+                            value={message}
+                            onInput={(e: any) => setMessage(e.target.value)}
+                            disabled={loading}
+                            placeholder="Расскажите, что произошло, на каком шаге возникла проблема и что вы ожидали увидеть"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.section}>
+                    <h3 className={`fontHero ${posterStyles.sectionTitle}`}>Скриншоты</h3>
                     <div
-                        className={uploadStyles.uploadBox + (isDragActive ? ' ' + uploadStyles.uploadBoxDragActive : '')}
+                        className={`${posterStyles.uploadBox} ${styles.uploadBox} ${isDragActive ? posterStyles.uploadBoxDragActive : ''}`}
                         onDragEnter={handleDragEnter}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                     >
-                        <div className={uploadStyles.uploadControls}>
+                        <div className={`${posterStyles.uploadControls} ${styles.uploadControls}`}>
                             <input
+                                id="support-photo-upload"
                                 type="file"
                                 accept="image/jpeg,image/png"
                                 multiple
-                                className={uploadStyles.fileInput}
+                                className={posterStyles.fileInput}
                                 disabled={loading}
                                 onChange={handlePhotoInput}
                             />
-                            <label className={uploadStyles.uploadButton}>
-                                Загрузить фото
-                                <input
-                                    type="file"
-                                    accept="image/jpeg,image/png"
-                                    multiple
-                                    className={uploadStyles.fileInput}
-                                    disabled={loading}
-                                    onChange={handlePhotoInput}
-                                />
-                            </label>
-                            <span className={uploadStyles.uploadHint}>или перетащите JPEG, PNG до 10 Мб</span>
+                            <button
+                                type="button"
+                                className={posterStyles.uploadButton}
+                                onClick={openPhotoDialog}
+                            >
+                                Загрузите фото
+                            </button>
+                            <span className={`fontHero ${posterStyles.uploadHint}`}>или перетащите JPEG, PNG до 10 МБ каждый</span>
                         </div>
+
                         {images.length > 0 && (
-                            <div className={uploadStyles.photoThumbGrid}>
+                            <div className={posterStyles.photoThumbGrid}>
                                 {images.map((img, idx) => (
-                                    <div key={img.previewUrl} className={uploadStyles.photoThumb} style={{ position: 'relative' }}>
-                                        <img src={img.previewUrl} alt={`preview-${idx}`} />
-                                        <div style={{
-                                            position: 'absolute',
-                                            inset: 0,
-                                            display: 'flex',
-                                            alignItems: 'flex-start',
-                                            justifyContent: 'flex-end',
-                                            pointerEvents: 'none',
-                                        }}>
+                                    <div key={img.previewUrl} className={posterStyles.photoThumb}>
+                                        <div className={posterStyles.photoOverlay}>
+                                            <span className={posterStyles.photoOverlayText}>Снимок #{idx + 1}</span>
                                             <button
                                                 type="button"
-                                                className={uploadStyles.photoRemoveButton}
-                                                style={{
-                                                    margin: 8,
-                                                    position: 'relative',
-                                                    zIndex: 2,
-                                                    background: '#fff',
-                                                    border: 'none',
-                                                    borderRadius: '50%',
-                                                    width: 28,
-                                                    height: 28,
-                                                    fontSize: 18,
-                                                    fontWeight: 700,
-                                                    color: '#111',
-                                                    boxShadow: '0 0 8px 0 rgba(0,0,0,0.10)',
-                                                    pointerEvents: 'auto',
-                                                    cursor: 'pointer',
-                                                }}
+                                                className={posterStyles.photoRemoveButton}
                                                 onClick={() => removePhoto(idx)}
                                                 aria-label="Удалить фото"
                                             >
-                                            &times;
+                                                x
                                             </button>
                                         </div>
+                                        <img src={img.previewUrl} alt={`preview-${idx}`} draggable="false" />
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
-                    <button
+                </div>
+
+                <div className={styles.actions}>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        className={`${posterStyles.button} ${styles.actionButton}`}
+                        onClick={onBack}
+                    >
+                        Назад
+                    </Button>
+                    <Button
                         type="submit"
+                        variant="accent"
+                        className={`${posterStyles.button} ${posterStyles.buttonPrimary} ${styles.actionButton}`}
                         disabled={loading || !categoryId || !message.trim()}
                     >
                         {loading ? "Отправка..." : "Отправить"}
-                    </button>
-                </form>
-                {error && <div className={styles["support-request-error"]}>{error}</div>}
-                {success && <div className={styles["support-request-success"]}>Обращение отправлено!</div>}
-            </div>
-        </div>
+                    </Button>
+                </div>
+            </form>
+
+            {error && (
+                <div className={`${errorStyles.banner} ${errorStyles.show} ${styles.banner}`}>
+                    <span className={errorStyles.icon}>!</span>
+                    <div className={errorStyles.text}>{error}</div>
+                </div>
+            )}
+            {success && (
+                <div className={`fontHero ${styles.successMessage}`}>Обращение отправлено.</div>
+            )}
+        </section>
     );
 }
