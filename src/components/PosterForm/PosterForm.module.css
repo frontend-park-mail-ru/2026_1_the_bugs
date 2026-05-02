@@ -120,7 +120,7 @@
   padding: 11px 14px;
   background: #fff;
   color: var(--text);
-  font-size: 16px;
+  font-size: 13px;
   font-family: "Hero", system-ui, sans-serif;
   font-weight: 600;
   outline: none;
@@ -237,24 +237,6 @@
 
 .errorHintWrap:hover .errorHintPopup {
   display: block;
-}
-
-.button {
-  margin: 0;
-  padding: 11px 20px;
-  min-width: 140px;
-  border: none;
-  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
-}
-
-.buttonSecondary {
-  color: var(--text);
-  background: #f1f1f1;
-}
-
-.buttonPrimary {
-  background: var(--accent);
-  color: #fff;
 }
 
 .housingTypeGroup {

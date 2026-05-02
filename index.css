@@ -78,6 +78,8 @@ button img {
   background-color: rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.3s ease-in-out; 
   -webkit-overflow-scrolling: touch;
+  pointer-events: auto;
+  overscroll-behavior: contain;
 }
 
 @keyframes fadeIn {
