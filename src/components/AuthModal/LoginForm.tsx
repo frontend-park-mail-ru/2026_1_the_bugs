@@ -68,6 +68,7 @@ export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildPro
       }catch{
         setError("Слишком много запросов, попробуйте позже");
       }
+      return
      
     }
     const message = getErrorMessage(error.status);

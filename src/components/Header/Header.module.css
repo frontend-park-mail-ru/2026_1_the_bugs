@@ -20,28 +20,13 @@
 }
 
 .logo {
-  all: unset;
-  font-weight: 700;
   letter-spacing: 2px;
   font-size: 18px;
-  display: inline-block;
-  line-height: 1;
-  cursor: pointer;
-  background: var(--card);
-  border-radius: var(--radius-L);
+  display: inline-block !important;
   padding: 10px 16px;
-  box-shadow: var(--shadow);
+  margin: 0;
 }
 
-.logo:hover,
-.logo:active,
-.logo:active:not(:disabled),
-.logo:focus-visible {
-  transform: none;
-  box-shadow: none;
-  opacity: 1;
-
-}
 .avatar {
   object-fit: cover;
   width: 100%;

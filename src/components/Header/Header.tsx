@@ -34,7 +34,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
       {isMenuOpen && (
         <div className={style.menuOverlay} onClick={closeMenu} />
       )}
-      <div
+      <Button
         variant='primary'
         id="DomDeli"
         key="DomDeli"
@@ -43,7 +43,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
         onClick={() => navigate('/')}
       >
         ДОМДЕЛИ
-      </div>
+      </Button>
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (

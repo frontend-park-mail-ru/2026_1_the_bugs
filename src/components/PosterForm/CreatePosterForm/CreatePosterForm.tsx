@@ -58,6 +58,7 @@ export function CreatePosterForm() {
   const [isLoadingComplexes, setIsLoadingComplexes] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedDeveloperId, setSelectedDeveloperId] = useState<number | null>(null);
+  const [generationCount, setGenerationCount] = useState(0);
 
   // Загрузка ЖК при выборе застройщика
   useEffect(() => {
@@ -363,6 +364,10 @@ export function CreatePosterForm() {
 
   const handleDescriptionGeneration = async () => {
     setSubmitError(null);
+    if (generationCount >= 5) {
+      setSubmitError('Превышен лимит генерации описаний (5 раз).');
+      return;
+    }
     try {
       console.log('Generating description with data:',formDraft)
       setIsGeneratingDescription(true);
@@ -373,6 +378,7 @@ export function CreatePosterForm() {
         'city': addressSuggestionCandidate?.suggestion.city || '', 
         'features': formDraft.features
       });
+      setGenerationCount(generationCount + 1);
       console.log('Received description:', description);
       updateField('description', description);
       const textarea = document.getElementById('description') as HTMLTextAreaElement;

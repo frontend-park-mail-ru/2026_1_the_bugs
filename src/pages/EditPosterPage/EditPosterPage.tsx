@@ -5,6 +5,7 @@ import { getMyPosterByAlias } from '../../services/posters';
 import type { ApartmentDetails } from '../../types';
 import layout from '../../components/PosterPage/PosterPageLayout.module.css';
 import { useNavigate } from '@router-dom';
+import { ErrorView } from '../../components/Errors/Errors';
 
 interface EditPosterProp{
     alias: string
@@ -13,7 +14,7 @@ interface EditPosterProp{
 export function EditPosterPage({alias}:EditPosterProp) {
     const [poster, setPoster] = useState<ApartmentDetails | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
         const loadPoster = async () => {
@@ -21,7 +22,7 @@ export function EditPosterPage({alias}:EditPosterProp) {
             const data = await getMyPosterByAlias(alias);
             setPoster(data);
           } catch (e: any) {
-            setError('Не удалось загрузить объявление');
+            setError(e);
           } finally {
             setLoading(false);
           }
@@ -35,9 +36,23 @@ export function EditPosterPage({alias}:EditPosterProp) {
     if (loading) {
         mainContent = <div className={layout.status}>Загрузка объявления...</div>;
     } else if (error) {
-        mainContent = <div className={layout.status}>Ошибка: {error}</div>;
+        mainContent = (
+          <ErrorView
+            error={error}
+            fallbackMessage="Не удалось загрузить объявление"
+            notFoundMessage="Объявление не найдено"
+            className={layout.status}
+          />
+        );
     } else if (!poster) {
-        mainContent = <div className={layout.status}>Объявление не найдено</div>;
+        mainContent = (
+          <ErrorView
+            error="Объявление не найдено"
+            fallbackMessage="Не удалось загрузить объявление"
+            notFoundMessage="Объявление не найдено"
+            className={layout.status}
+          />
+        );
     } else {
         mainContent = (
             <div>

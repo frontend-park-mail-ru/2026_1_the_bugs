@@ -1,0 +1,171 @@
+html,
+body,
+#app-support {
+height: 100%;
+}
+
+.main,
+.page {
+height: 100%;
+min-height: 100%;
+}
+
+.main {
+max-width: none;
+}
+
+.page {
+max-width: none;
+width: 100%;
+padding: 0;
+gap: 0;
+}
+
+body {
+min-height: 100dvh;
+padding: 0;
+overflow: hidden;
+background: none;
+}
+
+.support-page {
+height: 100%;
+min-height: 100%;
+padding: 20px;
+display: grid;
+place-items: start center;
+align-content: start;
+overflow-y: auto;
+overflow-x: hidden;
+overscroll-behavior: contain;
+}
+
+.support-card {
+background: transparent;
+position: relative;
+}
+
+.support-kicker {
+font-size: clamp(18px, 2.6vw, 28px);
+line-height: 1;
+margin-bottom: 38px;
+}
+
+.support-brand {
+text-align: center;
+font-size: clamp(24px, 3.2vw, 36px);
+letter-spacing: 1px;
+margin-bottom: 16px;
+padding: 20px;
+}
+
+.support-copy {
+max-width: 360px;
+margin: 0 auto;
+text-align: center;
+font-family: "Hero", system-ui, sans-serif;
+font-size: clamp(14px, 1.9vw, 20px);
+line-height: 1.35;
+-webkit-text-stroke: 0.15px currentColor;
+}
+
+.support-link {
+color: var(--accent);
+}
+
+
+
+.support-question {
+text-align: center;
+font-family: "Hero", system-ui, sans-serif;
+font-size: clamp(15px, 2vw, 22px);
+line-height: 1.25;
+margin-bottom: 14px;
+-webkit-text-stroke: 0.15px currentColor;
+}
+
+.support-footer {
+margin-top: 40px;
+text-align: center;
+font-family: "Hero", system-ui, sans-serif;
+font-size: clamp(16px, 2.2vw, 22px);
+line-height: 1.25;
+-webkit-text-stroke: 0.15px currentColor;
+}
+
+.support-footer-link {
+cursor: pointer;
+display: inline-block;
+margin-top: 6px;
+color: var(--accent);
+}
+
+.fontHero {
+  font-family: "Hero", system-ui, sans-serif;
+  -webkit-text-stroke: 0.2px currentColor;
+}
+
+input,
+textarea {
+  background: var(--card);
+  border-radius: var(--radius-L);
+  box-shadow: var(--shadow);
+  width: 100%;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  outline: none;
+  font-family: "Hero", system-ui, sans-serif;
+  color: var(--text);
+}
+
+input:focus,
+textarea:focus {
+  box-shadow: var(--shadow-accent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: "Hero", system-ui, sans-serif;
+  color: #999;
+}
+
+@media (max-width: 700px) {
+    .support-page {
+    min-height: 100%;
+    padding: 0px;
+    }
+
+    .support-card {
+    width: min(100%, 360px);
+    border-radius: 20px;
+    padding: 16px 14px 18px;
+    }
+
+    .support-close {
+    top: 18px;
+    right: 18px;
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+    font-size: 36px;
+    }
+
+    .support-kicker {
+    font-size: clamp(16px, 4vw, 22px);
+    margin-bottom: 22px;
+    }
+
+    .support-section {
+    margin-top: 24px;
+    }
+
+    .support-footer {
+    margin-top: 26px;
+    }
+
+    .support-tag {
+    min-height: 30px;
+    padding: 0 12px;
+    }
+}

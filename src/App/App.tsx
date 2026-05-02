@@ -82,7 +82,7 @@ export function App() {
                   <EditPosterPage alias="{alias}" key="EditPosterPage" />
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}">
-                  <PosterPage alias="{alias}" key="PosterPage" />
+                  <PosterPage alias="{alias}" key="PosterPage" isAuth={isAuthenticate} />
                 </Router>
                 <Router currentPath={currentPath} path="/my-posters">
                   <ProtectedLayout path="/my-posters" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate}>
