@@ -8,6 +8,7 @@ import { PosterGallery } from '../components/PosterPage/PosterGallery';
 import { PosterMainInfo } from '../components/PosterPage/PosterMainInfo';
 import { PosterDescription } from '../components/PosterPage/PosterDescription';
 import { PosterParams } from '../components/PosterPage/PosterParams';
+import { PosterPriceHistory } from '../components/PosterPage/PosterPriceHistory';
 import { PosterSummary } from '../components/PosterPage/PosterSummary';
 import { PosterMap } from '../components/PosterPage/PosterMap';
 import { PosterSeller } from '../components/PosterPage/PosterSeller';
@@ -147,6 +148,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
           <PosterGallery key="poster_gallery" poster={poster} />
           <PosterMainInfo key="poster_main_info" poster={poster} />
           <PosterDescription key="poster_description" description={description} />
+          <PosterPriceHistory key="poster_price_history" alias={alias} />
           <PosterParams key="poster_params" poster={poster} />
         </div>
 

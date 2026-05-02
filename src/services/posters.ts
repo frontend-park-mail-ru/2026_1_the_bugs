@@ -342,6 +342,14 @@ export async function generateDescription(data: {
     return resp.description;
 }
 
+export async function getPosterPriceHistory(alias: string) {
+    const resp = await apiService.get(`/posters/${alias}/price-history`, {}, {
+        'Accept': 'application/json',
+    });
+    console.log(resp)
+    return resp.history as { date: string; price: number }[];
+}
+
 export async function getFavoritesCount(alias: string): Promise<{ favorites: number, is_favorite: boolean }> {
     const resp: { favorites: number, is_favorite: boolean } = await authService.WithRefresh(async () => {
         const token = apiService.getToken();
