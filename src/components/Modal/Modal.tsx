@@ -8,6 +8,7 @@ interface ModalProps {
   contentClassName?: string;
   overlayClassName?: string;
   style?: Record<string, any>
+  contentStyle? : Record<string, any>
 }
 
 /** Универсальная модальная обёртка с затемнённым оверлеем; закрывается кликом по фону. */
@@ -17,7 +18,8 @@ export function Modal({
   children,
   contentClassName = '',
   overlayClassName = '',
-  style
+  style,
+  contentStyle
 }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -37,10 +39,9 @@ export function Modal({
       onClose();
     }
   };
-
   return (
     <div className={`modal active ${overlayClassName}`.trim()} onClick={handleOverlayClick} style={style}>
-      <div className={`modal-content ${contentClassName}`.trim()}>
+      <div className={`modal-content ${contentClassName}`.trim()} style={contentStyle}>
         <button className={styles.close} onClick={onClose}>&times;</button>
           {children}
       </div>

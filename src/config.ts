@@ -1,5 +1,6 @@
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 export const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5173";
+export const SUPPORT_URL = import.meta.env.SUPPORT_URL || "http://localhost:81";
 
 export const VK_OAUTH_REDIRECT_URL = `${BASE_URL}/oauth/vk`;
 export const YANDEX_OAUTH_REDIRECT_URL = `${BASE_URL}/oauth/yandex`;

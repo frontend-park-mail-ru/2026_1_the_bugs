@@ -1,8 +1,8 @@
 import {Switch, Router} from '@router-dom';
 import { useEffect, useState } from 'the-react';
-import { authService } from '../../services/auth';
-import type { UserResponse } from '../../types';
-import { apiService } from '../../services/apiClass';
+import { authService } from '../../../src/services/auth';
+import type { UserResponse } from '../../../src/types';
+import { apiService } from '../../../src/services/apiClass';
 import { HomePage } from '../pages/MainPage';
 
 /**

@@ -3,10 +3,12 @@ import { defineConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
 
 export default defineConfig(({ mode }) => ({
-  base: mode === 'support' ? '/support/' : '/',
+  base: '/',
   build: {
     rollupOptions: {
-      input: mode === 'support' ? 'support.html' : 'index.html'
+      input: mode === 'support' 
+        ? { index: './support/index.html' }
+        : 'index.html'  
     }
   },
   resolve: {

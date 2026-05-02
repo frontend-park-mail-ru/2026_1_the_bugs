@@ -1,13 +1,9 @@
-
-
 import { useState, useEffect } from "the-react";
-import { apiService } from "../../../services/apiClass";
-import { authService } from "../../../services/auth";
-import { Button } from '../../../components/Button/Button';
+import { apiService } from "../../../../src/services/apiClass";
+import { validateEmail } from '../../../../src/components/AuthModal/authValidation';
+import { Button } from "../../../../src/components/Button/Button";
 import styles from './SupportRequestPage.module.css';
-import posterStyles from '../../../components/PosterForm/PosterForm.module.css';
-import errorStyles from '../../../components/Errors/Errors.module.css';
-
+import posterStyles from '../../../../src/components/PosterForm/PosterForm.module.css';
 
 const SUPPORT_CATEGORIES = [
     { id: 1, label: "Публикация объявлений" },
@@ -21,22 +17,6 @@ const SUPPORT_CATEGORIES = [
 ];
 
 export function SupportRequestPageEntry() {
-    // Проверка авторизации и origin для iframe
-    const [iframeWarning, setIframeWarning] = useState<string | null>(null);
-    useEffect(() => {
-        // Проверяем origin
-        const parentOrigin = window.parent === window ? window.location.origin : document.referrer.split('/').slice(0, 3).join('/');
-        const myOrigin = window.location.origin;
-        const token = localStorage.getItem('authToken');
-        if (parentOrigin !== myOrigin) {
-            setIframeWarning(`ВНИМАНИЕ: origin iframe (${myOrigin}) не совпадает с родителем (${parentOrigin}). Авторизация работать не будет.`);
-        } else if (!token) {
-            setIframeWarning('ВНИМАНИЕ: Вы не авторизованы. Войдите на основном сайте, затем перезагрузите поддержку.');
-        } else {
-            setIframeWarning(null);
-        }
-    }, []);
-    // Синхронизация размеров с родителем (iframe)
     useEffect(() => {
         const sendSize = () => {
             const height = document.body.scrollHeight;
@@ -48,6 +28,7 @@ export function SupportRequestPageEntry() {
     }, []);
     const [categoryId, setCategoryId] = useState<number | "">("");
     const [message, setMessage] = useState("");
+    const [email, setEmail] = useState("")
     const [images, setImages] = useState<{ file: File; previewUrl: string }[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -91,6 +72,16 @@ export function SupportRequestPageEntry() {
 
     // Отправка
     const handleSend = async () => {
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid) {
+            setError(emailValidation.error);
+            return;
+        }
+
+        if (message.length > 3000){
+            setError("Слишком большое описание");
+            return;
+        }
         if (!categoryId || !message.trim()) {
             setError("Выберите тему и опишите проблему");
             return;
@@ -105,30 +96,26 @@ export function SupportRequestPageEntry() {
         const formData = new FormData();
         formData.append("category_id", String(categoryId));
         formData.append("description", message);
+        formData.append("email", email)
         images.forEach(({ file }, idx) => {
             formData.append(`photos.${idx}.file`, file);
             formData.append(`photos.${idx}.order`, String(idx));
         });
         try {
-            await authService.WithRefresh(async () => {
-                    const token = apiService.getToken();
-            
-                    await apiService.post(
-                        '/support/orders',
-                        formData,
-                        {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/json',
-                        },
-                    );
-            });
+            await apiService.post(
+                '/support/orders',
+                formData,
+                {
+                    'Accept': 'application/json',
+                },
+            );
             setSuccess(true);
             setMessage("");
             setImages([]);
             setCategoryId("");
         } catch (e: any) {
-            if (e.status === 401) {
-                setError("Авторизация истекла. Войдите заново.");
+            if (e.status === 404) {
+                setError("Пользователь с таким email не найден");
                 return;
             }
             setError(e.message || "Ошибка");
@@ -138,19 +125,39 @@ export function SupportRequestPageEntry() {
     };
 
     return (
+        
         <section className={styles.supportRequestPage}>
-            {iframeWarning && (
-                <div className={`${errorStyles.banner} ${errorStyles.show} ${styles.banner}`}>
-                    <span className={errorStyles.icon}>!</span>
-                    <div className={errorStyles.text}>{iframeWarning}</div>
-                </div>
-            )}
             <div className={styles.headerRow}>
-                <h2 className={`fontHero ${styles.title}`}>Поддержка</h2>
+                <h2 className={`fontHero ${styles.title}`}>Поддержка ДомДели</h2>
             </div>
-
-            <form className={styles.form} onSubmit={(e: any) => { e.preventDefault(); handleSend(); }}>
+            {success ? (<div className={styles.successState}>
+    <h2 className={styles.successTitle}>Спасибо за ваше обращение!</h2>
+    <p className={styles.successText}>
+      Ожидайте ответа на почту:
+    </p>
+    <p className={styles.successEmail}>{email}</p>
+  </div>) : (<div>
+                <form className={styles.form} onSubmit={(e: any) => { e.preventDefault(); handleSend(); }}>
                 <div className={styles.section}>
+                    <div className={posterStyles.group}>
+                        <label htmlFor="support-email" className={`fontHero ${posterStyles.label}`}>
+                            Email для ответа
+                        </label>
+                        <input
+                            id="support-email"
+                            type="email"
+                            className={`fontHero ${posterStyles.input} ${styles.field}`}
+                            value={email}
+                            onChange={(e: any) => {
+                                setEmail(e.target.value);
+                                setError(null);
+                            }}
+                            disabled={loading}
+                            placeholder="example@mail.com"
+                            required
+                        />
+                    </div>
+
                     <div className={posterStyles.group}>
                         <label htmlFor="support-category" className={`fontHero ${posterStyles.label}`}>Тема обращения</label>
                         <select
@@ -233,28 +240,29 @@ export function SupportRequestPageEntry() {
                         )}
                     </div>
                 </div>
-
+                {error && (
+                    <div className={styles.errorOverlay}>{error}</div>
+                )}
                 <div className={styles.actions}>
                     <Button
                         type="submit"
                         variant="accent"
                         className={`${posterStyles.button} ${posterStyles.buttonPrimary} ${styles.actionButton}`}
-                        disabled={loading || !categoryId || !message.trim() || !images.length}
+                        disabled={
+                            loading ||
+                            !categoryId ||
+                            !message.trim() ||
+                            !images.length ||
+                            !email.trim()
+                        }
                     >
                         {loading ? "Отправка..." : "Отправить"}
                     </Button>
                 </div>
             </form>
+              
+            </div>)}
 
-            {error && (
-                <div className={`${errorStyles.banner} ${errorStyles.show} ${styles.banner}`}>
-                    <span className={errorStyles.icon}>!</span>
-                    <div className={errorStyles.text}>{error}</div>
-                </div>
-            )}
-            {success && (
-                <div className={`fontHero ${styles.successMessage}`}>Обращение отправлено.</div>
-            )}
         </section>
     );
 }

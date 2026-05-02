@@ -13,7 +13,14 @@
   justify-content: space-between;
   gap: 12px;
 }
-
+.errorOverlay {
+  min-height: 20px;
+  color: #ff4d4f;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Zen Kaku Gothic Antique', system-ui, sans-serif;
+}
 .title {
   margin: 0;
   font-size: clamp(22px, 5.2vw, 30px);
@@ -134,9 +141,40 @@
   margin-bottom: 0;
 }
 
-.successMessage {
-  font-size: 13px;
-  color: #2ecc40;
+
+.successState {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+  padding-right: 8px;
+}
+
+.successTitle {
+  margin: 0;
+  font-size: clamp(24px, 5.2vw, 32px);
+  line-height: 1.05;
+  font-family: "Hero", system-ui, sans-serif;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.successText {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #7d7d7d;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.successEmail {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #a0a0a0;
+  word-break: break-word;
 }
 
 @media (max-width: 560px) {

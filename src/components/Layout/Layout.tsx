@@ -5,6 +5,8 @@ import { authService } from '../../services/auth';
 import type { UserResponse } from 'src/types';
 import style from "./Layout.module.css"
 import { Button } from '../Button/Button';
+import { Modal } from '../Modal/Modal';
+import { SUPPORT_URL } from '../../config';
 
 interface LayoutProps {
   children: any;
@@ -47,28 +49,32 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
         key="Header"
       />
       <div className={style.supportLayer}>
-        <div className={style.supportDock}>
-          {isSupportOpen && (
-            <div className={style.supportFrameWrap}>
-              <Button variant="none" shape='round' style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setIsSupportOpen(false)}>&times;</Button>
-              <iframe
-                src="http://localhost:5173/support.html"
-                title="Поддержка"
-                className={style.supportFrame}
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
-              />
+        {isAuthenticate && (
+           <div className={style.supportDock}>
+            {isSupportOpen && (
+              <div className={style.supportFrameWrap}>
+               <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow-y': 'hidden', 'max-height': '750px'}}>
+                  <iframe
+                  src={SUPPORT_URL}
+                  title="Поддержка"
+                  className={style.supportFrame}
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
+                />
+            </Modal>
             </div>
-          )}
-          <button 
-            className={`${style.button} ${style.round} ${style.accent}`}
-            style={{ marginRight: '5px', marginBottom: '10px' }}
-            type="button" 
-            aria-label="Поддержка" 
-            onClick={() => setIsSupportOpen(!isSupportOpen)}
-          >
-            <img src="/svg/message.svg" alt="Поддержка" aria-hidden="true" draggable="false" />
-          </button>
+            )}
+            <button 
+              className={`${style.button} ${style.round} ${style.accent}`}
+              style={{ marginRight: '5px', marginBottom: '10px' }}
+              type="button" 
+              aria-label="Поддержка" 
+              onClick={() => setIsSupportOpen(!isSupportOpen)}
+            >
+              <img src="/svg/message.svg" alt="Поддержка" aria-hidden="true" draggable="false" />
+            </button>
         </div>
+        )}
+       
       </div>
       {children}
       {isAuthModalOpen && (
