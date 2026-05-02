@@ -5,8 +5,8 @@ import "../index.css"
 const root = document.getElementById("app") as Element
 createApp(root, App);
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/serviceWorker.js");
-  })
-}
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", () => {
+//     navigator.serviceWorker.register("/serviceWorker.js");
+//   })
+// }

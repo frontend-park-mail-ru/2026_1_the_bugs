@@ -17,7 +17,7 @@ interface LayoutProps {
   currentUser?: UserResponse | null;
 }
 
-export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser }: LayoutProps) {
+export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser}: LayoutProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const isMapPage = currentPath === '/map';
@@ -54,7 +54,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
       <div className={style.supportLayer}>
         {isAuthenticate && (
            <div className={style.supportDock}>
-            {isSupportOpen && (
+            {isSupportOpen  &&!isMapPage && (
               <div className={style.supportFrameWrap}>
                <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow-y': 'hidden', 'max-height': '750px'}}>
                   <iframe
@@ -66,7 +66,8 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
             </Modal>
             </div>
             )}
-            <button 
+             {!isMapPage &&(
+               <button 
               className={`${style.button} ${style.round} ${style.accent}`}
               style={{ marginRight: '5px', marginBottom: '10px' }}
               type="button" 
@@ -75,6 +76,8 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
             >
               <img src="/svg/message.svg" alt="Поддержка" aria-hidden="true" draggable="false" />
             </button>
+             )}
+           
         </div>
         )}
        

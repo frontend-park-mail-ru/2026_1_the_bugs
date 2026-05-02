@@ -45,12 +45,11 @@ export function App() {
   return (
     <main className="main">
       <div className="page">
-        {/* <Switch key="root" currentPath={currentPath} >
-          hello
-          <Router currentPath={currentPath} path="/"> */}
+        <Switch key="root" currentPath={currentPath} >
+          <Router currentPath={currentPath} path="/">
             <HomePage key="HomePage" />
-          {/* </Router>
-        </Switch> */}
+           </Router>
+        </Switch> 
       </div>
     </main>
   );
