@@ -56,7 +56,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
            <div className={style.supportDock}>
             {isSupportOpen  &&!isMapPage && (
               <div className={style.supportFrameWrap}>
-               <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow-y': 'hidden', 'max-height': '750px'}}>
+               <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow': 'hidden', 'max-height': '750px'}}>
                   <iframe
                   src={SUPPORT_URL}
                   title="Поддержка"
