@@ -131,7 +131,8 @@ export default function RegisterForm({onSuccess, onToggleMode }: AuthModalChildP
         lastname: formData.lastname,
         phone: formData.phone
       });
-      onSuccess();
+      
+      onToggleMode('email_verify');
     } catch (error: any) {
       handleAuthError(error as ErrorResponse);
     } finally {

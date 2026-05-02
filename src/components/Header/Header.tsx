@@ -11,10 +11,11 @@ interface HeaderProps {
   onAuthorizeClick: ()=> void;
   isAutenticated: boolean;
   currentUser?: UserResponse | null;
+  isMapPage?: boolean;
 }
 
 /** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
-export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser }: HeaderProps) {
+export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser, isMapPage = false }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
@@ -29,18 +30,20 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
   };
 
   return (
-    <header className={style['header']}>
+    <header className={`${style.header} ${isMapPage ? style.headerMap : ''}`}>
       {isMenuOpen && (
         <div className={style.menuOverlay} onClick={closeMenu} />
       )}
-      <button
+      <Button
+        variant='primary'
+        id="DomDeli"
+        key="DomDeli"
         className={style['logo']}
-        type="button"
         aria-label="Перейти на главную"
         onClick={() => navigate('/')}
       >
         ДОМДЕЛИ
-      </button>
+      </Button>
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (
@@ -48,7 +51,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
             {/* <Button className={style.btn} type="button" aria-label="Сообщение" onClick={() => navigate('/myposters')}>
               <img src="/svg/message.svg" alt="Сообщение" aria-hidden="true" draggable="false"/>
             </Button> */}
-            <Button variant='primary' shape="round" type="button" aria-label="Избранное">
+            <Button variant='primary' shape="round" type="button" aria-label="Избранное" onClick={() => navigate('/profile/favorites')}>
               <img src="/svg/heart.svg" alt="Лайки" aria-hidden="true" draggable="false"/>
             </Button>
             {/* <Button className={style.btn} type="button" id="openAuth" aria-label="Профиль">

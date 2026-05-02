@@ -55,7 +55,6 @@ export type CreatePosterResponse = {
   alias: string
   id: string
 };
-
 export type CreatePosterStep = 1 | 2 | 3 | 4 | 5;
 
 export const TOTAL_CREATE_POSTER_STEPS = 5;

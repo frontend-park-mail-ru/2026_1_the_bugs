@@ -67,9 +67,10 @@ function createPinkMarkerIcon(L: any) {
 interface UtilMapProps {
   latitude: number;
   longitude: number;
+  additionalStyles?: Record<string, string>;
 }
 
-export function UtilMap({ latitude, longitude }: UtilMapProps) {
+export function UtilMap({ latitude, longitude, additionalStyles }: UtilMapProps) {
   useEffect(() => {
     let mapController: { map: any } | null = null;
 
@@ -104,7 +105,7 @@ export function UtilMap({ latitude, longitude }: UtilMapProps) {
   }, [latitude, longitude]);
 
   return (
-    <article className={`${styles.mapCard} ${style.descriptionCard}`}>
+    <article className={`${styles.mapCard} ${style.descriptionCard}`} style={additionalStyles}>
       <div id={MAP_ELEMENT_ID} className={styles.mapCanvas} />
     </article>
   );

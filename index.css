@@ -68,7 +68,7 @@ button img {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 5000;
   left: 0;
   top: 0;
   width: 100%;
@@ -164,6 +164,14 @@ img {
   width: 100%;
 }
 
+.pageFull {
+  max-width: 100vw;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+}
+
 
 .main {
   display: flex;
@@ -172,6 +180,13 @@ img {
   max-width: calc(4 * 250px + 3 * 18px); 
   width: 100%;
   margin: 0 auto;
+}
+
+.mainFull {
+  max-width: 100vw;
+  width: 100vw;
+  margin: 0;
+  gap: 0;
 }
 
 @media (max-width: 600px) {
@@ -212,5 +227,3 @@ input::placeholder {
   font-family: "Hero", system-ui, sans-serif;
   color: #999;
 }
-
-

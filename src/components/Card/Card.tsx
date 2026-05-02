@@ -1,13 +1,19 @@
 import type { Apartment } from '../../types';
+import { Button } from '../Button/Button';
+import { addPosterToFavorites, removePosterFromFavorites } from '../../services/posters';
+import { useState } from 'the-react';
 import style from './Card.module.css';
 import { useNavigate } from '@router-dom';
 
 interface CardProps {
   apartment: Apartment;
+  isFavorite?: boolean;
+  isAuth: boolean
 }
 
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
-export function Card({ apartment }: CardProps) {
+export function Card({ apartment, isFavorite, isAuth }: CardProps) {
+  const [liked, setLiked] = useState<number>(typeof isFavorite === 'boolean' ? (isFavorite ? 1 : -1) : -1);
   const ratingClass = 
     apartment.rating >= 8 ? 'good' :
     apartment.rating >= 6 ? 'mid' :
@@ -20,6 +26,32 @@ export function Card({ apartment }: CardProps) {
     <article className={style.card} data-title={apartment.metro} onClick={onOpenPoster}>
       <div className={style.image}>                         
         <img src={apartment.imageUrl} alt="Интерьер" draggable="false"/>
+        {isAuth && <Button 
+          id="like" 
+          variant='primary' 
+          style={{position: 'absolute', right: '12px', top: '12px'}}
+          shape='round' 
+          liked={liked === 1}
+          icon={
+            liked === 1
+              ? <img src="/svg/hearted.svg" alt="" aria-hidden="true" draggable={false} />
+              : <img src="/svg/heart.svg" alt="" aria-hidden="true" draggable={false} />
+          }
+          onClick={async e => {
+            e.stopPropagation();
+            try {
+              if (liked === -1) {
+                await addPosterToFavorites(apartment.alias);
+              } else {
+                await removePosterFromFavorites(apartment.alias);
+              }
+              setLiked(liked * -1);
+            } catch (err) {
+              console.error('Ошибка при изменении избранного');
+            }
+          }}
+        >
+        </Button>}
       </div>
       <div className={style.info}>                          
         <div className={style.meta}>                        

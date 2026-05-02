@@ -58,7 +58,19 @@ export default function LoginForm({ onSuccess, onToggleMode }: AuthModalChildPro
     onToggleMode(mode);
   };
 
-  const handleAuthError = (error: ErrorResponse) => {
+  const handleAuthError = async (error: ErrorResponse) => {
+    if (error.data.error == 'email is unverified') {
+      try{
+        await authService.sendEmailVerification(formData.email);
+        sessionStorage.setItem("email", formData.email);
+        sessionStorage.setItem("password", formData.password);
+        toggleMode('email_verify');
+      }catch{
+        setError("Слишком много запросов, попробуйте позже");
+      }
+      return
+     
+    }
     const message = getErrorMessage(error.status);
     setError(message);
 

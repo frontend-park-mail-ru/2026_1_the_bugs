@@ -2,8 +2,10 @@ import { useEffect, useState } from 'the-react/hooks';
 import { CardList } from '../components/CardList/CardList';
 import { getPosters } from '../services/posters';
 import { UtilCard } from '../components/UtilCard/UtilCard';
+import { UtilCardSkeleton } from '../components/UtilCard/UtilCardSkeleton';
 import { getUtilityCompanyByAlias } from '../services/complex';
 import type { Apartment, UtilityCompany } from '../types';
+import { ErrorView } from '../components/Errors/Errors';
 
 interface IUtilityComplex{
 	alias?: string;
@@ -16,7 +18,7 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 	const [isLoading, setIsLoading] = useState(false)
 	const [apartments, setApartments] = useState<Apartment[] | undefined>(undefined);
 	const [utilityCompany, setUtilityCompany] = useState<UtilityCompany | undefined>(undefined);
-	const [utilityError, setUtilityError] = useState<string | undefined>(undefined);
+	const [utilityError, setUtilityError] = useState<unknown>(null);
 	const [isFetchingMore, setIsFetchingMore] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const pageSize = 12;
@@ -28,13 +30,13 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 
 	const handleUtilityByAlias = async () => {
 		setIsLoading(true)
-		setUtilityError(undefined);
+		setUtilityError(null);
 		try {
 			const utilityResp = await getUtilityCompanyByAlias({ alias });
 			setUtilityCompany(utilityResp);
 		} catch (error) {
 			console.error('Failed to load utility complex by alias:', error);
-			setUtilityError('Не удалось загрузить данные ЖК');
+			setUtilityError(error);
 		} finally{
 			setIsLoading(false)
 		}
@@ -58,24 +60,30 @@ export function UtilityComplex({ alias }: IUtilityComplex) {
 		}, []
 	)
 	if (isLoading){
-		return(
+		return (
 			<div>
-				<p className="fontHero">Загрузка ЖК...</p>
+				<UtilCardSkeleton />
 			</div>
-		)
+		);
 	}
 
 	return (
 		<div>
 			{utilityCompany && (<UtilCard key="utilCard" alias={alias} utilityCompany={utilityCompany as UtilityCompany} />)}
-			{utilityError && <p className="fontHero">{utilityError}</p>}
+			{utilityError && (
+				<ErrorView
+					error={utilityError}
+					fallbackMessage="Не удалось загрузить данные ЖК"
+					notFoundMessage="ЖК не найден"
+				/>
+			)}
 			<section>
 				
-				{apartments && (
+				{utilityCompany && apartments && (
 					<div>
 						<br/>
 						<h2 className="fontHero">Объявления в этом ЖК</h2>
-						<CardList key="card_list_utility" styles={{'justify-content': 'start'}}apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
+						<CardList isAuth={false} key="card_list_utility" styles={{'justify-content': 'start'}}apartments={apartments} isFetchingMore={isFetchingMore} hasMore={hasMore} onLoadMore={handleLoadMore} pageSize={pageSize} />
 					</div>
 					
 				)}

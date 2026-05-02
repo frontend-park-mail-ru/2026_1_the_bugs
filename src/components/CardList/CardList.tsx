@@ -11,17 +11,23 @@ interface CardListProps {
   hasMore: boolean;
   onLoadMore: () => void;
   pageSize: number;
-  styles?:Record<string, any>
+  styles?: Record<string, any>;
+  favoritesIds?: Set<number | string>;
+  hideEmptyState?: boolean;
+  isAuth: boolean
 }
-
-export function CardList({ 
-  apartments, 
-  isFetchingMore, 
-  hasMore, 
-  onLoadMore, 
-  pageSize,
-  styles,
-}: CardListProps) {
+export function CardList(props: CardListProps) {
+  const {
+    apartments,
+    isFetchingMore,
+    hasMore,
+    onLoadMore,
+    pageSize,
+    styles,
+    favoritesIds,
+    hideEmptyState,
+    isAuth,
+  } = props;
   const navigate = useNavigate()
   useEffect(() => {
     if (!hasMore || isFetchingMore) return;
@@ -54,21 +60,31 @@ export function CardList({
 
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
-  
+  console.log(favoritesIds)
 
   return (
     <div style={{'align-items':'center'}}>
         <section className={style.cards} style={styles}>
-          {((apartments.length==0) && !isFetchingMore) && (
+          {((apartments.length==0) && !isFetchingMore && !hideEmptyState) && (
             <div className={style.emptyState}>
               <p className={style.emptyTitle}>Ничего не найдено</p>
               <Button variant="accent" type="button" className={style.emptyResetBtn} onClick={()=>{navigate("/")}} text="Сбросить фильтры" />
             </div>
-            
           )}
-      {apartments.map((apt) => (
-        <Card key={apt.id.toString()} apartment={apt} />
-      ))}
+      {apartments.map((apt) => {
+        let isFavorite;
+        if (favoritesIds) {
+          isFavorite =  favoritesIds.has(apt.alias);
+        }
+        return (
+          <Card
+            key={apt.id.toString()}
+            isAuth={isAuth}
+            apartment={apt}
+            isFavorite={isFavorite}
+          />
+        );
+      })}
       
      
         {Array.from({ length: pageSize }).map((_, i) => {

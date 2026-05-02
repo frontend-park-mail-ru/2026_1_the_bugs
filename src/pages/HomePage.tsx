@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { Hero } from '../components/Here/Here';
 import { CardList } from '../components/CardList/CardList';
-import { getPosters } from '../services/posters';
+import { getPosters, getFavorites } from '../services/posters';
 import { type Apartment, type IFilters} from '../types';
 import { useNavigate } from '@router-dom';
 
@@ -23,6 +23,7 @@ import { useNavigate } from '@router-dom';
 
 interface Props{
   search_query: string;
+  isAuth: boolean
 }
 
 const parseNum = (value: string | null): number | undefined => {
@@ -81,7 +82,7 @@ const syncQueryParams = (searchVal: string, filters: IFilters): string => {
   return params.toString();
 };
 
-export function HomePage({search_query}: Props) {
+export function HomePage({search_query, isAuth}: Props) {
   const initialParams = new URLSearchParams(window.location.search);
   const initialSearch = initialParams.get('search_query') || search_query || '';
   const initialFilters = parseFiltersFromSearch(initialParams);
@@ -94,6 +95,22 @@ export function HomePage({search_query}: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [favoriteAliases, setFavoriteAliases] = useState<Set<string>>(new Set());
+
+  const [isFavoritesLoading, setIsFavoritesLoading] = useState(true);
+
+    useEffect(() => {
+        const f = async () => {
+            try {
+                const res = await getFavorites();
+                setFavoriteAliases(new Set(res.posters.map(f => f.alias)));
+            } finally {
+                setIsFavoritesLoading(false);
+            }
+        };
+        f();
+    }, []);
+
 
   const fetchData = async (searchVal: string, currentFilters: IFilters, append = false) => {
     if (isLoading || !hasMore) return;
@@ -149,10 +166,12 @@ export function HomePage({search_query}: Props) {
       
       <CardList
         pageSize={pageSize}
-        apartments={apartments} 
+        apartments={apartments}
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}
+        isAuth={isAuth}
         onLoadMore={() => fetchData(searchQuery, filters, true)}
+        favoritesIds={isFavoritesLoading ? undefined : favoriteAliases} 
       />
     </div>
   );
