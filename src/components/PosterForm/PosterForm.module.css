@@ -235,6 +235,24 @@
   display: none;
 }
 
+.button {
+  margin: 0;
+  padding: 11px 20px;
+  min-width: 140px;
+  border: none;
+  box-shadow: 0 0 30px -8px rgba(0, 0, 0, 0.25);
+}
+
+.buttonSecondary {
+  color: var(--text);
+  background: #f1f1f1;
+}
+
+.buttonPrimary {
+  background: var(--accent);
+  color: #fff;
+}
+
 .errorHintWrap:hover .errorHintPopup {
   display: block;
 }
