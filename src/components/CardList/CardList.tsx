@@ -65,13 +65,12 @@ export function CardList(props: CardListProps) {
   return (
     <div style={{'align-items':'center'}}>
         <section className={style.cards} style={styles}>
-          {((apartments.length==0) && !isFetchingMore && !hideEmptyState) && (
+          {((apartments) && (apartments.length==0) && !isFetchingMore && !hideEmptyState) ? (
             <div className={style.emptyState}>
               <p className={style.emptyTitle}>Ничего не найдено</p>
               <Button variant="accent" type="button" className={style.emptyResetBtn} onClick={()=>{navigate("/")}} text="Сбросить фильтры" />
             </div>
-          )}
-      {apartments.map((apt) => {
+          ): (apartments.map((apt) => {
         let isFavorite;
         if (favoritesIds) {
           isFavorite =  favoritesIds.has(apt.alias);
@@ -84,9 +83,8 @@ export function CardList(props: CardListProps) {
             isFavorite={isFavorite}
           />
         );
-      })}
+      }))}
       
-     
         {Array.from({ length: pageSize }).map((_, i) => {
           if (shouldShowSkeletons){
             return <SkeletonCard key={`skeleton-${i}`} />
