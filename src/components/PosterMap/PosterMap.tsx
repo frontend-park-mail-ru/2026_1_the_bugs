@@ -402,6 +402,7 @@ export default function PostersMap() {
           onSearch={handleSearch}
           filterMenuPlacement="top"
           moreFiltersFullscreen
+          isMapPage={true}
           onMoreOpenChange={setIsMoreFiltersOpen}
           isSearchVisible={false}
         />

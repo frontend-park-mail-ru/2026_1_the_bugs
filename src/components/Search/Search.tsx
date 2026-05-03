@@ -16,6 +16,7 @@ interface SearchProps {
   filterMenuPlacement?: 'bottom' | 'top';
   moreFiltersFullscreen?: boolean;
   onMoreOpenChange?: (isOpen: boolean) => void;
+  isMapPage?: boolean;
 }
 
 export function Search({
@@ -27,6 +28,7 @@ export function Search({
   moreFiltersFullscreen = false,
   onMoreOpenChange,
   isSearchVisible = true,
+  isMapPage
 }: SearchProps) {
   const [search, setSearch] = useState(value);
   const [selectedFilters, setSelectedFilters] = useState<IFilters>(filters);
@@ -148,6 +150,7 @@ export function Search({
             onClose={() => setIsFilterOpen(false)}
             onApply={handleFilterApply}
             initialFilters={selectedFilters}
+            isMapFilters={isMapPage}
             onOpenMore={() => {
               setIsFilterOpen(false);
               setIsMoreOpen(true);

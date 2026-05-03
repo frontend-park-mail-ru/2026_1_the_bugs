@@ -10,6 +10,7 @@ interface FilterProps {
     onApply: (filters: IFilters) => void;
     setFilters: (filters: IFilters) => void;
     initialFilters?: IFilters;
+    isMapFilters?: boolean
 }
 
 const propertyTypes: { label: string; alias: string }[] = [
@@ -19,7 +20,7 @@ const propertyTypes: { label: string; alias: string }[] = [
 ];
 const roomOptions = ['0','1', '2', '3', '4', '5', '6+'];
 
-export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilters }: FilterProps) {
+export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilters, isMapFilters }: FilterProps) {
     const navigate = useNavigate();
     const [selectedType, setSelectedType] = useState(initialFilters?.category ?? '');
     const [selectedRoom, setSelectedRoom] = useState(
@@ -55,7 +56,7 @@ export function Filter({ onClose, onOpenMore, onApply, initialFilters, setFilter
             not_first_floor: undefined,
             not_last_floor: undefined,
         });
-        navigate("/");
+        isMapFilters ? navigate("/map"): navigate("/");
     };
 
     const toNumberOrUndefined = (value: string): number | undefined => {
