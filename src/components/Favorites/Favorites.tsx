@@ -39,7 +39,7 @@ export function Favorites() {
                 favoritesIds={favoritesIds}
                 hideEmptyState={true}
             />
-            {isLoading && <div>Загрузка…</div>}
+            {isLoading && <div style={{'text-align': 'center'}}>Загрузка…</div>}
             {!isLoading && favorites.length === 0 && <div style={{'text-align': 'center'}}>Нет избранных объявлений</div>}
         </div>
     );
