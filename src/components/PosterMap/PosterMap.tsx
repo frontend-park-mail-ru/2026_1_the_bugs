@@ -287,7 +287,6 @@ export default function PostersMap() {
 
     try {
       const data: ApiResponse = await apiService.get('/posters/geo', searchParams);
-      console.log(data)
       const items = data.features || [];
 
       markersLayer.clearLayers();

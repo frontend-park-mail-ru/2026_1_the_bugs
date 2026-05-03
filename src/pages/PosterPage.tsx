@@ -104,7 +104,6 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
       try {
         const resp = await getViews(alias);
         setViews(resp.views)
-        console.log(resp)
       } catch (e: any) {
         console.error(e)
       }

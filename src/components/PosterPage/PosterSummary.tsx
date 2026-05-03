@@ -30,7 +30,6 @@ function formatCount(count: number | null) {
 }
 
 export function PosterSummary({poster, price, views, isFavorite, countFavorites, onLikeToggle, setFavoritesCount, setIsFavorite, isAuth}: PosterSummaryProps) {
-    console.log('PosterSummary render', {isFavorite, countFavorites})
 
     const handleFavoriteClick = (isFavorite: boolean) => {
         const nextIsFavorite = !isFavorite;

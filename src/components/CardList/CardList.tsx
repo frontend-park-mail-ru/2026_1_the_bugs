@@ -60,7 +60,6 @@ export function CardList(props: CardListProps) {
 
   const shouldShowSkeletons = hasMore && isFetchingMore;
 
-  console.log(favoritesIds)
 
   return (
     <div style={{'align-items':'center'}}>

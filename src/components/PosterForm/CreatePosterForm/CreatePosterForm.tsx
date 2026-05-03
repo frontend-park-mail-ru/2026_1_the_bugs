@@ -178,7 +178,6 @@ export function CreatePosterForm() {
   const updateField = (field: Exclude<CreatePosterField, 'features' | 'images'>, value: string) => {
     formDraft[field] = value;
     setForm({ ...formDraft });
-    console.log(formDraft)
     clearFieldError(field);
   };
 
@@ -369,7 +368,6 @@ export function CreatePosterForm() {
       return;
     }
     try {
-      console.log('Generating description with data:',formDraft)
       setIsGeneratingDescription(true);
       const description = await generateDescription({
         'area': Number(formDraft.area), 
@@ -379,7 +377,6 @@ export function CreatePosterForm() {
         'features': formDraft.features
       });
       setGenerationCount(generationCount + 1);
-      console.log('Received description:', description);
       updateField('description', description);
       const textarea = document.getElementById('description') as HTMLTextAreaElement;
       if (textarea) {

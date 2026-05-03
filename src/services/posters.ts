@@ -346,7 +346,6 @@ export async function getPosterPriceHistory(alias: string) {
     const resp = await apiService.get(`/posters/${alias}/price-history`, {}, {
         'Accept': 'application/json',
     });
-    console.log(resp)
     return resp.history as { date: string; price: number }[];
 }
 
