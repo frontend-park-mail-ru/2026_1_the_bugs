@@ -111,7 +111,6 @@ export function PosterPriceHistory({ alias }: PosterPriceHistoryProps) {
               position: 'relative',
               margin: '0 45px',
               height: `${height}px`,
-              minWidth: '400px',
             }}
           >
             {/* Axis */}
