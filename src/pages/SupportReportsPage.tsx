@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'the-react/hooks';
-import styles from './AdminPage.module.css';
-import { getSupportOrders, type SupportOrder } from '../services/supports';
+import styles from './SupportReportsPage.module.css';
+import { getSupportOrders, type SupportOrder } from '../services/supports.ts';
 
 interface TicketItem {
   id: string;
@@ -34,7 +34,7 @@ const mapOrderToTicket = (order: SupportOrder): TicketItem => ({
   status: order.status || 'Без статуса',
 });
 
-export function AdminPage() {
+export function SupportReportsPage() {
   const [tickets, setTickets] = useState<TicketItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export function AdminPage() {
     <section className={styles.page}>
       <div className={styles.list}>
         {tickets.map((ticket) => (
-          <a key={ticket.id} href={`/admin/reports/${ticket.id}`} className={styles.cardLink}>
+          <a key={ticket.id} href={`/support/reports/${ticket.id}`} className={styles.cardLink}>
             <article className={styles.card}>
               <div className={styles.metaRow}>
                 <p className={styles.number}>№{ticket.id}</p>

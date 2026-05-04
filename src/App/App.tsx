@@ -13,8 +13,10 @@ import { authService } from '../services/auth';
 import { Profile } from '../components/Profile/Profile';
 import type { UserResponse } from '../types';
 import { apiService } from '../services/apiClass';
-import { AdminPage } from '../pages/AdminPage';
-import { AdminReportPage } from '../pages/AdminReportPage';
+import { SupportReportsPage } from '../pages/SupportReportsPage.tsx';
+import { SupportReportPage } from '../pages/SupportReportPage.tsx';
+import { SupportAuthPage } from '../pages/SupportAuthPage.tsx';
+import { SupportProtectedLayout } from '../Support/components/SupportProtectedLayout';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -57,6 +59,12 @@ export function App() {
     <main className="main">
       <div className="page">
         <Switch key="root" currentPath={currentPath} >
+          <Router path="/support/orders" currentPath={currentPath}>
+            <SupportReportsPage></SupportReportsPage>
+          </Router>
+          <Router path="/support/orders/{id}" currentPath={currentPath}>
+            <SupportReportPage id="id"></SupportReportPage>
+          </Router>
           <Router currentPath={currentPath} path="/oauth/vk">
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate} setCurrentUser={setCurrentUser} provider="vk" key="OAuthVerifyPageVK" />
           </Router>
@@ -93,11 +101,29 @@ export function App() {
                       <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
                 </Router>
-                <Router currentPath={currentPath} path="/admin/reports/{id}">
-                  <AdminReportPage id="{id}" key="AdminReportPage" />
+                <Router currentPath={currentPath} path="/support/reports/{id}">
+                  <SupportProtectedLayout isAuthenticate={isAuthenticate} isAuthResolved={isAuthResolved}>
+                    <SupportReportPage id="{id}" key="SupportReportPage" />
+                  </SupportProtectedLayout>
                 </Router>
-                <Router currentPath={currentPath} path="/admin/reports">
-                  <AdminPage key="AdminPage" />
+                <Router currentPath={currentPath} path="/support/reports">
+                  <SupportProtectedLayout isAuthenticate={isAuthenticate} isAuthResolved={isAuthResolved}>
+                    <SupportReportsPage key="SupportReportsPage" />
+                  </SupportProtectedLayout>
+                </Router>
+                <Router currentPath={currentPath} path="/support/login" currentSearch={currentSearch}>
+                  <SupportAuthPage
+                    key="SupportAuthPageLogin"
+                    isAuthenticate={isAuthenticate}
+                    setIsAuthenticate={setIsAuthenticate}
+                  />
+                </Router>
+                <Router currentPath={currentPath} path="/support" currentSearch={currentSearch}>
+                  <SupportAuthPage
+                    key="SupportAuthPage"
+                    isAuthenticate={isAuthenticate}
+                    setIsAuthenticate={setIsAuthenticate}
+                  />
                 </Router>
               </Switch>
             </Layout>

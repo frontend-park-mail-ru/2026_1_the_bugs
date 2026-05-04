@@ -1,0 +1,27 @@
+.page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.card {
+  width: min(100%, 460px);
+  border-radius: var(--radius-S);
+  background: var(--card);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  padding: 24px;
+}
+
+.kicker {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 26px;
+}
+
+.caption {
+  margin: 0 0 20px;
+  text-align: center;
+  font-family: "Hero", system-ui, sans-serif;
+}

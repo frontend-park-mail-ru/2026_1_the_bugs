@@ -1,0 +1,144 @@
+/* Используем глобальные .modal и .modal-content из index.css */
+/* Здесь только специфичные стили для AuthModal */
+
+/* Стили для форм авторизации */
+.title {
+  margin: 0 0 30px 0;
+  font-size: 28px;
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+/* Обертка для всех групп */
+.formGroups {
+  position: relative;
+  margin-bottom: 10px; /* Уменьшенный отступ до кнопки */
+}
+
+/* Ошибка поверх последнего поля */
+.errorOverlay {
+  min-height: 20px;
+  color: #ff4d4f;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Zen Kaku Gothic Antique', system-ui, sans-serif;
+}
+
+.group:nth-last-child(2) {
+  margin-bottom: 10px; 
+}
+
+.group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrapper input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.6;
+  object-fit: contain;
+}
+
+.eyeIcon:hover {
+  opacity: 0.8;
+}
+
+.eyeIconActive {
+  opacity: 1 !important;
+  filter: grayscale(0) !important;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+    padding: 30px 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    max-height: calc(100vh - 60px);
+  }
+}
+
+.oauthDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 20px;
+  position: relative;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.dividerText {
+  color: #8e8e93;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+.oauthContainer {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.oauthContainer > * {
+  max-width: 300px;
+  min-width: 200px;
+  height: 44px; 
+  border-radius: 8px;
+}
+
+
+@media (max-width: 480px) {
+  .oauthDivider {
+    gap: 8px;
+  }
+  .oauthContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .dividerText {
+    font-size: 13px;
+    padding: 0 8px;
+  }
+}

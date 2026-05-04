@@ -1,7 +1,11 @@
 import { useNavigate } from '@router-dom';
-import styles from './AdminReportPage.module.css';
+import styles from './SupportReportPage.module.css';
+import {useEffect, useState} from "the-react";
+import {getPosterByAlias} from "../services/posters.ts";
+import {getSupportOrder, SupportOrder} from "../services/supports.ts";
+import type {ApartmentDetails} from "../types";
 
-interface AdminReportPageProps {
+interface SupportReportPageProps {
   id?: string;
 }
 
@@ -38,16 +42,38 @@ const reports: Report[] = [
 
 const findReportById = (id?: string) => reports.find((report) => report.id === id);
 
-export function AdminReportPage({ id }: AdminReportPageProps) {
+export function SupportReportPage({ id }: SupportReportPageProps) {
+  const [support, setSupport] = useState<SupportOrder[] | null>(null);
   const navigate = useNavigate();
-  const report = findReportById(id);
+  // const report = findReportById(id);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const loadPoster = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getSupportOrder(Number(id));
+        setSupport(data);
+      } catch (e: any) {
+        setError(e?.message || 'Не удалось загрузить обращение');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPoster();
+  }, [id]);
 
   if (!report) {
     return (
       <section className={styles.page}>
         <div className={styles.wrapper}>
           <h1 className={styles.notFoundTitle}>Обращение не найдено</h1>
-          <button type="button" className={styles.backButton} onClick={() => navigate('/admin/reports')}>
+          <button type="button" className={styles.backButton} onClick={() => navigate('/support/reports')}>
             Назад к списку
           </button>
         </div>
@@ -76,7 +102,7 @@ export function AdminReportPage({ id }: AdminReportPageProps) {
         />
 
         <div className={styles.actions}>
-          <button type="button" className={styles.backButton} onClick={() => navigate('/admin/reports')}>
+          <button type="button" className={styles.backButton} onClick={() => navigate('/support/reports')}>
             Назад
           </button>
           <button type="button" className={styles.sendButton}>Отправить</button>
@@ -85,4 +111,3 @@ export function AdminReportPage({ id }: AdminReportPageProps) {
     </section>
   );
 }
-

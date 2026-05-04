@@ -4,6 +4,8 @@ import { authService } from '../../services/auth';
 import type { UserResponse } from '../../types';
 import { apiService } from '../../services/apiClass';
 import { HomePage } from '../pages/MainPage';
+import SupportLoginForm from "../components/SupportLoginForm.tsx";
+import {SupportReportsPage} from "../../pages/SupportReportsPage.tsx";
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -45,12 +47,7 @@ export function App() {
   return (
     <main className="main">
       <div className="page">
-        {/* <Switch key="root" currentPath={currentPath} >
-          hello
-          <Router currentPath={currentPath} path="/"> */}
-            <HomePage key="HomePage" />
-          {/* </Router>
-        </Switch> */}
+             <SupportReportsPage key="ReportsPage" />
       </div>
     </main>
   );

@@ -71,18 +71,6 @@
   background: #9b9b9b;
 }
 
-.inProgress {
-  background: #d8be18;
-}
-
-.done {
-  background: #39c45a;
-}
-
-.new {
-  background: #f08dcc;
-}
-
 @media (max-width: 1300px) {
   .list {
     gap: 12px;
@@ -133,3 +121,4 @@
     font-size: 13px;
   }
 }
+

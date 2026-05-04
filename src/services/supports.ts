@@ -1,10 +1,16 @@
-import { apiService } from './apiClass';
-import { authService } from './auth';
+import { apiService } from './apiClass.ts';
+import { authService } from './auth.ts';
 
 interface SupportOrderRaw {
   id: number | string;
   category_name?: string;
-  catergory_name?: string;
+  status?: string;
+  created_at?: string;
+}
+
+interface SupportOrderByIDRaw {
+  id: number | string;
+  category_name?: string;
   status?: string;
   created_at?: string;
 }
@@ -22,7 +28,7 @@ export interface SupportOrder {
 
 const normalizeOrder = (order: SupportOrderRaw): SupportOrder => ({
   id: order.id,
-  category_name: order.category_name ?? order.catergory_name ?? '',
+  category_name: order.category_name ?? '',
   status: order.status ?? '',
   created_at: order.created_at ?? '',
 });
@@ -31,7 +37,7 @@ export async function getSupportOrders(): Promise<SupportOrder[]> {
   return await authService.WithRefresh(async () => {
     const token = apiService.getToken();
     const response: SupportOrdersResponse = await apiService.get(
-      '/supports/orders',
+      '/support/orders',
       {},
       {
         Authorization: `Bearer ${token}`,
@@ -39,7 +45,24 @@ export async function getSupportOrders(): Promise<SupportOrder[]> {
       },
     );
 
-    const orders = Array.isArray(response?.orders) ? response.orders : [];
+    const orders = Array.isArray(response?.order) ? response.order : [];
+    return orders.map(normalizeOrder);
+  });
+}
+
+export async function getSupportOrder(id: number): Promise<SupportOrder[]> {
+  return await authService.WithRefresh(async () => {
+    const token = apiService.getToken();
+    const response: SupportOrdersResponse = await apiService.get(
+        `/support/orders/${id}`,
+        {},
+        {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+    );
+
+    const orders = Array.isArray(response?.order) ? response.order : [];
     return orders.map(normalizeOrder);
   });
 }
