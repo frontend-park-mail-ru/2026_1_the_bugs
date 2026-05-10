@@ -1,11 +1,33 @@
-import type { SupportOrder } from '../../types/support';
+import { useState } from 'the-react';
+import type { SupportOrder, SupportOrderStatus } from '../../types/support';
 import styles from './OrderCard.module.css';
+
+const STATUS_OPTIONS: { value: SupportOrderStatus; label: string }[] = [
+  { value: 'sent', label: 'в обработке' },
+  { value: 'in_progress', label: 'выполнено' },
+  { value: 'finished', label: 'закрыто' },
+];
 
 interface OrderCardProps {
   order: SupportOrder;
+  onStatusChange?: (id: number, status: SupportOrderStatus) => Promise<void>;
 }
 
-export function OrderCard({ order }: OrderCardProps) {
+export function OrderCard({ order, onStatusChange }: OrderCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const handleStatusSelect = async (status: SupportOrderStatus) => {
+    if (!onStatusChange || status === order.status) { setIsOpen(false); return; }
+    setSaving(true);
+    setIsOpen(false);
+    try {
+      await onStatusChange(order.id, status);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const formattedDate = new Date(order.created_at).toLocaleDateString('ru-RU', {
     day: 'numeric',
     month: 'long',
@@ -50,9 +72,30 @@ export function OrderCard({ order }: OrderCardProps) {
         <div className={styles.date}>{formattedDate}</div>
       </div>
       <div className={styles.footer}>
-        <span className={`${styles.status} ${getStatusColor(order.status)}`}>
-          {getStatusLabel(order.status)}
-        </span>
+        <div className={styles.statusWrapper}>
+          <button
+            className={`${styles.status} ${getStatusColor(order.status)} ${onStatusChange ? styles.statusClickable : ''}`}
+            onClick={() => onStatusChange && setIsOpen(!isOpen)}
+            disabled={saving}
+            aria-expanded={isOpen}
+          >
+            {saving ? '...' : getStatusLabel(order.status)}
+            {onStatusChange && <span className={styles.statusArrow}>{isOpen ? '▲' : '▼'}</span>}
+          </button>
+          {isOpen && (
+            <div className={styles.statusDropdown}>
+              {STATUS_OPTIONS.filter(o => o.value !== order.status).map(o => (
+                <button
+                  key={o.value}
+                  className={`${styles.statusOption} ${getStatusColor(o.value)}`}
+                  onClick={() => handleStatusSelect(o.value)}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
