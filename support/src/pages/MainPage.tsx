@@ -1,4 +1,4 @@
-import { SupportRequestPageEntry } from "./SupportRequestPage/SupportRequestPage";
+import { SupportRequestPageEntry } from "../components/SupportRequestPage/SupportRequestPage";
 export function HomePage() {
     return (
         <main class="support-page">

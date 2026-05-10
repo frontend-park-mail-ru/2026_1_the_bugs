@@ -54,7 +54,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
       <div className={style.supportLayer}>
         {isAuthenticate && (
            <div className={style.supportDock}>
-            {/* {isSupportOpen  &&!isMapPage && (
+            {isSupportOpen  &&!isMapPage && (
               <div className={style.supportFrameWrap}>
                <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow': 'hidden', 'max-height': '750px'}}>
                   <iframe
@@ -76,7 +76,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
             >
               <img src="/svg/message.svg" alt="Поддержка" aria-hidden="true" draggable="false" />
             </button>
-             )} */}
+             )}
            
         </div>
         )}
