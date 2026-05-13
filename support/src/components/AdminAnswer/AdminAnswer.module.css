@@ -1,0 +1,205 @@
+/* page layout — как в AdminPage */
+.page {
+  min-height: 100dvh;
+  width: 100%;
+  display: grid;
+  place-items: start center;
+  align-content: start;
+  padding: 24px;
+  background: var(--bg);
+}
+
+/* карточка — как authCard в AdminAuth */
+.card {
+  width: min(100%, 700px);
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 34px 40px 28px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.id {
+  margin: 0;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text);
+  -webkit-text-stroke: 0.2px currentColor;
+}
+
+.date {
+  font-family: "Aqum Two", system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* заголовок — как .title в AdminAuth */
+.title {
+  margin: 0 0 22px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1;
+  -webkit-text-stroke: 0.25px currentColor;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+/* метка — как .label в AdminAuth */
+.label {
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text);
+  -webkit-text-stroke: 0.2px currentColor;
+}
+
+/* поле только для чтения — input из index.css, но без radius-L */
+.readOnlyField {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 90px;
+  word-wrap: break-word;
+}
+
+/* фото */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.photoLink {
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.photoLink:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.photo {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+/* textarea наследует глобальные стили из index.css, добавляем только min-height и resize */
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+  border-radius: 18px;
+}
+
+.textarea:focus {
+  box-shadow: var(--shadow-accent);
+}
+
+/* кнопки действий */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.backButton {
+  min-width: 120px;
+  min-height: 48px;
+  padding: 10px 28px;
+  background: var(--muted);
+  color: #fff;
+  box-shadow: var(--shadow);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.backButton:hover:not(:disabled) {
+  background: #5a5a5a;
+}
+
+.submitButton {
+  min-width: 120px;
+  min-height: 48px;
+  padding: 10px 28px;
+  color: #ffffff;
+  background: var(--accent);
+  box-shadow: var(--shadow);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-accent);
+}
+
+/* загрузка */
+.loading {
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+}
+
+/* ошибки */
+.error {
+  font-family: "Aqum Two", system-ui, sans-serif;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 24px 18px 20px;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+
+  .label {
+    font-size: 18px;
+  }
+
+  .actions {
+    justify-content: space-between;
+  }
+
+  .backButton,
+  .submitButton {
+    flex: 1;
+    min-width: 0;
+    font-size: 18px;
+    min-height: 44px;
+  }
+}

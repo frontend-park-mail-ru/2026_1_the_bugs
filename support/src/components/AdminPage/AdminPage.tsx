@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'the-react';
 import { apiService } from '../../../../src/services/apiClass';
+import { useNavigate } from '../../../../src/RouterDOM';
 import { ErrorView } from '../../../../src/components/Errors/Errors';
 import type { SupportOrder, SupportOrdersResponse, SupportOrderStatus } from '../../types/support';
 import { OrderCard } from '../OrderCard/OrderCard';
@@ -15,6 +16,7 @@ const MOCK_ORDERS: SupportOrder[] = [
 ];
 
 export function AdminPage() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<SupportOrder[]>(MOCK_ORDERS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -25,10 +27,11 @@ export function AdminPage() {
         setLoading(true);
         setError(null);
         const response: SupportOrdersResponse = await apiService.get('/support/orders');
-        const loaded = response.orders || [];
+        const loaded = response.order || [];
         setOrders(loaded.length > 0 ? loaded : MOCK_ORDERS);
       } catch (err: unknown) {
         setError(err);
+        setOrders(MOCK_ORDERS);
       } finally {
         setLoading(false);
       }
@@ -64,6 +67,7 @@ export function AdminPage() {
               key={String(order.id)}
               order={order}
               onStatusChange={handleStatusChange}
+              onOpenOrder={(id: number) => navigate(`/admin/order/${id}`)}
             />
           ))}
         </div>

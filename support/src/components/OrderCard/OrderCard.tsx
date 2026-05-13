@@ -11,9 +11,10 @@ const STATUS_OPTIONS: { value: SupportOrderStatus; label: string }[] = [
 interface OrderCardProps {
   order: SupportOrder;
   onStatusChange?: (id: number, status: SupportOrderStatus) => Promise<void>;
+  onOpenOrder?: (id: number) => void;
 }
 
-export function OrderCard({ order, onStatusChange }: OrderCardProps) {
+export function OrderCard({ order, onStatusChange, onOpenOrder }: OrderCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -63,7 +64,19 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
   };
 
   return (
-    <div className={styles.orderCard}>
+    <div
+      className={styles.orderCard}
+      role={onOpenOrder ? 'button' : undefined}
+      tabIndex={onOpenOrder ? 0 : undefined}
+      onClick={() => onOpenOrder?.(order.id)}
+      onKeyDown={(e: KeyboardEvent) => {
+        if (!onOpenOrder) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpenOrder(order.id);
+        }
+      }}
+    >
       <div className={styles.header}>
         <div className={styles.info}>
           <h3 className={styles.orderNumber}>№{order.id}</h3>
@@ -75,7 +88,10 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
         <div className={styles.statusWrapper}>
           <button
             className={`${styles.status} ${getStatusColor(order.status)} ${onStatusChange ? styles.statusClickable : ''}`}
-            onClick={() => onStatusChange && setIsOpen(!isOpen)}
+            onClick={(e: MouseEvent) => {
+              e.stopPropagation();
+              onStatusChange && setIsOpen(!isOpen);
+            }}
             disabled={saving}
             aria-expanded={isOpen}
           >
@@ -88,7 +104,10 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
                 <button
                   key={o.value}
                   className={`${styles.statusOption} ${getStatusColor(o.value)}`}
-                  onClick={() => handleStatusSelect(o.value)}
+                  onClick={(e: MouseEvent) => {
+                    e.stopPropagation();
+                    handleStatusSelect(o.value);
+                  }}
                 >
                   {o.label}
                 </button>

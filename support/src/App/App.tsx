@@ -4,6 +4,7 @@ import { apiService } from '../../../src/services/apiClass';
 import { HomePage } from '../pages/MainPage';
 import { AdminAuth } from '../components/AdminAuth/AdminAuth.tsx';
 import { AdminPage } from '../components/AdminPage/AdminPage.tsx';
+import { AdminAnswer } from '../components/AdminAnswer/AdminAnswer.tsx';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -29,6 +30,13 @@ export function App() {
     <main className="main">
       <div className="page">
         <Switch key="root" currentPath={currentPath} >
+          <Router currentPath={currentPath} path="/admin/order/{id}">
+            {isAdminAuth ? (
+              <AdminAnswer key="AdminAnswer" />
+            ) : (
+              <AdminAuth key="AdminAuthOrder" onLogin={() => setIsAdminAuth(true)} />
+            )}
+          </Router>
           <Router currentPath={currentPath} path="/admin">
             {isAdminAuth ? (
               <AdminPage key="AdminPage" />
