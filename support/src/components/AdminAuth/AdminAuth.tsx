@@ -26,7 +26,7 @@ export function AdminAuth({ onLogin }: AdminAuthProps) {
   return (
     <main className={styles.adminPage}>
       <section className={styles.authCard} aria-label="Авторизация администратора">
-        <h1 className={styles.title}>Авторизация</h1>
+        <h1 className={styles.title}>Авторизация администратора</h1>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label htmlFor="admin-login" className={styles.label}>Логин / Email</label>

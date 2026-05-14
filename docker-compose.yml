@@ -1,7 +1,0 @@
-services:
-  frontend-support:
-    build:
-      context: .
-      dockerfile: support/Dockerfile
-    ports:
-      - "81:80"

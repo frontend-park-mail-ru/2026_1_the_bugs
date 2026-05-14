@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'the-react';
 import { apiService } from '../../../../src/services/apiClass';
 import { authService } from '../../../../src/services/auth';
+import { useNavigate } from '../../../../src/RouterDOM';
 import { ErrorView } from '../../../../src/components/Errors/Errors';
 import type { SupportOrder, SupportOrdersResponse, SupportOrderStatus } from '../../types/support';
 import { OrderCard } from '../OrderCard/OrderCard';
 import styles from './AdminPage.module.css';
 
-const MOCK_ORDERS: SupportOrder[] = [
-  {
-    id: 8643352,
-    category_name: 'Личный кабинет и аккаунт',
-    status: 'sent',
-    created_at: '2026-04-21T23:12:00+03:00',
-  },
-];
-
 export function AdminPage() {
-  const [orders, setOrders] = useState<SupportOrder[]>(MOCK_ORDERS);
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState<SupportOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
 
@@ -34,10 +27,11 @@ export function AdminPage() {
             return res
           }
         )
-        const loaded = response.orders || [];
-        setOrders(loaded.length > 0 ? loaded : MOCK_ORDERS);
+        const loaded = response.order || [];
+        setOrders(loaded.length > 0 ? loaded : []);
       } catch (err: unknown) {
         setError(err);
+        setOrders([]);
       } finally {
         setLoading(false);
       }
@@ -45,15 +39,6 @@ export function AdminPage() {
 
     loadOrders();
   }, []);
-
-  const handleStatusChange = async (id: number, status: SupportOrderStatus) => {
-    const updated = orders.map((o: SupportOrder) => o.id === id ? { ...o, status } : o);
-    setOrders(updated);
-    await authService.WithRefresh(()=>{
-      const token = apiService.getToken();
-      return apiService.put(`/support/orders/${id}`, { status }, { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, });
-    });
-  };
 
   return (
     <main className={styles.adminPage}>
@@ -75,7 +60,7 @@ export function AdminPage() {
             <OrderCard
               key={String(order.id)}
               order={order}
-              onStatusChange={handleStatusChange}
+              onOpenOrder={(id: number) => navigate(`/admin/order/${id}`)}
             />
           ))}
         </div>

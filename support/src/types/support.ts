@@ -15,13 +15,13 @@ export interface SupportOrder {
 }
 
 export interface SupportOrderFull extends SupportOrder {
-  user_id: number;
+  user_id?: number;
   description: string;
-  updated_at: string;
-  photos: SupportOrderPhoto[];
+  updated_at?: string;
+  images?: SupportOrderPhoto[];
 }
 
 export interface SupportOrdersResponse {
-  orders: SupportOrder[];
+  order: SupportOrder[];
   len: number;
 }

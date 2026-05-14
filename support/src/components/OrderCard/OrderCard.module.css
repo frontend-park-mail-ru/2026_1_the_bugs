@@ -134,7 +134,7 @@
 }
 
 .statusFinished {
-  background: var(--muted);
+  background: #ddd;
   color: var(--text);
 }
 

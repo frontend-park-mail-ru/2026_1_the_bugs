@@ -5,6 +5,7 @@ import { apiService } from '../../../src/services/apiClass.ts';
 import { HomePage } from '../pages/MainPage';
 import { AdminAuth } from '../components/AdminAuth/AdminAuth.tsx';
 import { AdminPage } from '../components/AdminPage/AdminPage.tsx';
+import { AdminAnswer } from '../components/AdminAnswer/AdminAnswer.tsx';
 
 export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -31,7 +32,14 @@ export function App() {
   return (
     <main className="main">
       <div className="page">
-        <Switch key="root" currentPath={currentPath}>
+        <Switch key="root" currentPath={currentPath} >
+          <Router currentPath={currentPath} path="/admin/order/{id}">
+            {isAdminAuth ? (
+              <AdminAnswer key="AdminAnswer" />
+            ) : (
+              <AdminAuth key="AdminAuthOrder" onLogin={handleAdminLogin} />
+            )}
+          </Router>
           <Router currentPath={currentPath} path="/admin">
             {isAdminAuth ? (
               <AdminPage key="AdminPage" />
