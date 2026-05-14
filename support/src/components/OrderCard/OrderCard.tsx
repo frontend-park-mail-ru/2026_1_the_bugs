@@ -66,7 +66,7 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
     <div className={styles.orderCard}>
       <div className={styles.header}>
         <div className={styles.info}>
-          <h3 className={styles.orderNumber}>№{order.id}</h3>
+          <h3 className={styles.orderNumber}>№{order.id.toString()}</h3>
           <p className={styles.category}>{order.category_name}</p>
         </div>
         <div className={styles.date}>{formattedDate}</div>

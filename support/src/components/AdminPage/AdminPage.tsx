@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'the-react';
 import { apiService } from '../../../../src/services/apiClass';
+import { authService } from '../../../../src/services/auth';
 import { ErrorView } from '../../../../src/components/Errors/Errors';
 import type { SupportOrder, SupportOrdersResponse, SupportOrderStatus } from '../../types/support';
 import { OrderCard } from '../OrderCard/OrderCard';
@@ -24,7 +25,15 @@ export function AdminPage() {
       try {
         setLoading(true);
         setError(null);
-        const response: SupportOrdersResponse = await apiService.get('/support/orders');
+        const response: SupportOrdersResponse = await authService.WithRefresh(()=>{
+            const token = apiService.getToken();
+            let res = apiService.get('/support/orders', {},   {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            });
+            return res
+          }
+        )
         const loaded = response.orders || [];
         setOrders(loaded.length > 0 ? loaded : MOCK_ORDERS);
       } catch (err: unknown) {
@@ -40,7 +49,10 @@ export function AdminPage() {
   const handleStatusChange = async (id: number, status: SupportOrderStatus) => {
     const updated = orders.map((o: SupportOrder) => o.id === id ? { ...o, status } : o);
     setOrders(updated);
-    await apiService.put(`/support/orders/${id}`, { status }, { 'Content-Type': 'application/json' });
+    await authService.WithRefresh(()=>{
+      const token = apiService.getToken();
+      return apiService.put(`/support/orders/${id}`, { status }, { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, });
+    });
   };
 
   return (

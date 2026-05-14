@@ -14,18 +14,18 @@ class AuthService {
     /** ID таймаута для проактивного обновления токена */
     private refreshTimeout: number | null = null;
 
-    /**
-     * Запускает таймер обновления, который обновляет токен до истечения срока действия.
-     * @param exp - Время истечения токена в секундах (относительное).
-     */
-    startRefreshTimer(exp: number) {
-        if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
+    // /**
+    //  * Запускает таймер обновления, который обновляет токен до истечения срока действия.
+    //  * @param exp - Время истечения токена в секундах (относительное).
+    //  */
+    // startRefreshTimer(exp: number) {
+    //     if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
         
-        this.refreshTimeout = setTimeout(async () => {
-            const date = await this.refreshTokenSilently();
-            this.startRefreshTimer(date.expire_at);
-        }, exp * 1000);
-    }
+    //     this.refreshTimeout = setTimeout(async () => {
+    //         const date = await this.refreshTokenSilently();
+    //         this.startRefreshTimer(date.expire_at);
+    //     }, exp * 1000);
+    // }
 
     /**
      * Тихо обновляет токен с дедупликацией промисов.
@@ -60,8 +60,19 @@ class AuthService {
             { "Content-Type": "application/x-www-form-urlencoded" }
         );
         apiService.setToken(cred.access_token);
-        this.startRefreshTimer(cred.expire_at);
     }
+
+    async adminLogin(data: { email: string; password: string }) {
+        const params = new URLSearchParams(data);
+        
+        const cred: LoginResponse = await apiService.post(
+            "/auth/admin/login",
+            params.toString(),
+            { "Content-Type": "application/x-www-form-urlencoded" }
+        );
+        apiService.setToken(cred.access_token);
+    }
+
 
     /**
      * Регистрирует нового пользователя и автоматически выполняет вход.
@@ -112,7 +123,7 @@ class AuthService {
                 if (this.refreshTimeout) {
                     clearTimeout(this.refreshTimeout);
                 }
-                this.startRefreshTimer(cred.expire_at);
+                // this.startRefreshTimer(cred.expire_at);
                 return await fn();
             }
             throw e;
@@ -241,7 +252,7 @@ class AuthService {
             if (this.refreshTimeout) {
                 clearTimeout(this.refreshTimeout);
             }
-            this.startRefreshTimer(cred.expire_at);
+            // this.startRefreshTimer(cred.expire_at);
         }catch{
             return false
         }

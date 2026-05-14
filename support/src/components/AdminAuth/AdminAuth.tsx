@@ -1,17 +1,26 @@
 import { useState } from 'the-react';
 import styles from './AdminAuth.module.css';
-
 interface AdminAuthProps {
-  onLogin: () => void;
+  onLogin: (email: string, password: string) => Promise<void>;
 }
 
 export function AdminAuth({ onLogin }: AdminAuthProps) {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    onLogin();
+    setError('');
+    setLoading(true);
+    try {
+      await onLogin(login, password);
+    } catch (err: any) {
+      setError(err.message || 'Ошибка авторизации');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -20,12 +29,12 @@ export function AdminAuth({ onLogin }: AdminAuthProps) {
         <h1 className={styles.title}>Авторизация</h1>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <label htmlFor="admin-login" className={styles.label}>Логин</label>
+          <label htmlFor="admin-login" className={styles.label}>Логин / Email</label>
           <input
             id="admin-login"
             type="text"
             value={login}
-            onInput={(event: any) => setLogin(event.target.value)}
+            onInput={(e: any) => setLogin(e.target.value)}
             className={styles.field}
             autoComplete="username"
             required
@@ -36,14 +45,16 @@ export function AdminAuth({ onLogin }: AdminAuthProps) {
             id="admin-password"
             type="password"
             value={password}
-            onInput={(event: any) => setPassword(event.target.value)}
+            onInput={(e: any) => setPassword(e.target.value)}
             className={styles.field}
             autoComplete="current-password"
             required
           />
 
-          <button type="submit" className={styles.submitButton} disabled={!login.trim() || !password.trim()}>
-            Войти
+          {error && <div className={styles.error}>{error}</div>}
+
+          <button type="submit" className={styles.submitButton} disabled={loading || !login.trim() || !password.trim()}>
+            {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
       </section>

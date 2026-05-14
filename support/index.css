@@ -98,7 +98,6 @@ color: var(--accent);
 
 .fontHero {
   font-family: "Hero", system-ui, sans-serif;
-  -webkit-text-stroke: 0.2px currentColor;
 }
 
 input,
