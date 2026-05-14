@@ -4,7 +4,7 @@ import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
 import cardStyle from '../Card/Card.module.css';
 import { Modal } from '../Modal/Modal';
-import { PromOffer } from '../PromOffer/PromOffer';
+import { Promotion, type PromotionOffer } from '../Promotion/Promotion';
 
 import type { MyPoster, } from '../../types';
 import { Button } from '../Button/Button';
@@ -17,7 +17,7 @@ export function MyPosterList() {
     const [error, setMyPosterError] = useState<string | null>(null);
     const [isPromoteOpen, setIsPromoteOpen] = useState(false);
 
-    const promoteOffers = [
+    const promoteOffers: PromotionOffer[] = [
         {
             title: 'Продвижение на неделю',
             price: '299 ₽',
@@ -69,25 +69,7 @@ export function MyPosterList() {
                 onClose={() => setIsPromoteOpen(false)}
                 contentClassName={style.promoteModal}
             >
-                <div className={style.promoteHeader}>
-                    <h2 className={style.promoteTitle}>Продвижение объявлений</h2>
-                    <p className={style.promoteSubtitle}>
-                        Ваше объявление поднимется выше в поиске и получит больше просмотров.
-                    </p>
-                </div>
-                <div className={style.promoteGrid}>
-                    {promoteOffers.map((offer) => (
-                        <PromOffer
-                            key={offer.title}
-                            title={offer.title}
-                            price={offer.price}
-                            description={offer.description}
-                            actionText={offer.actionText}
-                            badgeText={offer.badgeText}
-                            highlight={offer.highlight}
-                        />
-                    ))}
-                </div>
+                <Promotion offers={promoteOffers} />
             </Modal>
             {anyMenuOpen && (
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
