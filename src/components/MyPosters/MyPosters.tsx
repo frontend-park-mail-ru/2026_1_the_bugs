@@ -1,9 +1,10 @@
-
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
 import { deletePosterByAlias, getMyPosters } from '../../services/posters';
 import style from './MyPosters.module.css';
 import cardStyle from '../Card/Card.module.css';
+import { Modal } from '../Modal/Modal';
+import { PromOffer } from '../PromOffer/PromOffer';
 
 import type { MyPoster, } from '../../types';
 import { Button } from '../Button/Button';
@@ -14,6 +15,24 @@ export function MyPosterList() {
     const [menuOpen, setMenuOpen] = useState<number | null>(null);
     const [loading, setIsLoading] = useState(false);
     const [error, setMyPosterError] = useState<string | null>(null);
+    const [isPromoteOpen, setIsPromoteOpen] = useState(false);
+
+    const promoteOffers = [
+        {
+            title: 'Продвижение на неделю',
+            price: '299 ₽',
+            description: 'Ваше объявление поднимется в топ и получит максимум просмотров за 7 дней.',
+            actionText: 'Попробовать'
+        },
+        {
+            title: 'Продвижение на месяц',
+            price: '699 ₽',
+            description: 'Закрепите объявление в поиске на 30 дней и получите стабильный поток заявок.',
+            actionText: 'Попробовать',
+            badgeText: 'Выгодно',
+            highlight: true
+        }
+    ];
 
     const handleGetMyPosters = async () => {
         setIsLoading(true);
@@ -42,9 +61,34 @@ export function MyPosterList() {
     if (loading) return <div className={style.center}>Загрузка…</div>;
     if (error) return <div className={style.error}>{error}</div>;
 
-        const anyMenuOpen =  menuOpen !== null;
+    const anyMenuOpen = menuOpen !== null;
     return (
         <div className={style.wrapper}>
+            <Modal
+                isOpen={isPromoteOpen}
+                onClose={() => setIsPromoteOpen(false)}
+                contentClassName={style.promoteModal}
+            >
+                <div className={style.promoteHeader}>
+                    <h2 className={style.promoteTitle}>Продвижение объявлений</h2>
+                    <p className={style.promoteSubtitle}>
+                        Ваше объявление поднимется выше в поиске и получит больше просмотров.
+                    </p>
+                </div>
+                <div className={style.promoteGrid}>
+                    {promoteOffers.map((offer) => (
+                        <PromOffer
+                            key={offer.title}
+                            title={offer.title}
+                            price={offer.price}
+                            description={offer.description}
+                            actionText={offer.actionText}
+                            badgeText={offer.badgeText}
+                            highlight={offer.highlight}
+                        />
+                    ))}
+                </div>
+            </Modal>
             {anyMenuOpen && (
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
             )}
@@ -105,6 +149,18 @@ export function MyPosterList() {
                                 </button>
                                 {isMenuOpen && (
                                     <div className={style.menuPopup}>
+                                        <Button
+                                            variant="menu"
+                                            className="fontHero"
+                                            text="Продвигать"
+                                            key="ButtonPromote"
+                                            onClick={(e:MouseEvent) => {
+                                                e.stopPropagation();
+                                                setMenuOpen(null);
+                                                setIsPromoteOpen(true);
+                                            }}
+                                        />
+                                        <div className={style.menuSeparator} />
                                         <Button
                                             variant="menu"
                                             className="fontHero"

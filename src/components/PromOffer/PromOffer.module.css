@@ -1,0 +1,59 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 18px 16px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    min-width: 220px;
+}
+
+.cardHighlight {
+    border-color: #f1c3de;
+    box-shadow: 0 10px 26px rgba(238, 112, 179, 0.18);
+    background: linear-gradient(180deg, #fff, #fff6fb);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4f4f4f;
+}
+
+.title {
+    font-family: "Hero", system-ui, sans-serif;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #ffe7f5;
+    color: #db4ea0;
+}
+
+.price {
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+}
+
+.description {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #7a7a7a;
+}
+
+.action {
+    width: 100%;
+    border-radius: 999px;
+}
+

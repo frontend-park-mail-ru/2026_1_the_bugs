@@ -145,3 +145,43 @@
 .createBtn{
     margin-bottom: 20px;
 }
+
+.promoteModal {
+    --modal-width: min(860px, calc(100vw - 24px));
+    --modal-max-width: min(860px, calc(100vw - 24px));
+    width: min(720px, 92vw);
+    padding: 28px 32px 32px;
+    border-radius: 22px;
+}
+
+.promoteHeader {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.promoteTitle {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.promoteSubtitle {
+    margin: 0;
+    font-size: 13px;
+    color: #6f6f6f;
+}
+
+.promoteGrid {
+    margin-top: 22px;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+@media (max-width: 640px) {
+    .promoteModal {
+        padding: 24px 18px 26px;
+    }
+}
