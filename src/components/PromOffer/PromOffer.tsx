@@ -9,6 +9,7 @@ interface PromOfferProps {
     badgeText?: string;
     highlight?: boolean;
     onAction?: () => void;
+    disabled?: boolean;
 }
 
 export function PromOffer({
@@ -18,7 +19,8 @@ export function PromOffer({
     actionText = 'Попробовать',
     badgeText,
     highlight = false,
-    onAction
+    onAction,
+    disabled = false
 }: PromOfferProps) {
     return (
         <div className={`${styles.card} ${highlight ? styles.cardHighlight : ''}`.trim()}>
@@ -33,8 +35,8 @@ export function PromOffer({
                 className={styles.action}
                 text={actionText}
                 onClick={onAction}
+                disabled={disabled}
             />
         </div>
     );
 }
-

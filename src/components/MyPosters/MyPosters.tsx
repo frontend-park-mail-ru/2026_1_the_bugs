@@ -16,13 +16,15 @@ export function MyPosterList() {
     const [loading, setIsLoading] = useState(false);
     const [error, setMyPosterError] = useState<string | null>(null);
     const [isPromoteOpen, setIsPromoteOpen] = useState(false);
+    const [promotePosterId, setPromotePosterId] = useState<number | null>(null);
 
     const promoteOffers: PromotionOffer[] = [
         {
             title: 'Продвижение на неделю',
             price: '299 ₽',
             description: 'Ваше объявление поднимется в топ и получит максимум просмотров за 7 дней.',
-            actionText: 'Попробовать'
+            actionText: 'Попробовать',
+            promotionCode: 'boost_7_days'
         },
         {
             title: 'Продвижение на месяц',
@@ -30,7 +32,8 @@ export function MyPosterList() {
             description: 'Закрепите объявление в поиске на 30 дней и получите стабильный поток заявок.',
             actionText: 'Попробовать',
             badgeText: 'Выгодно',
-            highlight: true
+            highlight: true,
+            promotionCode: 'boost_30_days'
         }
     ];
 
@@ -66,10 +69,15 @@ export function MyPosterList() {
         <div className={style.wrapper}>
             <Modal
                 isOpen={isPromoteOpen}
-                onClose={() => setIsPromoteOpen(false)}
+                onClose={() => {
+                    setIsPromoteOpen(false);
+                    setPromotePosterId(null);
+                }}
                 contentClassName={style.promoteModal}
             >
-                <Promotion offers={promoteOffers} />
+                {promotePosterId !== null ? (
+                    <Promotion offers={promoteOffers} posterId={promotePosterId} />
+                ) : null}
             </Modal>
             {anyMenuOpen && (
                 <div className={style.menuOverlay} onClick={() => { setMenuOpen(null); }} />
@@ -139,6 +147,7 @@ export function MyPosterList() {
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
+                                                setPromotePosterId(apt.id);
                                                 setIsPromoteOpen(true);
                                             }}
                                         />
