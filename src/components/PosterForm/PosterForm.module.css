@@ -726,6 +726,12 @@
   font-size: 28px;
 }
 
+.successPromotion {
+  width: min(860px, 100%);
+  margin: 16px auto 0;
+  text-align: left;
+}
+
 .addressSuggestion {
   margin-top: 12px;
   border: 1px solid #f2d7e9;
