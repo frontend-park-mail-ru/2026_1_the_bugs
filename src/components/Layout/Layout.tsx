@@ -4,7 +4,6 @@ import { useState } from "the-react/hooks";
 import { authService } from '../../services/auth';
 import type { UserResponse } from 'src/types';
 import style from "./Layout.module.css"
-import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
 import { SUPPORT_URL } from '../../config';
 

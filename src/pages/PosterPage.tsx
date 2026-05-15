@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
-import { addView, getFavoritesCount, getPosterByAlias, getViews, addPosterToFavorites, removePosterFromFavorites  } from '../services/posters';
-import type { ApartmentDetails } from '../types';
+import { addView, getFavoritesCount, getPosterByAlias, getViews, addPosterToFavorites, removePosterFromFavorites, getRoommates, joinRoommates } from '../services/posters';
+import type { ApartmentDetails, Roommate } from '../types';
 
 import layout from '../components/PosterPage/PosterPageLayout.module.css';
 import { PosterGallery } from '../components/PosterPage/PosterGallery';
@@ -13,6 +13,7 @@ import { PosterSummary } from '../components/PosterPage/PosterSummary';
 import { PosterMap } from '../components/PosterPage/PosterMap';
 import { PosterSeller } from '../components/PosterPage/PosterSeller';
 import { PosterCompany } from '../components/PosterPage/PosterCompany';
+import { UsersPool } from '../components/UsersPool/UsersPool';
 
 import { PosterPageSkeleton } from '../components/PosterPage/PosterPageSkeleton';
 import { ErrorView } from '../components/Errors/Errors';
@@ -42,6 +43,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
   const [error, setError] = useState<unknown>(null);
   const [favoritesCount, setFavoritesCount] = useState<number | null>(null);
   const [isFavorite, setIsFavorite] = useState<boolean| null>(null);
+  const [roommates, setRoommates] = useState<Roommate[]>([]);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -81,6 +83,18 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
   
 
   useEffect(() => {
+    const loadRoommates = async () => {
+      try {
+        const resp = await getRoommates(alias);
+        setRoommates(resp.users);
+      } catch (e: any) {
+        console.error(e);
+      }
+    };
+    loadRoommates();
+  }, [alias]);
+
+  useEffect(() => {
     const loadPoster = async () => {
       try {
         await addView(alias);
@@ -90,6 +104,16 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
     };
     loadPoster();
   }, []);
+
+  const handleJoinRoommates = async () => {
+    try {
+      await joinRoommates(alias);
+      const resp = await getRoommates(alias);
+      setRoommates(resp.users);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
 
   const onLikeToggle=(alias: string, isLike: boolean) => {
     if (isLike) {
@@ -173,6 +197,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
               <PosterCompany key="poster_company" poster={poster} />
             </button>
           )}
+          <UsersPool key="users_pool" users={roommates} onJoin={handleJoinRoommates} isAuth={isAuth} />
         </aside>
       </div>
     );

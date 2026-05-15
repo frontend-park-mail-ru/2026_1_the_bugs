@@ -31,9 +31,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
 
   return (
     <header className={`${style.header} ${isMapPage ? style.headerMap : ''}`}>
-      {isMenuOpen && (
-        <div className={style.menuOverlay} onClick={closeMenu} />
-      )}
+      
       <Button
         variant='primary'
         id="DomDeli"
@@ -44,6 +42,10 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
       >
         ДОМДЕЛИ
       </Button>
+
+      {isMenuOpen && (
+        <div className={style.menuOverlay} onClick={closeMenu} />
+      )}
         {!isAuthResolved ? (
           <div className={style['actions']} />
         ) : isAutenticated ? (
@@ -64,7 +66,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
               <Button
                 variant='primary'
                 shape="round"
-                className={isMenuOpen ? style.menuBtnActive : ''}
+                className={style.menuBtnActive}
                 type="button"
                 aria-label="Открыть меню"
                 onClick={(e: MouseEvent) => {
@@ -78,7 +80,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   <img src="/svg/profile.svg" alt="Меню" aria-hidden="true" draggable="false"/>
                 )}
               </Button>
-              {isMenuOpen && (
+              {isMenuOpen &&(
                 <div className={style.menuPopup}>
                   <Button 
                     variant='menu'

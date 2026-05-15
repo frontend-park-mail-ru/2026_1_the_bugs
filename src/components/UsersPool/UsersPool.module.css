@@ -1,0 +1,56 @@
+.users-pool {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  display: grid;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.users-pool__title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.users-pool__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.users-pool__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.users-pool__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.users-pool__name {
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  -webkit-text-stroke: 0.4px currentColor;
+}
+
+.users-pool__empty {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.users-pool__join-btn {
+  width: 100%;
+  border-radius: 50px;
+}

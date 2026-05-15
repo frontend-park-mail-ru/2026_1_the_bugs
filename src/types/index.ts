@@ -78,6 +78,17 @@ export interface Category{
   alias: string;
   name: string;
 }
+
+export interface Roommate {
+  id: number;
+  firstname: string;
+  lastname: string;
+  avatar_url: string;
+}
+
+export interface RoommatesResponse {
+  users: Roommate[];
+}
 export interface ApartmentDetails {
   id: number;
   alias: string;

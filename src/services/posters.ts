@@ -1,4 +1,4 @@
-import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
+import type {Apartment, ApartmentDetails, MyPoster, IFilters, RoommatesResponse} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
@@ -362,4 +362,24 @@ export async function getFavoritesCount(alias: string): Promise<{ favorites: num
         );
     });
     return resp;
+}
+
+export async function getRoommates(alias: string): Promise<RoommatesResponse> {
+    const encodedAlias = encodeURIComponent(alias);
+    return await apiService.get(`/posters/${encodedAlias}/roommates`);
+}
+
+export async function joinRoommates(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/posters/${encodedAlias}/roommates`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
 }
