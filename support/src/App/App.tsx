@@ -25,7 +25,7 @@ export function App() {
 
   // Обработчик логина
   const handleAdminLogin = async (email: string, password: string) => {
-    await authService.login({ email, password });
+    await authService.adminLogin({ email, password });
     setIsAdminAuth(true);
   };
 
