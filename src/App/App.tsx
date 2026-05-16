@@ -5,6 +5,7 @@ import { UtilityComplex } from '../pages/UtilityComplex';
 import { OAuthVerifyPage } from '../pages/OAuthVerifyPage/OAuthVerifyPage';
 import { PosterPage } from '../pages/PosterPage';
 import { CreatePosterPage } from '../pages/CreatePosterPage/CreatePosterPage';
+import { PromotionPaymentPage } from '../pages/PromotionPaymentPage/PromotionPaymentPage';
 import { Layout } from '../components/Layout/Layout';
 import { MyPosterList } from '../components/MyPosters/MyPosters';
 import { EditPosterPage } from '../pages/EditPosterPage/EditPosterPage';
@@ -63,6 +64,9 @@ export function App() {
           </Router>
           <Router currentPath={currentPath} path="/oauth/yandex">
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate}  setCurrentUser={setCurrentUser} provider="yandex" key="OAuthVerifyPageYandex" />
+          </Router>
+          <Router currentPath={currentPath} path="/promotions/waiting">
+            <PromotionPaymentPage />
           </Router>
           <Router currentPath={currentPath} path="*">
             < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
