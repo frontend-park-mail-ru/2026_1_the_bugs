@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
 import { deletePosterByAlias, getMyPosters } from '../../services/posters';
+import { getMyPromotions, type MyPromotionItem } from '../../services/promotions';
 import style from './MyPosters.module.css';
 import cardStyle from '../Card/Card.module.css';
 import { Modal } from '../Modal/Modal';
@@ -12,6 +13,7 @@ import { Button } from '../Button/Button';
 export function MyPosterList() {
     const navigate = useNavigate();
     const [posters, setPosters] = useState<MyPoster[]>([]);
+    const [promotionsByPosterId, setPromotionsByPosterId] = useState<Record<number, MyPromotionItem>>({});
     const [menuOpen, setMenuOpen] = useState<number | null>(null);
     const [loading, setIsLoading] = useState(false);
     const [error, setMyPosterError] = useState<string | null>(null);
@@ -40,8 +42,17 @@ export function MyPosterList() {
     const handleGetMyPosters = async () => {
         setIsLoading(true);
         try {
-            const { posters } = await getMyPosters();
-            setPosters(Array.isArray(posters) ? posters : []);
+            const [postersResponse, promotionsResponse] = await Promise.all([
+                getMyPosters(),
+                getMyPromotions()
+            ]);
+            setPosters(Array.isArray(postersResponse.posters) ? postersResponse.posters : []);
+            const promotions = Array.isArray(promotionsResponse.promotions) ? promotionsResponse.promotions : [];
+            const promotionsMap = promotions.reduce<Record<number, MyPromotionItem>>((acc, promotion) => {
+                acc[promotion.poster_id] = promotion;
+                return acc;
+            }, {});
+            setPromotionsByPosterId(promotionsMap);
         } catch (error: any) {
             setMyPosterError(error?.message || 'Ошибка загрузки объявлений');
         } finally {
@@ -98,6 +109,7 @@ export function MyPosterList() {
                 <section className={style.cardsGrid}>
                     {posters.map((apt) => {
                         const isMenuOpen = menuOpen === apt.id;
+                        const promotion = promotionsByPosterId[apt.id];
                         return (
                             <article
                                 key={apt.id}
@@ -106,6 +118,11 @@ export function MyPosterList() {
                                 onClick={() => navigate(`/posters/${encodeURIComponent(apt.alias)}`)}
                             >
                                 <div className={cardStyle.image}>
+                                    {promotion && (
+                                        <span className={style.promotionBadge}>
+                                            Продвинуто до {promotion.ends_at}
+                                        </span>
+                                    )}
                                     <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
                                 </div>
                                 <div className={cardStyle.info}>

@@ -45,6 +45,21 @@
     width: 100%;
 }
 
+.promotionBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    pointer-events: none;
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(240, 141, 204, 0.35);
+}
+
 .menuBtn {
     position: absolute;
     top: 16px;
