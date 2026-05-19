@@ -128,7 +128,7 @@ export function SupportRequestPageEntry() {
         
         <section className={styles.supportRequestPage}>
             <div className={styles.headerRow}>
-                <h2 className={`fontHero ${styles.title}`}>Поддержка ДомДели</h2>
+                <h2 style={{'font-family': 'Aqum Two, system-ui, sans-serif'}} className={`fontHero ${styles.title}`}>Поддержка ДомДели</h2>
             </div>
             {success ? (<div className={styles.successState}>
     <h2 className={styles.successTitle}>Спасибо за ваше обращение!</h2>
@@ -146,12 +146,13 @@ export function SupportRequestPageEntry() {
                         <input
                             id="support-email"
                             type="email"
-                            className={`fontHero ${posterStyles.input} ${styles.field}`}
+                            className={`${posterStyles.input} ${styles.field}`}
                             value={email}
                             onChange={(e: any) => {
                                 setEmail(e.target.value);
                                 setError(null);
                             }}
+                            style={{'font-weight': '200'}}
                             disabled={loading}
                             placeholder="example@mail.com"
                             required
@@ -162,10 +163,11 @@ export function SupportRequestPageEntry() {
                         <label htmlFor="support-category" className={`fontHero ${posterStyles.label}`}>Тема обращения</label>
                         <select
                             id="support-category"
-                            className={`fontHero ${posterStyles.select} ${styles.field}`}
+                            className={` ${posterStyles.select} ${styles.field}`}
                             value={categoryId}
                             onChange={(e: any) => setCategoryId(e.target.value ? Number(e.target.value) : "")}
                             disabled={loading}
+                            style={{'font-weight': '200'}}
                             required
                         >
                             <option value="">Выберите тему...</option>
@@ -179,7 +181,8 @@ export function SupportRequestPageEntry() {
                         <label htmlFor="support-message" className={`fontHero ${posterStyles.label}`}>Описание проблемы</label>
                         <textarea
                             id="support-message"
-                            className={`fontHero ${posterStyles.textarea} ${styles.messageField}`}
+                            style={{'font-weight': '200'}}
+                            className={`${posterStyles.textarea} ${styles.messageField}`}
                             value={message}
                             onInput={(e: any) => setMessage(e.target.value)}
                             disabled={loading}
@@ -190,7 +193,7 @@ export function SupportRequestPageEntry() {
                 </div>
 
                 <div className={styles.section}>
-                    <h3 className={`fontHero ${posterStyles.sectionTitle}`}>Скриншоты</h3>
+                    <h3 className={`fontHero ${posterStyles.sectionTitle}`}  style={{'font-weight': '200'}}>Скриншоты</h3>
                     <div
                         className={`${posterStyles.uploadBox} ${styles.uploadBox} ${isDragActive ? posterStyles.uploadBoxDragActive : ''}`}
                         onDragEnter={handleDragEnter}

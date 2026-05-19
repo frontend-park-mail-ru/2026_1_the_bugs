@@ -80,7 +80,7 @@ export function CardList(props: CardListProps) {
       const viewportHeight = window.innerHeight || doc.clientHeight;
       const fullHeight = doc.scrollHeight;
 
-      if (scrollTop + viewportHeight >= fullHeight - 220) {
+      if (scrollTop + viewportHeight >= fullHeight - 300) {
         lock.current = true;
         onLoadMore();
       }

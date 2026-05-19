@@ -5,7 +5,21 @@ import { getPosters, getFavorites } from '../services/posters';
 import { type Apartment, type IFilters} from '../types';
 import { useNavigate } from '@router-dom';
 
-const pageSize = 4;
+const updatePageSize = () => {
+      const width = window.innerWidth;
+      if (width >= 2400){
+        return 30;
+      }
+      if (width >= 1400) {
+        return (30);
+      } else if (width >= 1000) {
+        return(15);
+      } else if (width >= 768) {
+        return(10);
+      } else {
+        return(10);
+      }
+};
 
 interface Props{
   search_query: string;
@@ -106,7 +120,7 @@ export function HomePage({search_query, isAuth}: Props) {
     
     try {
       const postersResp = await getPosters({ 
-        limit: pageSize, 
+        limit: updatePageSize(), 
         offset, 
         search: searchVal,
         ...currentFilters,
@@ -116,7 +130,7 @@ export function HomePage({search_query, isAuth}: Props) {
       const total = postersResp.len;
       const nextApartments = append ? [...apartments, ...incoming] : incoming;
       const nextLoadedCount = nextApartments.length;
-      const hasNextByPageSize = incoming.length === pageSize;
+      const hasNextByPageSize = incoming.length === updatePageSize();
 
       setApartments(nextApartments);
 
@@ -156,7 +170,7 @@ export function HomePage({search_query, isAuth}: Props) {
       />
       
       <CardList
-        pageSize={pageSize}
+        pageSize={updatePageSize()}
         apartments={apartments}
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}
