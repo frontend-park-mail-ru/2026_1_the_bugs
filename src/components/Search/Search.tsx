@@ -19,6 +19,26 @@ interface SearchProps {
   isMapPage?: boolean;
 }
 
+// Функция для преобразования объекта фильтров в строку запроса
+const filtersToQueryString = (filters: IFilters): string => {
+  const params = new URLSearchParams();
+  
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          params.append(key, value.join(','));
+        }
+      } else {
+        params.append(key, String(value));
+      }
+    }
+  });
+  
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
+};
+
 export function Search({
   value,
   filters,
@@ -66,79 +86,78 @@ export function Search({
     onSearch(liveValue ?? search, mergedFilters);
   };
 
+  const navigateWithFilters = (path: string) => {
+    const query = filtersToQueryString(selectedFilters);
+    navigate(`${path}${query}`);
+  };
+
   return (
     <div className={style.searchWrap}>
       {isFilterOpen && <div className={style.menuOverlay} onClick={() => setIsFilterOpen(false)} />}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', 'justify-content': 'center', width: '100%' }}>
-         {isSearchVisible ? (
+        {isSearchVisible ? (
           <Button
             variant="accent"
             className={style.btn}
             type="button"
-            onClick={() => navigate('/map')}
+            onClick={() => navigateWithFilters('/map')}
             aria-label="Карта"
-            style={{'margin': '0'}}
-          title="Карта"
-          icon={<img src="/svg/map.svg" alt="" aria-hidden="true" draggable={false} />}
-        />
+            style={{ margin: '0' }}
+            title="Карта"
+            icon={<img src="/svg/map.svg" alt="" aria-hidden="true" draggable={false} />}
+          />
         ) : (
           <Button
             variant="accent"
             className={style.btn}
             type="button"
-            style={{'margin': '0'}}
-            onClick={() => navigate('/')}
+            style={{ margin: '0' }}
+            onClick={() => navigateWithFilters('/')}
             aria-label="Списком"
-          title="Списком"
-          icon={<img src="/svg/list.svg" alt="" aria-hidden="true" draggable={false} />}
-        />)
-      }
+            title="Списком"
+            icon={<img src="/svg/list.svg" alt="" aria-hidden="true" draggable={false} />}
+          />
+        )}
        
         <div className={style.search}>
-        
-        <input
-          id="global-search-input"
-          className={style.input}
-          type="text"
-          placeholder="Поиск по району или метро"
-          value={search}
-          onInput={handleInput}
-          onKeyDown={(e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-              handleSearchClick(search, selectedFilters);
-            }
-          }}
-        />
-        <Button
-          variant="accent"
-          className={style.btn}
-          type="button"
-          aria-label="Фильтр"
-          title="Фильтр"
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          icon={<img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />}
-        />
-
-       
-        
-       <button
-        className={`${style.btn} ${style.dark}`}
-        type="button"
-        aria-label="Поиск"
-        title="Поиск"
-        onClick={() => handleSearchClick(search, selectedFilters)}
-        >
-        <img 
-            src="/svg/search.svg" 
-            alt="" 
-            aria-hidden="true" 
-            draggable={false} 
-        />
-    </button>
+          <input
+            id="global-search-input"
+            className={style.input}
+            type="text"
+            placeholder="Поиск по району или метро"
+            value={search}
+            onInput={handleInput}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                handleSearchClick(search, selectedFilters);
+              }
+            }}
+          />
+          <Button
+            variant="accent"
+            className={style.btn}
+            type="button"
+            aria-label="Фильтр"
+            title="Фильтр"
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            icon={<img src="/svg/filter.svg" alt="" aria-hidden="true" draggable={false} />}
+          />
+          <button
+            className={`${style.btn} ${style.dark}`}
+            type="button"
+            aria-label="Поиск"
+            title="Поиск"
+            onClick={() => handleSearchClick(search, selectedFilters)}
+          >
+            <img 
+              src="/svg/search.svg" 
+              alt="" 
+              aria-hidden="true" 
+              draggable={false} 
+            />
+          </button>
+        </div>
       </div>
-      </div>
-    
-      
 
       {isFilterOpen && (
         <div

@@ -124,7 +124,23 @@ const parseFiltersFromSearch = (params: URLSearchParams): IFilters => {
   };
 };
 
-const syncQueryParams = (searchVal: string, filters: IFilters): string => {
+// Получение параметров карты из URL
+const getMapParamsFromUrl = (params: URLSearchParams) => {
+  const lat = parseFloat(params.get('lat') || '');
+  const lng = parseFloat(params.get('lng') || '');
+  const zoom = parseInt(params.get('zoom') || '', 10);
+  if (isFinite(lat) && isFinite(lng) && isFinite(zoom)) {
+    return { lat, lng, zoom };
+  }
+  return null;
+};
+
+// Формирование полного URL с параметрами поиска, фильтров и карты
+const buildFullUrl = (
+  searchVal: string,
+  filters: IFilters,
+  mapParams: { lat: number; lng: number; zoom: number }
+): string => {
   const params = new URLSearchParams();
 
   if (searchVal) params.set('search_query', searchVal);
@@ -142,7 +158,13 @@ const syncQueryParams = (searchVal: string, filters: IFilters): string => {
   if (filters.not_first_floor) params.set('not_first_floor', 'true');
   if (filters.not_last_floor) params.set('not_last_floor', 'true');
 
-  return params.toString();
+  // Добавляем параметры карты
+  params.set('lat', mapParams.lat.toFixed(6));
+  params.set('lng', mapParams.lng.toFixed(6));
+  params.set('zoom', String(mapParams.zoom));
+
+  const query = params.toString();
+  return `${window.location.pathname}${query ? `?${query}` : ''}`;
 };
 
 const appendFiltersToParams = (params: URLSearchParams, searchVal: string, filters: IFilters) => {
@@ -161,7 +183,6 @@ const appendFiltersToParams = (params: URLSearchParams, searchVal: string, filte
   if (filters.not_first_floor) params.set('not_first_floor', 'true');
   if (filters.not_last_floor) params.set('not_last_floor', 'true');
 };
-
 
 function formatPrice(price?: number) {
   if (!price) return '';
@@ -197,7 +218,6 @@ function makeGroupHtml(text: string) {
   `;
 }
 
-
 function priceIcon(L: any, price?: number) {
   return L.divIcon({
     className: 'cian-marker',
@@ -225,11 +245,11 @@ function groupIcon(L: any, count?: number, minPrice?: number) {
   });
 }
 
-
 export default function PostersMap() {
   const initialParams = new URLSearchParams(window.location.search);
   const initialSearch = initialParams.get('search_query') || '';
   const initialFilters = parseFiltersFromSearch(initialParams);
+  const initialMapParams = getMapParamsFromUrl(initialParams);
 
   const navigate = useNavigate();
   const [selectedPoint, setSelectedPoint] = useState<{ lat: number; lng: number } | null>(null);
@@ -241,17 +261,22 @@ export default function PostersMap() {
   const [filters, setFilters] = useState<IFilters>(initialFilters);
   const [mapController, setMapController] = useState<{ map: any; markersLayer: any } | null>(null);
 
+  const [mapParams, setMapParams] = useState(initialMapParams);
+  const updateUrl = (searchVal: string, currentFilters: IFilters, currentMapParams: any) => {
+    const url = buildFullUrl(searchVal, currentFilters, currentMapParams);
+    navigate(url);
+  };
+
   const handleSearch = (searchVal: string, nextFilters: IFilters) => {
     setSearchQuery(searchVal);
     setFilters(nextFilters);
-    const query = syncQueryParams(searchVal, nextFilters);
-    navigate(`${window.location.pathname}${query ? `?${query}` : ''}`);
+    updateUrl(searchVal, nextFilters, mapParams);
   };
 
   const loadPostersByPoint = async (lat: number, lng: number) => {
     setLoading(true);
     try {
-      let searchParams = new URLSearchParams()
+      let searchParams = new URLSearchParams();
       searchParams.set('lat', String(lat));
       searchParams.set('lon', String(lng));
       appendFiltersToParams(searchParams, searchQuery, filters);
@@ -269,7 +294,6 @@ export default function PostersMap() {
 
   const closePanel = () => {
     setIsPanelOpen(false);
-    
   };
 
   const loadPosters = async (map: any, markersLayer: any, searchVal: string, currentFilters: IFilters) => {
@@ -277,7 +301,7 @@ export default function PostersMap() {
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
     const zoom = map.getZoom();
-    let searchParams = new URLSearchParams()
+    let searchParams = new URLSearchParams();
     searchParams.set('sw_lat', String(sw.lat));
     searchParams.set('sw_lon', String(sw.lng));
     searchParams.set('ne_lat', String(ne.lat));
@@ -300,31 +324,30 @@ export default function PostersMap() {
 
         const props = item.propertiese || {};
 
-        let icon
-        if (props.cluster){
-          icon = clusterIcon(getLeafletGlobal(), props.count)
-        } else if (props.group){
-          icon = groupIcon(getLeafletGlobal(), props.count, props.priceMin)
-        } else{
-          icon = priceIcon(getLeafletGlobal(), props.price)
+        let icon;
+        if (props.cluster) {
+          icon = clusterIcon(getLeafletGlobal(), props.count);
+        } else if (props.group) {
+          icon = groupIcon(getLeafletGlobal(), props.count, props.priceMin);
+        } else {
+          icon = priceIcon(getLeafletGlobal(), props.price);
         }
 
         const marker = getLeafletGlobal().marker([lat, lng], { icon });
 
         marker.on('click', (e: any) => {
-            e.propagate = false;
-            e.originalEvent.stopPropagation();
-            
-            if (props.cluster) {
-                map.flyTo([lat, lng], zoom*1.5, {
-                    animate: true,
-                    duration: 0.5
-                });
-                
-            } else {
-                setSelectedPoint({ lat, lng });
-                loadPostersByPoint(lat, lng);
-            }
+          e.propagate = false;
+          e.originalEvent.stopPropagation();
+
+          if (props.cluster) {
+            map.flyTo([lat, lng], zoom * 1.5, {
+              animate: true,
+              duration: 0.5,
+            });
+          } else {
+            setSelectedPoint({ lat, lng });
+            loadPostersByPoint(lat, lng);
+          }
         });
         marker.addTo(markersLayer);
       });
@@ -333,8 +356,10 @@ export default function PostersMap() {
     }
   };
 
+  // Инициализация карты
   useEffect(() => {
     let controller: { map: any; markersLayer: any } | null = null;
+    let isMounted = true;
 
     const init = async () => {
       try {
@@ -342,21 +367,26 @@ export default function PostersMap() {
         const mapElement = document.getElementById(MAP_ELEMENT_ID);
         if (!mapElement) return;
         if (mapElement.innerHTML.trim()) return;
+        let mapCoords = mapParams ? mapParams : { lat: 55.751244, lng: 37.618423, zoom: 11 }
+        if (mapParams){
+          setMapParams(mapCoords)
+        }
 
-        const map = L.map(MAP_ELEMENT_ID, { 
-          attributionControl: false, 
-          zoomControl: true 
-        }).setView([55.751244, 37.618423], 11);
-        
+        // Создаём карту с начальными координатами из состояния mapParams
+        const map = L.map(MAP_ELEMENT_ID, {
+          attributionControl: false,
+          zoomControl: true,
+        }).setView([mapCoords.lat, mapCoords.lng], mapCoords.zoom);
+
         map.zoomControl.setPosition('topright');
-        
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
+          attribution: '&copy; OpenStreetMap contributors',
         }).addTo(map);
 
         const markersLayer = L.layerGroup().addTo(map);
         controller = { map, markersLayer };
-        setMapController(controller);
+        if (isMounted) setMapController(controller);
       } catch (error) {
         console.warn('Posters map init failed', error);
       }
@@ -365,13 +395,37 @@ export default function PostersMap() {
     init();
 
     return () => {
+      isMounted = false;
       if (controller?.map) {
         controller.map.remove();
         setMapController(null);
       }
     };
-  }, []);
+  }, []); // Зависимости пусты, чтобы создать карту один раз
 
+  // Подписка на события карты и обновление URL при перемещении/зуме
+  useEffect(() => {
+    if (!mapController) return;
+
+    const handleMapMove = () => {
+      const center = mapController.map.getCenter();
+      const zoom = mapController.map.getZoom();
+      const newMapParams = { lat: center.lat, lng: center.lng, zoom };
+      setMapParams(newMapParams);
+      // Обновляем URL, сохраняя текущие search и filters
+      updateUrl(searchQuery, filters, newMapParams);
+    };
+
+    mapController.map.on('moveend', handleMapMove);
+    mapController.map.on('zoomend', handleMapMove);
+
+    return () => {
+      mapController.map.off('moveend', handleMapMove);
+      mapController.map.off('zoomend', handleMapMove);
+    };
+  }, [mapController, searchQuery, filters]); // пересоздаём подписку при изменении search/filters
+
+  // Загрузка маркеров при изменении видимой области или фильтров
   useEffect(() => {
     if (!mapController) return;
 
@@ -406,13 +460,13 @@ export default function PostersMap() {
           isSearchVisible={false}
         />
       </div>
-      
+
       <div className={`poster-panel ${isPanelOpen ? 'open' : ''}`}>
         <div className="panel-header">
           <h3>Объявления</h3>
           <button className="close-btn" onClick={closePanel}>×</button>
         </div>
-        
+
         <div className="panel-content">
           {loading ? (
             <div className="loading-spinner">Загрузка...</div>
@@ -420,34 +474,34 @@ export default function PostersMap() {
             <div className="no-posters">Нет объявлений по данной точке</div>
           ) : (
             <div className="posters-list">
-  {posters.map((apt) => (
-    <article
-                                key={apt.id}
-                                className={cardStyle.card + ' ' + "myCard"}
-                                data-title={apt.address}
-                                onClick={() => navigate(`/posters/${encodeURIComponent(apt.alias)}`)}
-                            >
-              <div className={cardStyle.image}>
-                <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
-              </div>
+              {posters.map((apt) => (
+                <article
+                  key={apt.id}
+                  className={cardStyle.card + ' ' + 'myCard'}
+                  data-title={apt.address}
+                  onClick={() => navigate(`/posters/${encodeURIComponent(apt.alias)}`)}
+                >
+                  <div className={cardStyle.image}>
+                    <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
+                  </div>
 
-              <div className={cardStyle.info}>
-                <div className={cardStyle.meta}>
-                  <span className={cardStyle.location}>
-                    <img src="/svg/location.svg" alt="" aria-hidden="true" draggable="false" />
-                    {apt.address}
-                  </span>
-                  <span>{apt.area.toString()} м²</span>
-                </div>
+                  <div className={cardStyle.info}>
+                    <div className={cardStyle.meta}>
+                      <span className={cardStyle.location}>
+                        <img src="/svg/location.svg" alt="" aria-hidden="true" draggable="false" />
+                        {apt.address}
+                      </span>
+                      <span>{apt.area.toString()} м²</span>
+                    </div>
 
-                <div className={cardStyle.footer}>
-                  <span>{apt.category.name}</span>
-                  <strong>{apt.price.toLocaleString()} ₽</strong>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+                    <div className={cardStyle.footer}>
+                      <span>{apt.category.name}</span>
+                      <strong>{apt.price.toLocaleString()} ₽</strong>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           )}
         </div>
       </div>
