@@ -18,6 +18,7 @@ interface HeaderProps {
 export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser, isMapPage = false }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
   const isMyPostersRoute = normalizedPath === '/myposters';
 
@@ -25,12 +26,25 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
     setIsMenuOpen(false);
   }, [currentPath]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 12);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
   return (
-    <header className={`${style.header} ${isMapPage ? style.headerMap : ''}`}>
+    <header className={`${style.header} ${isMapPage ? style.headerMap : ''} ${isScrolled ? style.headerScrolled : ''}`}>
       
       <Button
         variant='primary'

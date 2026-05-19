@@ -4,11 +4,38 @@
   justify-content: space-between;
   max-width: calc(4 * 250px + 3 * 18px);
   width: 100%;
-  margin: 20px auto;
+  margin: 0px auto;
+  position: -webkit-sticky;
   position: sticky;
-  top: 20px;
-  z-index: 2001;
-  padding-inline: 10px;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 1001;
+  padding-inline: 20px;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline: -20px;
+  border-radius: 0px 0px var(--radius-S) var(--radius-S);
+  background: transparent;
+  backdrop-filter: blur(0);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.headerScrolled {
+  isolation: isolate;
+}
+
+.headerScrolled::before {
+  background: rgba(246, 246, 246, 0.6);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
 }
 
 .headerMap {
@@ -18,6 +45,21 @@
   transform: translateX(-50%);
   z-index: 2002;
   margin: 0;
+}
+
+@media (max-width: 600px) {
+  .header {
+    position: sticky;
+    top: 0px;
+    left: auto;
+    transform: none;
+    width: 100%;
+    margin: 0px auto;
+  }
+
+  .header::before {
+    inset-inline: 0;
+  }
 }
 
 .logo {
