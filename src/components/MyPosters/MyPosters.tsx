@@ -39,7 +39,22 @@ export function MyPosterList() {
         navigate(`/posters/${encodeURIComponent(alias)}/edit`);
     };
 
-    if (loading) return <div className={style.center}>Загрузка…</div>;
+    if (loading) return (
+        <div className={style.wrapper}>
+            <h1 className={style.main}>Мои объявления</h1>
+            <button
+                style={{'display':'flex', 'margin':'0 auto', 'padding': '10px', 'background-color': 'var(--accent)','color': 'white'}}
+                aria-label="Создать объявление"
+                onClick={() => {
+                    navigate('/posters/create');
+                }}
+              >
+                + Создать новое объявление
+              </button>
+            <div className={style.center}>Загрузка…</div>
+        </div>
+    
+);
     if (error) return <div className={style.error}>{error}</div>;
 
         const anyMenuOpen =  menuOpen !== null;

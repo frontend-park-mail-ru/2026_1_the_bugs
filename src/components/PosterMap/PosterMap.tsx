@@ -469,7 +469,7 @@ export default function PostersMap() {
 
         <div className="panel-content">
           {loading ? (
-            <div className="loading-spinner">Загрузка...</div>
+            <div className="loading-spinner"></div>
           ) : posters.length === 0 ? (
             <div className="no-posters">Нет объявлений по данной точке</div>
           ) : (
