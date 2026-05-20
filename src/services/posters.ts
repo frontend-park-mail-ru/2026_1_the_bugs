@@ -1,4 +1,12 @@
-import type {Apartment, ApartmentDetails, MyPoster, IFilters, RoommatesResponse} from "src/types";
+import type {
+    Apartment,
+    ApartmentDetails,
+    MyPoster,
+    IFilters,
+    RoommatesResponse,
+    UserMatchContacts,
+    UserPoolProfile,
+} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
@@ -381,5 +389,58 @@ export async function joinRoommates(alias: string): Promise<void> {
                 'Accept': 'application/json',
             }
         );
+    });
+}
+
+export async function getUserProfileById(userId: number): Promise<UserPoolProfile> {
+    const resp: {
+        firstname: string;
+        lastname?: string;
+        lasname?: string;
+        avatar_url?: string;
+        avatart_url?: string;
+        gender: string;
+        birthday: string;
+        description: string;
+        tags: string[];
+    } = await apiService.get(`/users/${userId}`);
+
+    return {
+        firstname: resp.firstname,
+        lastname: resp.lastname ?? resp.lasname ?? '',
+        avatar_url: resp.avatar_url ?? resp.avatart_url ?? '/svg/profile.svg',
+        gender: resp.gender,
+        birthday: resp.birthday,
+        description: resp.description,
+        tags: Array.isArray(resp.tags) ? resp.tags : [],
+    };
+}
+
+export async function sendMatchByUserId(userId: number): Promise<void> {
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/users/${userId}/match`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+    });
+}
+
+export async function getUserContactsById(userId: number): Promise<UserMatchContacts> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        const resp: UserMatchContacts = await apiService.get(
+            `/users/${userId}/contacts`,
+            {},
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp;
     });
 }

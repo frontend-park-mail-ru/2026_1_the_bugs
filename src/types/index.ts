@@ -89,6 +89,22 @@ export interface Roommate {
 export interface RoommatesResponse {
   users: Roommate[];
 }
+
+export interface UserPoolProfile {
+  firstname: string;
+  lastname: string;
+  avatar_url: string;
+  gender: string;
+  birthday: string;
+  description: string;
+  tags: string[];
+}
+
+export interface UserMatchContacts {
+  email: string;
+  phone: string;
+}
+
 export interface ApartmentDetails {
   id: number;
   alias: string;
