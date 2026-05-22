@@ -9,8 +9,9 @@ import {
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { ProfileSetAvatar } from './ProfileSetAvatar';
 import { ProfilePassword } from './ProfilePassword';
+import { ProfileRoommateForm } from './ProfileRoommateForm';
 
-type ProfileTab = 'main' | 'password';
+type ProfileTab = 'main' | 'password' | 'roommate';
 type ProfileField =
     | 'firstname'
     | 'lastname'
@@ -320,6 +321,14 @@ export function Profile({setCurrentUser}: Prop) {
                 <span className={style.tabDivider} aria-hidden="true">|</span>
                 <button
                     type="button"
+                    className={`${style.tab} ${activeTab === 'roommate' ? style.activeTab : ''}`}
+                    onClick={() => setActiveTab('roommate')}
+                >
+                    Анкета
+                </button>
+                <span className={style.tabDivider} aria-hidden="true">|</span>
+                <button
+                    type="button"
                     className={`${style.tab} ${activeTab === 'password' ? style.activeTab : ''}`}
                     onClick={() => setActiveTab('password')}
                 >
@@ -376,6 +385,10 @@ export function Profile({setCurrentUser}: Prop) {
             </form>
             )}
 
+
+            {activeTab === 'roommate' && (
+            <ProfileRoommateForm />
+            )}
 
             {activeTab === 'password' && (
             <section className={style.profileForm}>
