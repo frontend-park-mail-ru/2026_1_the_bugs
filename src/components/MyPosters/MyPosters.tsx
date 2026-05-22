@@ -20,6 +20,16 @@ export function MyPosterList() {
     const [isPromoteOpen, setIsPromoteOpen] = useState(false);
     const [promotePosterId, setPromotePosterId] = useState<number | null>(null);
 
+    const formatPromotionDate = (value: string) => {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        return `${day}.${month}`;
+    };
+
     const promoteOffers: PromotionOffer[] = [
         {
             title: 'Продвижение на неделю',
@@ -120,7 +130,7 @@ export function MyPosterList() {
                                 <div className={cardStyle.image}>
                                     {promotion && (
                                         <span className={style.promotionBadge}>
-                                            Продвинуто до {promotion.ends_at}
+                                            Продвинуто до {formatPromotionDate(promotion.ends_at)}
                                         </span>
                                     )}
                                     <img src={apt.avatar_url} alt="Интерьер" draggable="false" />
