@@ -15,6 +15,7 @@ import type { UserResponse } from '../types';
 import { apiService } from '../services/apiClass';
 import { Favorites } from '../components/Favorites/Favorites';
 import PostersMap from '../components/PosterMap/PosterMap';
+import { FriendsPage } from '../components/Friends/Friends';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -97,6 +98,11 @@ export function App() {
                 <Router currentPath={currentPath} path="/profile/favorites">
                   <ProtectedLayout path="/profile/favorites" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutLikes">
                       <Favorites key="FavoritesPage" />
+                  </ProtectedLayout>
+                </Router>
+                <Router currentPath={currentPath} path="/friends">
+                  <ProtectedLayout path="/friends" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutFriends">
+                      <FriendsPage key="FriendsPage" />
                   </ProtectedLayout>
                 </Router>
                 <Router  currentPath={currentPath} path="/map">

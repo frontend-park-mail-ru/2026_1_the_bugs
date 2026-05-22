@@ -107,6 +107,17 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                     }}
                   />
                   <div className={style.menuSeparator} />
+                  <Button
+                    variant='menu'
+                    className="fontHero"
+                    text="Мои друзья"
+                    type="button"
+                    onClick={() => {
+                      closeMenu();
+                      navigate('/friends');
+                    }}
+                  />
+                  <div className={style.menuSeparator} />
                   <Button 
                     variant='menu'
                     className="fontHero"
