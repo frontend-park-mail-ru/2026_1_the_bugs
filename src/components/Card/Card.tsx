@@ -26,7 +26,12 @@ export function Card({ apartment, isFavorite, isAuth }: CardProps) {
     <article className={style.card} data-title={apartment.metro} onClick={onOpenPoster}>
       <div className={style.image}>                         
         <img src={apartment.imageUrl} alt="Интерьер" draggable="false"/>
-        {isAuth && <Button 
+        {apartment.has_active_promotion && (
+          <span className={style.promotion} aria-label="Активная промоакция">
+            <img src="/svg/promoted.svg" alt="" aria-hidden="true" draggable={false} />
+          </span>
+        )}
+        {isAuth && <Button
           id="like" 
           variant='primary' 
           style={{position: 'absolute', right: '12px', top: '12px'}}

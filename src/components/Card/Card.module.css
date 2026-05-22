@@ -31,6 +31,26 @@
   }
 }
 
+.promotion {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promotion img {
+  width: 18px;
+  height: 18px;
+  filter: none;
+}
+
 .chip {
   position: absolute;
   right: 12px;
