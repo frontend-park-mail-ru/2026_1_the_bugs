@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import { useNavigate } from '@router-dom';
 import { addView, getFavoritesCount, getPosterByAlias, getViews, addPosterToFavorites, removePosterFromFavorites, getRoommates, joinRoommates } from '../services/posters';
-import type { ApartmentDetails, Roommate } from '../types';
+import type { ApartmentDetails, Roommate, UserResponse } from '../types';
 
 import layout from '../components/PosterPage/PosterPageLayout.module.css';
 import { PosterGallery } from '../components/PosterPage/PosterGallery';
@@ -21,6 +21,7 @@ import { ErrorView } from '../components/Errors/Errors';
 interface PosterPageProps {
   alias?: string;
   isAuth: boolean;
+  user: UserResponse | null;
 }
 
 const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
@@ -33,7 +34,7 @@ const formatPrice = (price: number) => `${price.toLocaleString()} ₽`;
  * @param alias - Уникальный alias объявления из параметров роутера.
  * @param isAuth - Флаг, указывающий, авторизован ли пользователь.
  */
-export function PosterPage({ alias, isAuth }: PosterPageProps) {
+export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
   if (alias === undefined){
     return null
   }
@@ -111,7 +112,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
       const resp = await getRoommates(alias);
       setRoommates(resp.users);
     } catch (e: any) {
-      console.error(e);
+      navigate('/profile?form=roomate')
     }
   };
 
@@ -197,7 +198,7 @@ export function PosterPage({ alias, isAuth }: PosterPageProps) {
               <PosterCompany key="poster_company" poster={poster} />
             </button>
           )}
-          <UsersPool key="users_pool" users={roommates} onJoin={handleJoinRoommates} isAuth={isAuth} />
+          <UsersPool key="users_pool" users={roommates} user={user} onJoin={handleJoinRoommates} isAuth={isAuth} />
         </aside>
       </div>
     );

@@ -53,6 +53,7 @@ export function App() {
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);
   }, []);
+  console.log("App", currentUser)
 
   return (
     <main className={isMapPage ? 'main mainFull' : 'main'}>
@@ -65,7 +66,7 @@ export function App() {
             <OAuthVerifyPage setIsAuthenticate={setIsAuthenticate}  setCurrentUser={setCurrentUser} provider="yandex" key="OAuthVerifyPageYandex" />
           </Router>
           <Router currentPath={currentPath} path="*">
-            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} key="Layout">
+            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} setCurrentUser={setCurrentUser} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/" currentSearch={currentSearch}>
                   <HomePage search_query="" isAuth={isAuthenticate} key="HomePage" />
@@ -82,7 +83,7 @@ export function App() {
                   <EditPosterPage alias="{alias}" key="EditPosterPage" />
                 </Router>
                 <Router currentPath={currentPath} path="/posters/{alias}">
-                  <PosterPage alias="{alias}" key="PosterPage" isAuth={isAuthenticate} />
+                  <PosterPage alias="{alias}" key="PosterPage" isAuth={isAuthenticate} user={currentUser} />
                 </Router>
                 <Router currentPath={currentPath} path="/my-posters">
                   <ProtectedLayout path="/my-posters" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate}>

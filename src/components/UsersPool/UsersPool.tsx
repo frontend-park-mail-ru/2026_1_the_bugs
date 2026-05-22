@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'the-react/hooks';
-import type { Roommate } from '../../types';
+import type { Roommate, UserResponse } from '../../types';
 import type { UserMatchContacts, UserPoolProfile } from '../../types';
 import { getUserContactsById, getUserProfileById, sendMatchByUserId } from '../../services/posters';
 import { Button } from '../Button/Button';
@@ -10,9 +10,10 @@ interface UsersPoolProps {
   users: Roommate[];
   onJoin?: () => void;
   isAuth: boolean;
+  user: UserResponse | null
 }
 
-export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
+export function UsersPool({ users, onJoin, isAuth, user }: UsersPoolProps) {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedUserName, setSelectedUserName] = useState('Пользователь');
@@ -22,6 +23,13 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
   const [isMatchLoading, setIsMatchLoading] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [statusText, setStatusText] = useState<string | null>(null);
+  const isInclude = users.filter((r) => {
+    if (user === null){
+      return false
+    }
+    return r.id === user.id
+  }).length !== 0
+  console.log(isInclude, users, user?.id, user)
 
   const getAge = (birthday: string) => {
     const date = new Date(birthday);
@@ -124,7 +132,7 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
 
   const age = selectedUserProfile?.birthday ? getAge(selectedUserProfile.birthday) : null;
   const gender = selectedUserProfile?.gender ? normalizeGender(selectedUserProfile.gender) : '';
-
+  console.log(user, selectedUserId)
   return (
     <section className={styles['users-pool']}>
       <h3 className={styles['users-pool__title']}>Хотят жить здесь вместе</h3>
@@ -157,8 +165,9 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
           variant="accent"
           className={styles['users-pool__join-btn']}
           onClick={onJoin}
+          disabled={isInclude}
         >
-          Добавить свою анкету
+          {!isInclude ? 'Добавить свою анкету' : 'Ваша анкета добавлена'}
         </Button>
       )}
 
@@ -217,14 +226,14 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
 
               {statusText && <p className={styles['users-pool__status']}>{statusText}</p>}
 
-              {isAuth &&<Button
+              {isAuth && (user && user.id != selectedUserId) && <Button
                 variant="accent"
                 className={styles['users-pool__match-btn']}
                 onClick={handleMatch}
                 disabled={isMatchLoading}
               >
                 {isMatchLoading ? 'Отправляем...' : 'Жить вместе'}
-              </Button>}
+              </Button> }
             </div>
           ) : null}
         </div>
