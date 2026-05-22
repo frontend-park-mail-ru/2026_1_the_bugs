@@ -415,7 +415,7 @@ export async function getUserProfileById(userId: number): Promise<UserPoolProfil
     };
 }
 
-export async function sendMatchByUserId(userId: number, alias: string): Promise<void> {
+export async function sendMatchByUserId(userId: number, alias: string | null): Promise<void> {
     await authService.WithRefresh(async () => {
         const token = apiService.getToken();
         await apiService.post(

@@ -84,6 +84,7 @@ export interface Roommate {
   first_name: string;
   last_name: string;
   avatar_url?: string;
+  poster_alias?: string;
 }
 
 export interface RoommatesResponse {

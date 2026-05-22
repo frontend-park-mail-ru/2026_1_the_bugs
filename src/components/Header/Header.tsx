@@ -110,7 +110,7 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                   <Button
                     variant='menu'
                     className="fontHero"
-                    text="Мои друзья"
+                    text="Мои сожители"
                     type="button"
                     onClick={() => {
                       closeMenu();
