@@ -10,7 +10,7 @@
 	width: 100%;
 	height: calc(100dvh - 76px);
 	pointer-events: none;
-	z-index: 30;
+	z-index: 1002;
 }
 
 .supportDock {
@@ -34,7 +34,7 @@
 	width: 100%;
 	height: 100%;
 	border: none;
-	min-height: 600px;
+	min-height: 640px;
 	display: block;
 }
 

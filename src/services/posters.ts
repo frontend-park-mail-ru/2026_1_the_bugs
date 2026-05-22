@@ -1,4 +1,13 @@
-import type {Apartment, ApartmentDetails, MyPoster, IFilters} from "src/types";
+import type {
+    Apartment,
+    ApartmentDetails,
+    MyPoster,
+    IFilters,
+    RoommatesResponse,
+    UserMatchContacts,
+    UserPoolProfile,
+    Tag,
+} from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
 import { authService } from "./auth";
@@ -362,4 +371,75 @@ export async function getFavoritesCount(alias: string): Promise<{ favorites: num
         );
     });
     return resp;
+}
+
+export async function getRoommates(alias: string): Promise<RoommatesResponse> {
+    const encodedAlias = encodeURIComponent(alias);
+    return await apiService.get(`/posters/${encodedAlias}/roommates`);
+}
+
+export async function joinRoommates(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/posters/${encodedAlias}/roommates`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        );
+    });
+}
+
+export async function getUserProfileById(userId: number): Promise<UserPoolProfile> {
+    const resp: {
+        first_name: string;
+        last_name: string;
+        avatar_url?: string;
+        gender: string;
+        birthday: string;
+        description: string;
+        tags: Tag[];
+    } = await apiService.get(`/user/${userId}`);
+
+    return {
+        first_name: resp.first_name,
+        last_name: resp.last_name,
+        avatar_url: resp.avatar_url ?? '/svg/profile.svg',
+        gender: resp.gender,
+        birthday: resp.birthday,
+        description: resp.description,
+        tags: Array.isArray(resp.tags) ? resp.tags : [],
+    };
+}
+
+export async function sendMatchByUserId(userId: number): Promise<void> {
+    await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        await apiService.post(
+            `/users/${userId}/match`,
+            null,
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+    });
+}
+
+export async function getUserContactsById(userId: number): Promise<UserMatchContacts> {
+    return await authService.WithRefresh(async () => {
+        const token = apiService.getToken();
+        const resp: UserMatchContacts = await apiService.get(
+            `/users/${userId}/contacts`,
+            {},
+            {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        );
+        return resp;
+    });
 }

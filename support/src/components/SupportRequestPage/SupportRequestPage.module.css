@@ -11,6 +11,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  font-family: Aqum Two, system-ui, sans-serif;
   gap: 12px;
 }
 .errorOverlay {
@@ -58,15 +59,13 @@
 }
 
 .section :global(label) {
-  font-size: 12px;
-  font-family: "Hero", system-ui, sans-serif;
+  font-size: 16px;
   -webkit-text-stroke: 0.1px currentColor;
 }
 
 .section :global(h3) {
   font-size: 16px;
   margin-bottom: 0;
-  font-family: "Hero", system-ui, sans-serif;
   -webkit-text-stroke: 0.1px currentColor;
 }
 
@@ -76,7 +75,6 @@
   max-width: 100%;
   font-size: 10px;
   padding: 9px 12px;
-  font-family: "Hero", system-ui, sans-serif;
 }
 
 .messageField {
@@ -84,7 +82,6 @@
 }
 
 .messageField::placeholder {
-  font-family: "Hero", system-ui, sans-serif;
   color: #999;
 }
 
@@ -154,7 +151,6 @@
   margin: 0;
   font-size: clamp(24px, 5.2vw, 32px);
   line-height: 1.05;
-  font-family: "Hero", system-ui, sans-serif;
   color: var(--accent);
   letter-spacing: -0.02em;
 }

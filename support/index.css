@@ -24,6 +24,8 @@ padding: 0;
 background: none;
 overflow: auto;
 overflow-y: auto;
+font-family: "Hero", system-ui, sans-serif;
+
 }
 
 .support-page {
@@ -73,7 +75,6 @@ color: var(--accent);
 
 .support-question {
 text-align: center;
-font-family: "Hero", system-ui, sans-serif;
 font-size: clamp(15px, 2vw, 22px);
 line-height: 1.25;
 margin-bottom: 14px;
@@ -83,7 +84,6 @@ margin-bottom: 14px;
 .support-footer {
 margin-top: 40px;
 text-align: center;
-font-family: "Hero", system-ui, sans-serif;
 font-size: clamp(16px, 2.2vw, 22px);
 line-height: 1.25;
 -webkit-text-stroke: 0.15px currentColor;
@@ -97,7 +97,9 @@ color: var(--accent);
 }
 
 .fontHero {
-  font-family: "Hero", system-ui, sans-serif;
+  
+  font-weight: 200;
+  font-size: 16px;
 }
 
 input,
@@ -110,8 +112,8 @@ textarea {
   padding: 10px 16px;
   font-size: 14px;
   outline: none;
-  font-family: "Hero", system-ui, sans-serif;
   color: var(--text);
+  font-weight: 200
 }
 
 input:focus,
@@ -121,7 +123,6 @@ textarea:focus {
 
 input::placeholder,
 textarea::placeholder {
-  font-family: "Hero", system-ui, sans-serif;
   color: #999;
 }
 
