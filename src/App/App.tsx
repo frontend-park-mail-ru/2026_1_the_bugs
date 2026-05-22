@@ -89,7 +89,7 @@ export function App() {
                       <MyPosterList key="MyPosterPage" />
                   </ProtectedLayout>
                 </Router>
-                <Router currentPath={currentPath} path="/profile">
+                <Router currentPath={currentPath} path="/profile" currentSearch={currentSearch}>
                   <ProtectedLayout path="/profile" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayout12">
                       <Profile alias="{alias}" setCurrentUser={setCurrentUser} key="ProfilePage" />
                   </ProtectedLayout>
