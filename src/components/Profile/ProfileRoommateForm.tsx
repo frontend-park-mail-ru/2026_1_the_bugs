@@ -99,6 +99,15 @@ export function ProfileRoommateForm() {
 				setIsExisting(false);
 			} catch (e: any) {
 				if (!isMounted) return;
+				if (e?.status === 404) {
+					setIsExisting(false);
+					setBirthday(EMPTY_FORM.birthday);
+					setGender(EMPTY_FORM.gender);
+					setTags(EMPTY_FORM.tags);
+					setDescription(EMPTY_FORM.description);
+					setError(null);
+					return;
+				}
 				const message = e?.data?.details || e?.message || 'Не удалось загрузить анкету';
 				setError(message);
 			} finally {
