@@ -73,63 +73,69 @@
   border-radius: 50px;
 }
 
+
 .users-pool__modal-content {
-  width: min(820px, 96vw) !important;
-  max-width: min(820px, 96vw) !important;
+  width: min(720px, 94vw) !important;
+  max-width: min(720px, 94vw) !important;
   background: var(--bg);
-  border-radius: 28px;
-  padding: 28px 32px 24px;
+  border-radius: 24px;
+  padding: 20px 24px 20px; 
 }
 
 .users-pool__profile {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
+/* Внутренняя обёртка */
 .users-pool__profile-body {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .users-pool__profile-header {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
+  gap: 14px; 
 }
 
+
 .users-pool__profile-avatar {
-  width: 112px;
-  height: 112px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  background: #d9dde1;
 }
+
 
 .users-pool__profile-info {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
 }
 
+
 .users-pool__profile-name {
-  font-family: "Aqum Two", system-ui, sans-serif;
-  font-size: clamp(24px, 3vw, 38px);
-  line-height: 1;
+  font-size: clamp(20px, 4vw, 28px);
+  line-height: 1.1;
   margin: 0;
+  font-weight: lighter;
 }
+
 
 .users-pool__profile-meta {
   font-family: "Hero", system-ui, sans-serif;
-  font-size: 22px;
+  font-size: 18px;
   margin: 0;
 }
+
 
 .users-pool__tags {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   padding: 0;
   margin: 0;
 }
@@ -139,110 +145,107 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 7px 18px;
+  padding: 5px 12px;
   font-family: "Hero", system-ui, sans-serif;
-  font-size: 16px;
-  background: #efbfdf;
+  font-size: 14px;
+  background: #efbfdf85;
   color: #db57b0;
 }
 
+
 .users-pool__description {
-  border-radius: 24px;
+  border-radius: 20px; 
   background: var(--card);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 14px;
   font-family: "Hero", system-ui, sans-serif;
-  font-size: 22px;
-  line-height: 1.35;
+  font-size: 16px;
+  line-height: 1.4;
   margin: 0;
 }
 
+/* Блок контактов */
 .users-pool__contacts {
-  border-radius: 20px;
+  border-radius: 18px;                 /* было 20px */
   background: var(--card);
   box-shadow: var(--shadow);
-  padding: 18px 22px;
+  padding: 12px 16px;                  /* было 18px 22px */
   display: grid;
-  gap: 6px;
+  gap: 4px;                            /* было 6px */
 }
 
 .users-pool__contacts-title {
   margin: 0;
   font-family: "Aqum Two", system-ui, sans-serif;
-  font-size: 20px;
+  font-size: 18px;                     /* было 20px */
 }
 
 .users-pool__contacts-item {
   margin: 0;
   font-family: "Hero", system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 14px;                     /* было 16px */
 }
 
+/* Кнопка "Жить вместе" */
 .users-pool__match-btn {
-  width: min(380px, 100%);
-  min-height: 58px;
+  width: min(320px, 100%);
+  min-height: 48px;                    /* было 58px */
   margin: 0;
-  font-size: 24px;
+  font-size: 20px;                     /* было 24px */
   line-height: 1;
 }
 
+/* Статусы и ошибки */
 .users-pool__status,
 .users-pool__state,
 .users-pool__error {
   margin: 0;
   font-family: "Hero", system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 14px;                     /* было 16px */
 }
 
 .users-pool__status {
   color: var(--text);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
-.users-pool__state {
-  color: var(--muted);
-}
-
-.users-pool__error {
-  color: #d84545;
-}
-
+/* Мобильная адаптация (до 900px) */
 @media (max-width: 900px) {
   .users-pool__modal-content {
-    padding: 18px 14px 14px;
+    padding: 14px 16px 14px;
     border-radius: 20px;
   }
 
   .users-pool__profile {
-    gap: 16px;
+    gap: 12px;
   }
 
   .users-pool__profile-header {
-    gap: 14px;
+    gap: 10px;
   }
 
   .users-pool__profile-avatar {
-    width: 72px;
-    height: 72px;
+    width: 56px;
+    height: 56px;
   }
 
   .users-pool__profile-meta {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .users-pool__tag {
-    font-size: 14px;
-    padding: 5px 10px;
+    font-size: 12px;
+    padding: 4px 10px;
   }
 
   .users-pool__description {
-    font-size: 18px;
-    padding: 14px;
+    font-size: 14px;
+    padding: 12px;
   }
 
   .users-pool__match-btn {
     width: 100%;
-    min-height: 48px;
-    font-size: 22px;
+    min-height: 44px;
+    font-size: 18px;
   }
 }

@@ -23,18 +23,6 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
   const [errorText, setErrorText] = useState<string | null>(null);
   const [statusText, setStatusText] = useState<string | null>(null);
 
-  const usersForRender: Roommate[] =
-    users.length > 0
-      ? users
-      : [
-          {
-            id: -1,
-            firstname: 'Mock',
-            lastname: 'User',
-            avatar_url: '/svg/profile.svg',
-          },
-        ];
-
   const getAge = (birthday: string) => {
     const date = new Date(birthday);
     if (Number.isNaN(date.getTime())) {
@@ -60,32 +48,11 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
     return gender;
   };
 
-  const buildMockProfile = (): UserPoolProfile => ({
-    firstname: 'Иван',
-    lastname: 'Журавлев',
-    avatar_url: '/svg/profile.svg',
-    gender: 'male',
-    birthday: '2004-05-10',
-    description:
-      'Ранний подъём, строгий режим тишины. Гостей не вожу, животных не боюсь. Порядок для меня не пункт, а стиль жизни. Ищу такого же ответственного соседа в спокойную квартиру.',
-    tags: ['Не курит', 'Не любит гостей', 'Порядок - образ жизни', 'Не против животных', 'Ранний подъём'],
-  });
-
   const handleOpenUser = (user: Roommate) => {
-    const fullName = `${user.firstname} ${user.lastname}`.trim() || 'Пользователь';
+    const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
     setSelectedUserName(fullName);
     setSelectedUserId(user.id);
-    if (user.id < 0) {
-      const mock = buildMockProfile();
-      setSelectedUserProfile({
-        ...mock,
-        avatar_url: user.avatar_url || mock.avatar_url,
-        firstname: user.firstname || mock.firstname,
-        lastname: user.lastname || mock.lastname,
-      });
-    } else {
-      setSelectedUserProfile(null);
-    }
+    setSelectedUserProfile(null);
     setContacts(null);
     setErrorText(null);
     setStatusText(null);
@@ -107,14 +74,6 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
     }
     if (!isAuth) {
       setErrorText('Нужно авторизоваться, чтобы отправить симпатию');
-      return;
-    }
-    if (selectedUserId < 0) {
-      setContacts({
-        email: 'ivan.mock@example.com',
-        phone: '+7 (900) 000-00-00',
-      });
-      setStatusText('Взаимный мэтч!');
       return;
     }
 
@@ -144,13 +103,6 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
         return;
       }
 
-      if (selectedUserId < 0) {
-        if (!selectedUserProfile) {
-          setSelectedUserProfile(buildMockProfile());
-        }
-        return;
-      }
-
       try {
         setIsProfileLoading(true);
         setErrorText(null);
@@ -167,7 +119,7 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
   }, [isUserModalOpen, selectedUserId]);
 
   const modalFullName = selectedUserProfile
-    ? `${selectedUserProfile.firstname} ${selectedUserProfile.lastname}`.trim() || selectedUserName
+    ? `${selectedUserProfile.first_name} ${selectedUserProfile.last_name}`.trim() || selectedUserName
     : selectedUserName;
 
   const age = selectedUserProfile?.birthday ? getAge(selectedUserProfile.birthday) : null;
@@ -178,8 +130,8 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
       <h3 className={styles['users-pool__title']}>Хотят жить здесь вместе</h3>
 
       <ul className={styles['users-pool__list']}>
-        {usersForRender.map((user) => {
-          const fullName = `${user.firstname} ${user.lastname}`.trim() || 'Пользователь';
+        {users.map((user) => {
+          const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
           return (
             <li key={user.id} className={styles['users-pool__item']}>
               <Button
@@ -233,7 +185,7 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
                   <h3 className={styles['users-pool__profile-name']}>{modalFullName}</h3>
                   {(age !== null || gender) && (
                     <p className={styles['users-pool__profile-meta']}>
-                      {age !== null ? `${age} года` : ''}
+                      {age !== null ? `${age} ${age % 10 === 1 && age % 100 !== 11 ? 'год' : (age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? 'года' : 'лет')}` : ''}
                       {age !== null && gender ? ', ' : ''}
                       {gender}
                     </p>
@@ -242,8 +194,8 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
                   {selectedUserProfile.tags.length > 0 && (
                     <ul className={styles['users-pool__tags']}>
                       {selectedUserProfile.tags.map((tag, index) => (
-                        <li key={`${tag}-${index}`} className={styles['users-pool__tag']}>
-                          {tag}
+                        <li key={`${tag.alias}-${index}`} className={styles['users-pool__tag']}>
+                          {tag.name}
                         </li>
                       ))}
                     </ul>
@@ -265,14 +217,14 @@ export function UsersPool({ users, onJoin, isAuth }: UsersPoolProps) {
 
               {statusText && <p className={styles['users-pool__status']}>{statusText}</p>}
 
-              <Button
+              {isAuth &&<Button
                 variant="accent"
                 className={styles['users-pool__match-btn']}
                 onClick={handleMatch}
                 disabled={isMatchLoading}
               >
                 {isMatchLoading ? 'Отправляем...' : 'Жить вместе'}
-              </Button>
+              </Button>}
             </div>
           ) : null}
         </div>

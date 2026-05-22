@@ -81,23 +81,27 @@ export interface Category{
 
 export interface Roommate {
   id: number;
-  firstname: string;
-  lastname: string;
-  avatar_url: string;
+  first_name: string;
+  last_name: string;
+  avatar_url?: string;
 }
 
 export interface RoommatesResponse {
   users: Roommate[];
 }
+export interface Tag {
+  alias: string
+  name: string
+}
 
 export interface UserPoolProfile {
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   avatar_url: string;
   gender: string;
   birthday: string;
   description: string;
-  tags: string[];
+  tags: Tag[];
 }
 
 export interface UserMatchContacts {

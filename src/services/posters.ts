@@ -6,6 +6,7 @@ import type {
     RoommatesResponse,
     UserMatchContacts,
     UserPoolProfile,
+    Tag,
 } from "src/types";
 import type { CreatePosterPayload, CreatePosterResponse } from '../types/posterCreate';
 import {apiService} from "./apiClass";
@@ -394,21 +395,19 @@ export async function joinRoommates(alias: string): Promise<void> {
 
 export async function getUserProfileById(userId: number): Promise<UserPoolProfile> {
     const resp: {
-        firstname: string;
-        lastname?: string;
-        lasname?: string;
+        first_name: string;
+        last_name: string;
         avatar_url?: string;
-        avatart_url?: string;
         gender: string;
         birthday: string;
         description: string;
-        tags: string[];
-    } = await apiService.get(`/users/${userId}`);
+        tags: Tag[];
+    } = await apiService.get(`/user/${userId}`);
 
     return {
-        firstname: resp.firstname,
-        lastname: resp.lastname ?? resp.lasname ?? '',
-        avatar_url: resp.avatar_url ?? resp.avatart_url ?? '/svg/profile.svg',
+        first_name: resp.first_name,
+        last_name: resp.last_name,
+        avatar_url: resp.avatar_url ?? '/svg/profile.svg',
         gender: resp.gender,
         birthday: resp.birthday,
         description: resp.description,
