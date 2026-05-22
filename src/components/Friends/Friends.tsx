@@ -227,7 +227,7 @@ export function FriendsPage() {
 	return (
 		<section className={style.page}>
 			<header className={style.head}>
-				<h1 className={style.title}>Друзья</h1>
+				<h1 className={style.main}>Друзья</h1>
 				<p className={style.subtitle}>Следите за друзьями и заявками на совместное проживание.</p>
 			</header>
 
