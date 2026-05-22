@@ -415,12 +415,16 @@ export async function getUserProfileById(userId: number): Promise<UserPoolProfil
     };
 }
 
-export async function sendMatchByUserId(userId: number): Promise<void> {
+export async function sendMatchByUserId(userId: number, alias: string): Promise<void> {
     await authService.WithRefresh(async () => {
         const token = apiService.getToken();
         await apiService.post(
-            `/users/${userId}/match`,
-            null,
+            `/user/${userId}/match`,
+            JSON.stringify(
+                {
+                    "poster_alias": alias
+                }
+            ),
             {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
@@ -433,7 +437,7 @@ export async function getUserContactsById(userId: number): Promise<UserMatchCont
     return await authService.WithRefresh(async () => {
         const token = apiService.getToken();
         const resp: UserMatchContacts = await apiService.get(
-            `/users/${userId}/contacts`,
+            `/user/${userId}/contacts`,
             {},
             {
                 'Authorization': `Bearer ${token}`,

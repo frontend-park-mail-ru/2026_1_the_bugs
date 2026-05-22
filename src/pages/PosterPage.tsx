@@ -198,7 +198,7 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
               <PosterCompany key="poster_company" poster={poster} />
             </button>
           )}
-          <UsersPool key="users_pool" users={roommates} user={user} onJoin={handleJoinRoommates} isAuth={isAuth} />
+          <UsersPool key="users_pool" users={roommates} user={user} onJoin={handleJoinRoommates} isAuth={isAuth} alias={poster.alias} />
         </aside>
       </div>
     );

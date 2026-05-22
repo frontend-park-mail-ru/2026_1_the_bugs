@@ -11,9 +11,10 @@ interface UsersPoolProps {
   onJoin?: () => void;
   isAuth: boolean;
   user: UserResponse | null
+  alias: string
 }
 
-export function UsersPool({ users, onJoin, isAuth, user }: UsersPoolProps) {
+export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps) {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedUserName, setSelectedUserName] = useState('Пользователь');
@@ -88,7 +89,7 @@ export function UsersPool({ users, onJoin, isAuth, user }: UsersPoolProps) {
     try {
       setIsMatchLoading(true);
       setErrorText(null);
-      await sendMatchByUserId(selectedUserId);
+      await sendMatchByUserId(selectedUserId, alias);
       setStatusText('Симпатия отправлена');
 
       try {
