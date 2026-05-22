@@ -104,12 +104,14 @@
 .card {
 	display: flex;
 	align-items: center;
+	justify-content: flex-start;
 	gap: 12px;
 	width: 100%;
 	padding: 10px 12px;
 	border-radius: 12px;
 	background: #fff;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+	text-align: left;
 }
 
 .avatar {
@@ -125,6 +127,8 @@
 	font-size: 18px;
 	line-height: 1.2;
 	font-family: "Hero", system-ui, sans-serif;
+	flex: 1;
+	text-align: left;
 }
 
 @media (max-width: 720px) {
