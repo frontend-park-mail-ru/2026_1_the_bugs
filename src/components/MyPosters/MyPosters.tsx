@@ -161,6 +161,7 @@ export function MyPosterList() {
                                             className="fontHero"
                                             text="Продвигать"
                                             key="ButtonPromote"
+                                            disabled={Boolean(promotion)}
                                             onClick={(e:MouseEvent) => {
                                                 e.stopPropagation();
                                                 setMenuOpen(null);
