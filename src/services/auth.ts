@@ -192,6 +192,42 @@ class AuthService {
         });
     }
 
+    async getRoommateForm() {
+        return await this.WithRefresh(async () => {
+            const token = apiService.getToken();
+            const data = await apiService.get(
+                '/user/me/roommate-form',
+                {},
+                { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
+            );
+            return data;
+        });
+    }
+
+    async createRoommateForm(payload: { birthday: string; description: string; gender: string; tags: string[] }) {
+        return await this.WithRefresh(async () => {
+            const token = apiService.getToken();
+            const data = await apiService.post(
+                '/user/me/roommate-form',
+                JSON.stringify(payload),
+                { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            );
+            return data;
+        });
+    }
+
+    async updateRoommateForm(payload: { birthday: string; description: string; gender: string; tags: string[] }) {
+        return await this.WithRefresh(async () => {
+            const token = apiService.getToken();
+            const data = await apiService.put(
+                '/user/me/roommate-form',
+                payload,
+                { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            );
+            return data;
+        });
+    }
+
     async sendCode(data: {email: string}) {
         await apiService.post(
             "/auth/recover",

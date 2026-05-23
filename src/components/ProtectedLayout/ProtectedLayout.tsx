@@ -6,9 +6,10 @@ interface LayoutProps {
     children: any;
     isAuthenticate: boolean;
     setIsAuthenticate: (isAuth: boolean) => void;
+    [key: string]: any;
 }
 
-export function ProtectedLayout({ path, children, isAuthenticate, setIsAuthenticate }: LayoutProps) {
+export function ProtectedLayout({ path, children, isAuthenticate, setIsAuthenticate, ...passthrough }: LayoutProps) {
   const navigate = useNavigate();
 
   const onSuccess = () => {
@@ -20,6 +21,13 @@ export function ProtectedLayout({ path, children, isAuthenticate, setIsAuthentic
     navigate('/');
     document.body.style.overflow = '';
   };
+
+  if (isAuthenticate && children?.type === 'component') {
+    children.props = {
+      ...children.props,
+      ...passthrough,
+    };
+  }
 
   return (
     <div>

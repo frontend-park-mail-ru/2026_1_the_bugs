@@ -5,19 +5,19 @@ import { getPosters, getFavorites } from '../services/posters';
 import { type Apartment, type IFilters} from '../types';
 import { useNavigate } from '@router-dom';
 
- const updatePageSize = () => {
+const updatePageSize = () => {
       const width = window.innerWidth;
       if (width >= 2400){
-        return 20;
+        return 30;
       }
       if (width >= 1400) {
-        return (12);
+        return (30);
       } else if (width >= 1000) {
-        return(9);
+        return(15);
       } else if (width >= 768) {
-        return(6);
+        return(10);
       } else {
-        return(4);
+        return(10);
       }
 };
 
@@ -91,7 +91,6 @@ export function HomePage({search_query, isAuth}: Props) {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [filters, setFilters] = useState<IFilters>(initialFilters);
   const [apartments, setApartments] = useState<Apartment[]>([]);
-  const [pageSize] = useState(updatePageSize());
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -113,7 +112,7 @@ export function HomePage({search_query, isAuth}: Props) {
 
 
   const fetchData = async (searchVal: string, currentFilters: IFilters, append = false) => {
-    if (isLoading || !hasMore) return;
+    if (isLoading || (append && !hasMore)) return;
     
     setIsLoading(true);
     setIsFetchingMore(true);
@@ -121,19 +120,25 @@ export function HomePage({search_query, isAuth}: Props) {
     
     try {
       const postersResp = await getPosters({ 
-        limit: pageSize, 
+        limit: updatePageSize(), 
         offset, 
         search: searchVal,
         ...currentFilters,
       });
 
-      const newApartments = append 
-        ? [...apartments, ...postersResp.posters] 
-        : postersResp.posters;
-        
-      
-      setApartments(newApartments);
-      setHasMore((newApartments.length < (postersResp.len || 0)) && postersResp.posters.length > 0);
+      const incoming = postersResp.posters;
+      const total = postersResp.len;
+      const nextApartments = append ? [...apartments, ...incoming] : incoming;
+      const nextLoadedCount = nextApartments.length;
+      const hasNextByPageSize = incoming.length === updatePageSize();
+
+      setApartments(nextApartments);
+
+      if (Number.isFinite(total) && Number(total) > 0) {
+        setHasMore(nextLoadedCount < Number(total) || hasNextByPageSize);
+      } else {
+        setHasMore(hasNextByPageSize);
+      }
     }catch{
       setHasMore(false);
     } finally {
@@ -165,7 +170,7 @@ export function HomePage({search_query, isAuth}: Props) {
       />
       
       <CardList
-        pageSize={pageSize}
+        pageSize={updatePageSize()}
         apartments={apartments}
         isFetchingMore={isFetchingMore}
         hasMore={hasMore}

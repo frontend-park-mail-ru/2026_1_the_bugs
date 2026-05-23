@@ -4,7 +4,6 @@ import { useState } from "the-react/hooks";
 import { authService } from '../../services/auth';
 import type { UserResponse } from 'src/types';
 import style from "./Layout.module.css"
-import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
 import { SUPPORT_URL } from '../../config';
 
@@ -15,21 +14,24 @@ interface LayoutProps {
   isAuthenticate: boolean;
   setIsAuthenticate: (isAuth: boolean) => void;
   currentUser?: UserResponse | null;
+  setCurrentUser: (user: UserResponse | null)=>void
 }
 
-export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser}: LayoutProps) {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
+export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser, setCurrentUser}: LayoutProps) {
+  const [ isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const isMapPage = currentPath === '/map';
 
   const onLogoutClick = () => {
     setIsAuthenticate(false);
+    setCurrentUser(null)
     authService.logout();
     // window.location.href = '/';
   };
 
   const onSuccess = () => {
     setIsAuthenticate(true);
+    authService.getMe().then((u)=>{setCurrentUser(u)}).catch((e)=>{console.log(e)});
     closeAuthModal();
   };
 
@@ -56,7 +58,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
            <div className={style.supportDock}>
             {isSupportOpen  &&!isMapPage && (
               <div className={style.supportFrameWrap}>
-               <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow': 'hidden', 'max-height': '750px'}}>
+               <Modal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} contentStyle={{'overflow': 'hidden', 'max-height': '760px', 'margin-top':'100px'}}>
                   <iframe
                   src={SUPPORT_URL}
                   title="Поддержка"

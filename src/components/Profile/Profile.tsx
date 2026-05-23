@@ -9,8 +9,9 @@ import {
 import { getHighlightStyle } from '../AuthModal/authErrors';
 import { ProfileSetAvatar } from './ProfileSetAvatar';
 import { ProfilePassword } from './ProfilePassword';
+import { ProfileRoommateForm } from './ProfileRoommateForm';
 
-type ProfileTab = 'main' | 'password';
+type ProfileTab = 'main' | 'password' | 'roommate';
 type ProfileField =
     | 'firstname'
     | 'lastname'
@@ -18,9 +19,23 @@ type ProfileField =
 
 interface Prop{
     setCurrentUser: (u: UserResponse)=>void
+    form?: string
 }
 
-export function Profile({setCurrentUser}: Prop) {
+const resolveProfileTab = (form?: string): ProfileTab => {
+    if (form === 'roomate' || form === 'roommate') {
+        return 'roommate';
+    }
+    if (form === 'password') {
+        return 'password';
+    }
+    if (form === 'main') {
+        return 'main';
+    }
+    return 'main';
+};
+
+export function Profile({setCurrentUser, form}: Prop) {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -34,8 +49,12 @@ export function Profile({setCurrentUser}: Prop) {
     const [avatarCacheBuster, setAvatarCacheBuster] = useState<number | null>(null);
     const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
     const [isAvatarEditorOpen, setIsAvatarEditorOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<ProfileTab>('main');
+    const [activeTab, setActiveTab] = useState<ProfileTab>(resolveProfileTab(form));
     const [fieldHighlights, setFieldHighlights] = useState<Partial<Record<ProfileField, boolean>>>({});
+
+    useEffect(() => {
+        setActiveTab(resolveProfileTab(form));
+    }, [form]);
 
     useEffect(() => {
         let isMounted = true;
@@ -320,6 +339,14 @@ export function Profile({setCurrentUser}: Prop) {
                 <span className={style.tabDivider} aria-hidden="true">|</span>
                 <button
                     type="button"
+                    className={`${style.tab} ${activeTab === 'roommate' ? style.activeTab : ''}`}
+                    onClick={() => setActiveTab('roommate')}
+                >
+                    Анкета
+                </button>
+                <span className={style.tabDivider} aria-hidden="true">|</span>
+                <button
+                    type="button"
                     className={`${style.tab} ${activeTab === 'password' ? style.activeTab : ''}`}
                     onClick={() => setActiveTab('password')}
                 >
@@ -327,7 +354,7 @@ export function Profile({setCurrentUser}: Prop) {
                 </button>
             </nav>
 
-            {activeTab === 'main' && (
+            <section style={{ display: activeTab === 'main' ? 'block' : 'none' }}>
             <form className={style.profileForm} onSubmit={handleSave}>
                 <label className={style.label}>Фотография:</label>
                     <button type="button" className={style.ghostAction} onClick={handleAvatarInputClick}>Изменить</button>
@@ -374,14 +401,16 @@ export function Profile({setCurrentUser}: Prop) {
                     {isSaving ? 'Сохранение...' : 'Сохранить'}
                 </button>
             </form>
-            )}
+            </section>
 
 
-            {activeTab === 'password' && (
-            <section className={style.profileForm}>
+            <section style={{ display: activeTab === 'roommate' ? 'block' : 'none' }}>
+            <ProfileRoommateForm />
+            </section>
+
+            <section className={style.profileForm} style={{ display: activeTab === 'password' ? 'block' : 'none' }}>
                 <ProfilePassword email={email} />
             </section>
-            )}
 
             <ProfileSetAvatar
                 isOpen={isAvatarEditorOpen}
