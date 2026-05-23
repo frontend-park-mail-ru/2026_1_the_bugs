@@ -284,7 +284,9 @@ export function ProfileRoommateForm() {
 						if (fieldErrors.description) setFieldErrors({ ...fieldErrors, description: '' });
 					}}
 					onInput={handleDescriptionInput}
-				/>
+				>
+					{description}
+				</textarea>
 
 				<div className={style.errorOverlay}>
 					{error && <span>{error}</span>}
