@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'the-react/hooks';
 import type { Roommate, UserResponse } from '../../types';
 import type { UserMatchContacts, UserPoolProfile } from '../../types';
-import { getUserContactsById, getUserProfileById, sendMatchByUserId } from '../../services/posters';
+import { getUserContactsById, getUserProfileById, removeMeFromPool, sendMatchByUserId } from '../../services/posters';
 import { authService } from '../../services/auth';
 import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
@@ -36,8 +36,8 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
   const [errorModalMessage, setErrorModalMessage] = useState('');
   const [isJoinConfirmModalOpen, setIsJoinConfirmModalOpen] = useState(false);
   const [isCheckingProfile, setIsCheckingProfile] = useState(false);
-
-  const [hasProfile, setHasProfile] = useState(false);
+  const [isRemovingProfile, setIsRemovingProfile] = useState(false);
+  const [isRemovedFromPool, setIsRemovedFromPool] = useState(false);
 
 
   const getAge = (birthday: string) => {
@@ -70,20 +70,19 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
   const handleOpenUser = async (user: Roommate) => {
     try {
       const form = await authService.getRoommateForm();
-      setHasProfile(!!form);
       if (form) {
         const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
         setSelectedUserName(fullName);
         setSelectedUserId(user.id);
         setSelectedUserProfile(null);
         setContacts(null);
+        setStatusText(null);
         setHasSentMatch(false);
         setIsUserModalOpen(true);
       } else {
         showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
       }
     } catch {
-      setHasProfile(false);
       showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
     }
     
@@ -95,6 +94,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     setSelectedUserId(null);
     setSelectedUserProfile(null);
     setContacts(null);
+    setStatusText(null);
     setHasSentMatch(false);
   };
 
@@ -111,6 +111,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     setSelectedUserId(null);
     setSelectedUserProfile(null);
     setContacts(null);
+    setStatusText(null);
     setHasSentMatch(false);
   };
 
@@ -124,14 +125,12 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     setIsCheckingProfile(true);
     try {
       const form = await authService.getRoommateForm();
-      setHasProfile(!!form);
       if (form) {
         setIsJoinConfirmModalOpen(true);
       } else {
         showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
       }
     } catch {
-      setHasProfile(false);
       showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
     } finally {
       setIsCheckingProfile(false);
@@ -141,6 +140,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
 
   const handleConfirmJoin = () => {
     setIsJoinConfirmModalOpen(false);
+    setIsRemovedFromPool(false);
     if (onJoin) {
       onJoin();
     }
@@ -155,6 +155,25 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
   const handleGoToSettings = () => {
     setIsErrorModalOpen(false);
     navigate('/profile?form=roomate');
+  };
+
+
+  const handleRemoveFromPool = async () => {
+    if (!isAuth) {
+      showErrorModal('Нужно авторизоваться', 'Для удаления анкеты сначала нужно авторизоваться.');
+      return;
+    }
+
+    try {
+      setIsRemovingProfile(true);
+      await removeMeFromPool(alias);
+      setIsRemovedFromPool(true);
+      setStatusText(null);
+    } catch {
+      showErrorModal('Ошибка', 'Не удалось удалить вашу анкету из пула.');
+    } finally {
+      setIsRemovingProfile(false);
+    }
   };
 
 
@@ -233,6 +252,8 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     return r.id === user.id
   }).length !== 0;
 
+  const isInPool = isInclude && !isRemovedFromPool;
+
   return (
     <section className={styles['users-pool']}>
       <h3 className={styles['users-pool__title']}>Хотят жить здесь вместе</h3>
@@ -266,14 +287,16 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
         <Button
           variant="accent"
           className={styles['users-pool__join-btn']}
-          onClick={handleOpenJoinConfirmModal}
-          disabled={isInclude || isCheckingProfile}
+          onClick={isInPool ? handleRemoveFromPool : handleOpenJoinConfirmModal}
+          disabled={isCheckingProfile || isRemovingProfile}
         >
-          {!isInclude && !isCheckingProfile
-            ? 'Добавить свою анкету'
-            : isCheckingProfile
-              ? 'Проверяем...'
-              : 'Ваша анкета добавлена'}
+          {isCheckingProfile
+            ? 'Проверяем...'
+            : isRemovingProfile
+              ? 'Удаляем...'
+              : isInPool
+                ? 'Удалить свою анкету'
+                : 'Добавить свою анкету'}
         </Button>
       )}
 
