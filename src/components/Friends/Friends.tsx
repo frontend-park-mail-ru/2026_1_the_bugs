@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'the-react/hooks'; // или 'react'
+import { useEffect, useState } from 'the-react/hooks';
 import style from './Friends.module.css';
 import usersPoolStyle from '../UsersPool/UsersPool.module.css';
 import type { Roommate, UserMatchContacts, UserPoolProfile } from '../../types';
@@ -8,14 +8,18 @@ import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
 import { useNavigate } from '@router-dom';
 
+
+
 type FriendsTab = 'friends' | 'requests';
 
-const POLLING_INTERVAL_MS = 5000; // 5 секунд
+
 
 const getInitialTab = (): FriendsTab => {
     const params = new URLSearchParams(window.location.search);
     return params.get('tab') === 'requests' ? 'requests' : 'friends';
 };
+
+
 
 export function FriendsPage() {
     const [activeTab, setActiveTab] = useState<FriendsTab>(getInitialTab());
@@ -35,28 +39,42 @@ export function FriendsPage() {
     const isAuth = true;
     const navigate = useNavigate();
 
+
+    // Флаг: является ли выбранный пользователь уже другом
     const [isSelectedUserFriend, setIsSelectedUserFriend] = useState(false);
+    // poster_alias выбранного друга (для перехода к объявлению)
     const [selectedPosterAlias, setSelectedPosterAlias] = useState<string | null>(null);
-    
-    // Флаг для предотвращения одновременных поллингов
-    const [isPolling, setIsPolling] = useState(false);
+
+
 
     const getAge = (birthday: string) => {
         const date = new Date(birthday);
-        if (Number.isNaN(date.getTime())) return null;
+        if (Number.isNaN(date.getTime())) {
+            return null;
+        }
         const now = new Date();
         let age = now.getFullYear() - date.getFullYear();
         const monthDiff = now.getMonth() - date.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < date.getDate())) age -= 1;
+        if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < date.getDate())) {
+            age -= 1;
+        }
         return age >= 0 ? age : null;
     };
 
+
+
     const normalizeGender = (gender: string) => {
         const value = gender.toLowerCase();
-        if (value === 'male' || value === 'm') return 'муж.';
-        if (value === 'female' || value === 'f') return 'жен.';
+        if (value === 'male' || value === 'm') {
+            return 'муж.';
+        }
+        if (value === 'female' || value === 'f') {
+            return 'жен.';
+        }
         return gender;
     };
+
+
 
     const handleOpenUser = (user: Roommate) => {
         const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
@@ -74,6 +92,8 @@ export function FriendsPage() {
         setIsUserModalOpen(true);
     };
 
+
+
     const handleCloseUserModal = () => {
         setIsUserModalOpen(false);
         setSelectedUserId(null);
@@ -85,96 +105,130 @@ export function FriendsPage() {
         setSelectedPosterAlias(null);
     };
 
+
+
     const setTab = (tab: FriendsTab) => {
         setActiveTab(tab);
         const params = new URLSearchParams(window.location.search);
-        if (tab === 'requests') params.set('tab', 'requests');
-        else params.delete('tab');
+        if (tab === 'requests') {
+            params.set('tab', 'requests');
+        } else {
+            params.delete('tab');
+        }
         const search = params.toString();
         const nextUrl = `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`;
         window.history.replaceState(null, '', nextUrl);
     };
 
-    const handleMatch = async () => {
-        if (!selectedUserId) return;
-        if (!isAuth) {
-            setErrorText('Нужно авторизоваться, чтобы отправить симпатию');
-            return;
-        }
 
-        const requestUser = requests.find(r => r.id === selectedUserId);
+
+const handleMatch = async () => {
+    if (!selectedUserId) {
+        return;
+    }
+    if (!isAuth) {
+        setErrorText('Нужно авторизоваться, чтобы отправить симпатию');
+        return;
+    }
+
+    const requestUser = requests.find(r => r.id === selectedUserId);
+
+    try {
+        setIsMatchLoading(true);
+        setErrorText(null);
+        await sendMatchByUserId(selectedUserId, null);
+        //setStatusText('Симпатия отправлена');
 
         try {
-            setIsMatchLoading(true);
-            setErrorText(null);
-            await sendMatchByUserId(selectedUserId, null);
-
-            try {
-                const contactsData = await getUserContactsById(selectedUserId);
-                setContacts(contactsData);
-            } catch {
-                setContacts(null);
-            }
-
-            const newUserRoommate: Roommate = {
-                id: selectedUserId,
-                first_name: selectedUserProfile?.first_name || requestUser?.first_name || selectedUserName.split(' ')[0],
-                last_name: selectedUserProfile?.last_name || requestUser?.last_name || '',
-                avatar_url: selectedUserProfile?.avatar_url || requestUser?.avatar_url || '/svg/profile.svg',
-                poster_alias: requestUser?.poster_alias,
-            };
-
-            const exists = friends.some(f => f.id === selectedUserId);
-            if (!exists) setFriends([...friends, newUserRoommate]);
-            setRequests(requests.filter(r => r.id !== selectedUserId));
-
-            setIsSelectedUserFriend(true);
-            setSelectedPosterAlias(newUserRoommate.poster_alias ?? null);
+            const contactsData = await getUserContactsById(selectedUserId);
+            setContacts(contactsData);
+            //setStatusText('Взаимный мэтч! Контакты открыты');
         } catch {
-            setErrorText('Не удалось отправить симпатию');
-        } finally {
-            setIsMatchLoading(false);
+            setContacts(null);
         }
-    };
+        const newUserRoommate: Roommate = {
+            id: selectedUserId,
+            first_name: selectedUserProfile?.first_name || requestUser?.first_name || selectedUserName.split(' ')[0],
+            last_name: selectedUserProfile?.last_name || requestUser?.last_name || '',
+            avatar_url: selectedUserProfile?.avatar_url || requestUser?.avatar_url || '/svg/profile.svg',
+            poster_alias: requestUser?.poster_alias,
+        };
 
-    // Функция загрузки данных (используется при старте и в поллинге)
-    const fetchMatches = async () => {
-        // Предотвращаем одновременные вызовы
-        if (isPolling) return;
-        setIsPolling(true);
-
-        try {
-            const [friendsResp, requestsResp] = await Promise.all([
-                getMatchedRoommates(),
-                getIncomingRoommateRequests(),
-            ]);
-            setFriends(Array.isArray(friendsResp.users) ? friendsResp.users : []);
-            setRequests(Array.isArray(requestsResp.users) ? requestsResp.users : []);
-            setError(null);
-        } catch (err) {
-            setError('Не удалось загрузить списки');
-        } finally {
-            setIsPolling(false);
-            setIsLoading(false);
+        const exists = friends.some(f => f.id === selectedUserId);
+        if (!exists) {
+            setFriends([...friends, newUserRoommate]);
         }
-    };
+        setRequests(requests.filter(r => r.id !== selectedUserId));
 
-    // Запуск поллинга
+        setIsSelectedUserFriend(true);
+        setSelectedPosterAlias(newUserRoommate.poster_alias ?? null);
+    } catch {
+        setErrorText('Не удалось отправить симпатию');
+    } finally {
+        setIsMatchLoading(false);
+    }
+};
+
+
     useEffect(() => {
-        // Первый вызов
-        fetchMatches();
+        let isMounted = true;
 
-        // Устанавливаем интервал
-        const intervalId = setInterval(fetchMatches, POLLING_INTERVAL_MS);
 
-        // Очистка при размонтировании
-        return () => clearInterval(intervalId);
-    }, []); // Пустой массив – эффект сработает один раз
 
-    // Загрузка профиля при открытии модалки
+        const loadMatches = async () => {
+            try {
+                setIsLoading(true);
+                setError(null);
+
+
+
+                const [friendsResp, requestsResp] = await Promise.all([
+                    getMatchedRoommates(),
+                    getIncomingRoommateRequests(),
+                ]);
+
+
+
+                if (!isMounted) {
+                    return;
+                }
+
+
+
+                setFriends(Array.isArray(friendsResp.users) ? friendsResp.users : []);
+                setRequests(Array.isArray(requestsResp.users) ? requestsResp.users : []);
+            } catch {
+                if (!isMounted) {
+                    return;
+                }
+                setError('Не удалось загрузить списки');
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+
+
+        loadMatches();
+
+
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+
+
     useEffect(() => {
         const loadProfile = async () => {
-            if (!isUserModalOpen || selectedUserId === null) return;
+            if (!isUserModalOpen || selectedUserId === null) {
+                return;
+            }
+
+
 
             try {
                 setIsProfileLoading(true);
@@ -182,6 +236,8 @@ export function FriendsPage() {
                 const profile = await getUserProfileById(selectedUserId);
                 setSelectedUserProfile(profile);
 
+
+                // Если пользователь уже в друзьях, сразу загружаем контакты
                 if (isSelectedUserFriend) {
                     try {
                         const contactsData = await getUserContactsById(selectedUserId);
@@ -199,17 +255,35 @@ export function FriendsPage() {
             }
         };
 
+
+
         loadProfile();
     }, [isUserModalOpen, selectedUserId, isSelectedUserFriend]);
 
+
+
     const renderList = (users: Roommate[], emptyText: string) => {
-        if (isLoading) return <p className={style.status}>Загружаем...</p>;
-        if (error) return <p className={style.status}>{error}</p>;
-        if (users.length === 0) return <p className={style.placeholder}>{emptyText}</p>;
+        if (isLoading) {
+            return <p className={style.status}>Загружаем...</p>;
+        }
+
+
+
+        if (error) {
+            return <p className={style.status}>{error}</p>;
+        }
+
+
+
+        if (users.length === 0) {
+            return <p className={style.placeholder}>{emptyText}</p>;
+        }
+
+
 
         return (
             <ul className={style.list}>
-                {users.map(user => {
+                {users.map((user) => {
                     const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
                     return (
                         <li key={user.id} className={style.item}>
@@ -234,13 +308,17 @@ export function FriendsPage() {
         );
     };
 
+
+
     const modalFullName = selectedUserProfile
         ? `${selectedUserProfile.first_name} ${selectedUserProfile.last_name}`.trim() || selectedUserName
         : selectedUserName;
 
+
+
     const age = selectedUserProfile?.birthday ? getAge(selectedUserProfile.birthday) : null;
     const gender = selectedUserProfile?.gender ? normalizeGender(selectedUserProfile.gender) : '';
-    const requestsCount = requests.length;
+
 
     return (
         <section className={style.page}>
@@ -248,6 +326,8 @@ export function FriendsPage() {
                 <h1 className={style.main}>Сожители</h1>
                 <p className={style.subtitle}>Общайтесь и планируйте сожительство.</p>
             </header>
+
+
 
             <nav className={style.tabs} aria-label="Разделы друзей">
                 <button
@@ -264,9 +344,10 @@ export function FriendsPage() {
                     onClick={() => setTab('requests')}
                 >
                     Заявки
-                    {requestsCount > 0 && <span className={style.badge}>{requestsCount}</span>}
                 </button>
             </nav>
+
+
 
             {activeTab === 'friends' && (
                 <section className={style.section}>
@@ -274,11 +355,15 @@ export function FriendsPage() {
                 </section>
             )}
 
+
+
             {activeTab === 'requests' && (
                 <section className={style.section}>
                     {renderList(requests, 'У вас нет заявок')}
                 </section>
             )}
+
+
 
             <Modal
                 isOpen={isUserModalOpen}
@@ -298,6 +383,9 @@ export function FriendsPage() {
                                     src={selectedUserProfile.avatar_url || '/svg/profile.svg'}
                                     alt={modalFullName}
                                 />
+
+
+
                                 <div className={usersPoolStyle['users-pool__profile-info']}>
                                     <h3 className={usersPoolStyle['users-pool__profile-name']}>{modalFullName}</h3>
                                     {(age !== null || gender) && (
@@ -307,6 +395,9 @@ export function FriendsPage() {
                                             {gender}
                                         </p>
                                     )}
+
+
+
                                     {selectedUserProfile.tags.length > 0 && (
                                         <ul className={usersPoolStyle['users-pool__tags']}>
                                             {selectedUserProfile.tags.map((tag, index) => (
@@ -318,9 +409,15 @@ export function FriendsPage() {
                                     )}
                                 </div>
                             </div>
+
+
+
                             <p className={usersPoolStyle['users-pool__description']}>
                                 {selectedUserProfile.description || 'Пользователь пока не добавил описание'}
                             </p>
+
+
+
                             {contacts && (
                                 <div className={usersPoolStyle['users-pool__contacts']}>
                                     <p className={usersPoolStyle['users-pool__contacts-title']}>Контакты</p>
@@ -328,7 +425,14 @@ export function FriendsPage() {
                                     <p className={usersPoolStyle['users-pool__contacts-item']}>Телефон: {contacts.phone}</p>
                                 </div>
                             )}
+
+
+
                             {statusText && <p className={usersPoolStyle['users-pool__status']}>{statusText}</p>}
+
+
+
+                            {/* Кнопка «Жить вместе» показываем только если пользователь НЕ в друзьях */}
                             {isAuth && !isSelectedUserFriend && (
                                 <Button
                                     variant="accent"
@@ -339,6 +443,8 @@ export function FriendsPage() {
                                     {isMatchLoading ? 'Отправляем...' : 'Жить вместе'}
                                 </Button>
                             )}
+
+                            {/* Кнопка «К объявлению» для друзей, если есть poster_alias */}
                             {isAuth && isSelectedUserFriend && selectedPosterAlias && (
                                 <Button
                                     variant="accent"
