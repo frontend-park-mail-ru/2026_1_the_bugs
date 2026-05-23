@@ -228,3 +228,25 @@ input::placeholder {
   font-family: "Hero", system-ui, sans-serif;
   color: #999;
 }
+.menuItemWithBadge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge {
+  position: absolute;
+  top: 3px;
+  right: -6px;
+  min-width: 15px;
+  min-height: 15px;
+  border-radius: 50%;
+  background: #e53935;
+  box-shadow: 0 0 0 2px #fff;
+  color: #fff;
+  content: attr(data-count);
+  font-size: xx-small;
+  align-content: center;
+  text-align: center;
+  padding: 2px;
+}

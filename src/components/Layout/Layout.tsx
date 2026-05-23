@@ -14,10 +14,11 @@ interface LayoutProps {
   isAuthenticate: boolean;
   setIsAuthenticate: (isAuth: boolean) => void;
   currentUser?: UserResponse | null;
+  requestsCount: number;
   setCurrentUser: (user: UserResponse | null)=>void
 }
 
-export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser, setCurrentUser}: LayoutProps) {
+export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, setIsAuthenticate, currentUser, setCurrentUser, requestsCount }: LayoutProps) {
   const [ isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const isMapPage = currentPath === '/map';
@@ -52,6 +53,7 @@ export function Layout({ children, currentPath, isAuthResolved, isAuthenticate, 
         onAuthorizeClick={openAuthModal} 
         isMapPage={isMapPage}
         key="Header"
+        requestsCount={requestsCount}
       />
       <div className={style.supportLayer}>
         {isAuthenticate && (
