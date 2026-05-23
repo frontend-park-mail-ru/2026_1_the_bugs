@@ -249,3 +249,64 @@
     font-size: 18px;
   }
 }
+
+/* Общие стили для модалок ошибок и подтверждения */
+.users-pool__error-modal,
+.users-pool__confirm-modal {
+  display: grid;
+  gap: 14px;
+}
+
+.users-pool__error-modal-title,
+.users-pool__confirm-modal-title {
+  font-size: clamp(20px, 4vw, 28px);
+  line-height: 1.1;
+  margin: 0;
+  text-align: center;
+}
+
+.users-pool__error-modal-text,
+.users-pool__confirm-modal-text {
+  margin: 0;
+  font-family: "Hero", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.users-pool__error-modal-buttons,
+.users-pool__confirm-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.users-pool__error-modal-buttons .Button,
+.users-pool__confirm-modal-buttons .Button {
+  flex: 0 0 auto;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 900px) {
+  .users-pool__error-modal-title,
+  .users-pool__confirm-modal-title {
+    font-size: 18px;
+  }
+
+  .users-pool__error-modal-text,
+  .users-pool__confirm-modal-text {
+    font-size: 14px;
+  }
+
+  .users-pool__error-modal-buttons,
+  .users-pool__confirm-modal-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .users-pool__error-modal-buttons .Button,
+  .users-pool__confirm-modal-buttons .Button {
+    width: 100%;
+  }
+}

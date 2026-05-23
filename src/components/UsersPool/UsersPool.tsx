@@ -2,9 +2,12 @@ import { useEffect, useState } from 'the-react/hooks';
 import type { Roommate, UserResponse } from '../../types';
 import type { UserMatchContacts, UserPoolProfile } from '../../types';
 import { getUserContactsById, getUserProfileById, sendMatchByUserId } from '../../services/posters';
+import { authService } from '../../services/auth';
 import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
 import styles from './UsersPool.module.css';
+import { useNavigate } from '@router-dom';
+
 
 interface UsersPoolProps {
   users: Roommate[];
@@ -14,7 +17,10 @@ interface UsersPoolProps {
   alias: string
 }
 
+
 export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps) {
+  const navigate = useNavigate();
+
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedUserName, setSelectedUserName] = useState('Пользователь');
@@ -22,15 +28,17 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
   const [contacts, setContacts] = useState<UserMatchContacts | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [isMatchLoading, setIsMatchLoading] = useState(false);
-  const [errorText, setErrorText] = useState<string | null>(null);
   const [statusText, setStatusText] = useState<string | null>(null);
-  const isInclude = users.filter((r) => {
-    if (user === null){
-      return false
-    }
-    return r.id === user.id
-  }).length !== 0
-  console.log(isInclude, users, user?.id, user)
+  const [hasSentMatch, setHasSentMatch] = useState(false);
+
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorModalTitle, setErrorModalTitle] = useState('Ошибка');
+  const [errorModalMessage, setErrorModalMessage] = useState('');
+  const [isJoinConfirmModalOpen, setIsJoinConfirmModalOpen] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(false);
+
+  const [hasProfile, setHasProfile] = useState(false);
+
 
   const getAge = (birthday: string) => {
     const date = new Date(birthday);
@@ -46,6 +54,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     return age >= 0 ? age : null;
   };
 
+
   const normalizeGender = (gender: string) => {
     const value = gender.toLowerCase();
     if (value === 'male' || value === 'm') {
@@ -57,40 +66,115 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
     return gender;
   };
 
-  const handleOpenUser = (user: Roommate) => {
-    const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
-    setSelectedUserName(fullName);
-    setSelectedUserId(user.id);
-    setSelectedUserProfile(null);
-    setContacts(null);
-    setErrorText(null);
-    setStatusText(null);
-    setIsUserModalOpen(true);
+
+  const handleOpenUser = async (user: Roommate) => {
+    try {
+      const form = await authService.getRoommateForm();
+      setHasProfile(!!form);
+      if (form) {
+        const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
+        setSelectedUserName(fullName);
+        setSelectedUserId(user.id);
+        setSelectedUserProfile(null);
+        setContacts(null);
+        setHasSentMatch(false);
+        setIsUserModalOpen(true);
+      } else {
+        showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
+      }
+    } catch {
+      setHasProfile(false);
+      showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
+    }
+    
   };
+
 
   const handleCloseUserModal = () => {
     setIsUserModalOpen(false);
     setSelectedUserId(null);
     setSelectedUserProfile(null);
     setContacts(null);
-    setErrorText(null);
-    setStatusText(null);
+    setHasSentMatch(false);
   };
+
+
+  const showErrorModal = (title: string, message: string) => {
+    setErrorModalTitle(title);
+    setErrorModalMessage(message);
+    setIsErrorModalOpen(true);
+  };
+
+
+  const handleCloseErrorModal = () => {
+    setIsErrorModalOpen(false);
+    setSelectedUserId(null);
+    setSelectedUserProfile(null);
+    setContacts(null);
+    setHasSentMatch(false);
+  };
+
+
+  const handleOpenJoinConfirmModal = async () => {
+    if (!isAuth) {
+      showErrorModal('Нужно авторизоваться', 'Для добавления анкеты сначала нужно авторизоваться.');
+      return;
+    }
+
+    setIsCheckingProfile(true);
+    try {
+      const form = await authService.getRoommateForm();
+      setHasProfile(!!form);
+      if (form) {
+        setIsJoinConfirmModalOpen(true);
+      } else {
+        showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
+      }
+    } catch {
+      setHasProfile(false);
+      showErrorModal('Анкета не заполнена', 'Сначала заполните вашу анкету в настройках, чтобы добавить её в пул.');
+    } finally {
+      setIsCheckingProfile(false);
+    }
+  };
+
+
+  const handleConfirmJoin = () => {
+    setIsJoinConfirmModalOpen(false);
+    if (onJoin) {
+      onJoin();
+    }
+  };
+
+
+  const handleCancelJoin = () => {
+    setIsJoinConfirmModalOpen(false);
+  };
+
+
+  const handleGoToSettings = () => {
+    setIsErrorModalOpen(false);
+    navigate('/profile?form=roomate');
+  };
+
 
   const handleMatch = async () => {
     if (!selectedUserId) {
       return;
     }
     if (!isAuth) {
-      setErrorText('Нужно авторизоваться, чтобы отправить симпатию');
+      showErrorModal('Нужно авторизоваться', 'Для отправки симпатии сначала нужно авторизоваться.');
       return;
     }
 
+
     try {
       setIsMatchLoading(true);
-      setErrorText(null);
+      setStatusText(null);
       await sendMatchByUserId(selectedUserId, alias);
       setStatusText('Симпатия отправлена');
+      setHasSentMatch(true);
+
 
       try {
         const contactsData = await getUserContactsById(selectedUserId);
@@ -99,12 +183,17 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
       } catch {
         setContacts(null);
       }
-    } catch {
-      setErrorText('Не удалось отправить симпатию');
+    } catch (err: any) {
+      if (err?.status === 409 || err?.response?.status === 409) {
+        showErrorModal('Заявка уже отправлена', 'Вы уже отправили заявку этому пользователю.');
+      } else {
+        showErrorModal('Ошибка', 'Не удалось отправить симпатию.');
+      }
     } finally {
       setIsMatchLoading(false);
     }
   };
+
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -112,31 +201,42 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
         return;
       }
 
+
       try {
         setIsProfileLoading(true);
-        setErrorText(null);
         const profile = await getUserProfileById(selectedUserId);
         setSelectedUserProfile(profile);
       } catch {
-        setErrorText('Не удалось загрузить анкету пользователя');
+        showErrorModal('Ошибка', 'Не удалось загрузить анкету пользователя.');
       } finally {
         setIsProfileLoading(false);
       }
     };
 
+
     loadProfile();
   }, [isUserModalOpen, selectedUserId]);
+
 
   const modalFullName = selectedUserProfile
     ? `${selectedUserProfile.first_name} ${selectedUserProfile.last_name}`.trim() || selectedUserName
     : selectedUserName;
 
+
   const age = selectedUserProfile?.birthday ? getAge(selectedUserProfile.birthday) : null;
   const gender = selectedUserProfile?.gender ? normalizeGender(selectedUserProfile.gender) : '';
-  console.log(user, selectedUserId)
+
+  const isInclude = users.filter((r) => {
+    if (user === null){
+      return false
+    }
+    return r.id === user.id
+  }).length !== 0;
+
   return (
     <section className={styles['users-pool']}>
       <h3 className={styles['users-pool__title']}>Хотят жить здесь вместе</h3>
+
 
       <ul className={styles['users-pool__list']}>
         {users.map((user) => {
@@ -161,17 +261,24 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
         })}
       </ul>
 
+
       {isAuth && (
         <Button
           variant="accent"
           className={styles['users-pool__join-btn']}
-          onClick={onJoin}
-          disabled={isInclude}
+          onClick={handleOpenJoinConfirmModal}
+          disabled={isInclude || isCheckingProfile}
         >
-          {!isInclude ? 'Добавить свою анкету' : 'Ваша анкета добавлена'}
+          {!isInclude && !isCheckingProfile
+            ? 'Добавить свою анкету'
+            : isCheckingProfile
+              ? 'Проверяем...'
+              : 'Ваша анкета добавлена'}
         </Button>
       )}
 
+
+      {/* Модалка профиля пользователя */}
       <Modal
         isOpen={isUserModalOpen}
         onClose={handleCloseUserModal}
@@ -180,8 +287,6 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
         <div className={styles['users-pool__profile']}>
           {isProfileLoading ? (
             <p className={styles['users-pool__state']}>Загружаем анкету...</p>
-          ) : errorText ? (
-            <p className={styles['users-pool__error']}>{errorText}</p>
           ) : selectedUserProfile ? (
             <div className={styles['users-pool__profile-body']}>
               <div className={styles['users-pool__profile-header']}>
@@ -190,6 +295,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
                   src={selectedUserProfile.avatar_url || '/svg/profile.svg'}
                   alt={modalFullName}
                 />
+
 
                 <div className={styles['users-pool__profile-info']}>
                   <h3 className={styles['users-pool__profile-name']}>{modalFullName}</h3>
@@ -200,6 +306,7 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
                       {gender}
                     </p>
                   )}
+
 
                   {selectedUserProfile.tags.length > 0 && (
                     <ul className={styles['users-pool__tags']}>
@@ -213,9 +320,11 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
                 </div>
               </div>
 
+
               <p className={styles['users-pool__description']}>
                 {selectedUserProfile.description || 'Пользователь пока не добавил описание'}
               </p>
+
 
               {contacts && (
                 <div className={styles['users-pool__contacts']}>
@@ -225,18 +334,66 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
                 </div>
               )}
 
+
               {statusText && <p className={styles['users-pool__status']}>{statusText}</p>}
 
-              {isAuth && (user && user.id != selectedUserId) && <Button
-                variant="accent"
-                className={styles['users-pool__match-btn']}
-                onClick={handleMatch}
-                disabled={isMatchLoading}
-              >
-                {isMatchLoading ? 'Отправляем...' : 'Жить вместе'}
-              </Button> }
+
+              {isAuth && (user && user.id != selectedUserId) && !hasSentMatch && (
+                <Button
+                  variant="accent"
+                  className={styles['users-pool__match-btn']}
+                  onClick={handleMatch}
+                  disabled={isMatchLoading}
+                >
+                  {isMatchLoading ? 'Отправляем...' : 'Жить вместе'}
+                </Button>
+              )}
             </div>
           ) : null}
+        </div>
+      </Modal>
+
+
+      {/* Модалка ошибки */}
+      <Modal
+        isOpen={isErrorModalOpen}
+        onClose={handleCloseErrorModal}
+        contentClassName={styles['users-pool__modal-content']}
+      >
+        <div className={styles['users-pool__error-modal']}>
+          <h3 className={styles['users-pool__error-modal-title']}>{errorModalTitle}</h3>
+          <p className={styles['users-pool__error-modal-text']}>{errorModalMessage}</p>
+          {errorModalTitle === 'Анкета не заполнена' ? (
+            <div className={styles['users-pool__error-modal-buttons']}>
+              <Button variant="accent" onClick={handleGoToSettings}>
+                Заполнить анкету
+              </Button>
+            </div>
+          ) : (
+            <Button variant="accent" onClick={handleCloseErrorModal}>
+              Хорошо
+            </Button>
+          )}
+        </div>
+      </Modal>
+
+
+      {/* Модалка подтверждения добавления анкеты */}
+      <Modal
+        isOpen={isJoinConfirmModalOpen}
+        onClose={handleCancelJoin}
+        contentClassName={styles['users-pool__modal-content']}
+      >
+        <div className={styles['users-pool__confirm-modal']}>
+          <h3 className={styles['users-pool__confirm-modal-title']}>Внимание!</h3>
+          <p className={styles['users-pool__confirm-modal-text']}>
+            Ваша анкета станет видна для всех пользователей.
+          </p>
+          <div className={styles['users-pool__confirm-modal-buttons']}>
+            <Button variant="accent" onClick={handleConfirmJoin}>
+              Продолжить
+            </Button>
+          </div>
         </div>
       </Modal>
     </section>

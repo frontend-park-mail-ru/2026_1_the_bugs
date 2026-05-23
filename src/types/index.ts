@@ -179,4 +179,5 @@ export interface UserResponse {
     lastname: string;
     phone: string;
     avatar_url: string | null;
+    form_filled?: boolean
 }
