@@ -12,6 +12,14 @@ import { useNavigate } from '@router-dom';
 
 type FriendsTab = 'friends' | 'requests';
 
+const SHOW_MOCK_ROOMMATE = true;
+const MOCK_ROOMMATE: Roommate = {
+    id: -1,
+    first_name: 'Тестовый',
+    last_name: 'Пользователь',
+    avatar_url: '/svg/profile.svg',
+};
+
 
 
 const getInitialTab = (): FriendsTab => {
@@ -118,6 +126,14 @@ export function FriendsPage() {
         const search = params.toString();
         const nextUrl = `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`;
         window.history.replaceState(null, '', nextUrl);
+    };
+
+    const handleRemoveFriend = (userId: number) => {
+        setFriends(friends.filter((friend) => friend.id !== userId));
+
+        if (selectedUserId === userId) {
+            handleCloseUserModal();
+        }
     };
 
 
@@ -262,20 +278,22 @@ const handleMatch = async () => {
 
 
 
-    const renderList = (users: Roommate[], emptyText: string) => {
-        if (isLoading) {
+    const renderList = (users: Roommate[], emptyText: string, canRemove = false) => {
+        if (!SHOW_MOCK_ROOMMATE && isLoading) {
             return <p className={style.status}>Загружаем...</p>;
         }
 
 
 
-        if (error) {
+        if (!SHOW_MOCK_ROOMMATE && error) {
             return <p className={style.status}>{error}</p>;
         }
 
+        const usersToRender = SHOW_MOCK_ROOMMATE ? [MOCK_ROOMMATE] : users;
 
 
-        if (users.length === 0) {
+
+        if (usersToRender.length === 0) {
             return <p className={style.placeholder}>{emptyText}</p>;
         }
 
@@ -283,7 +301,7 @@ const handleMatch = async () => {
 
         return (
             <ul className={style.list}>
-                {users.map((user) => {
+                {usersToRender.map((user) => {
                     const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
                     return (
                         <li key={user.id} className={style.item}>
@@ -301,6 +319,20 @@ const handleMatch = async () => {
                                 />
                                 <span className={style.name}>{fullName}</span>
                             </Button>
+                            {canRemove && (
+                                <button
+                                    type="button"
+                                    className={style.removeBtn}
+                                    onClick={(event: any) => {
+                                        event.stopPropagation();
+                                        handleRemoveFriend(user.id);
+                                    }}
+                                    aria-label={`Удалить из друзей: ${fullName}`}
+                                    title="Удалить из друзей"
+                                >
+                                    &times;
+                                </button>
+                            )}
                         </li>
                     );
                 })}
@@ -351,7 +383,7 @@ const handleMatch = async () => {
 
             {activeTab === 'friends' && (
                 <section className={style.section}>
-                    {renderList(friends, 'Вы пока не добавили ни одного друга')}
+                    {renderList(friends, 'Вы пока не добавили ни одного друга', true)}
                 </section>
             )}
 
