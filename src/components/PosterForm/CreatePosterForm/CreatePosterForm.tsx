@@ -17,6 +17,7 @@ import { OpenStreetMapPicker, type LeafletAddressSuggestion } from '../OpenStree
 import { Field } from '../Field/Field';
 import type { ErrorResponse } from 'src/types/api';
 import { Button } from '../../Button/Button';
+import { Promotion, type PromotionOffer } from '../../Promotion/Promotion';
 
 function nextStep(step: CreatePosterStep): CreatePosterStep {
   return Math.min(step + 1, TOTAL_CREATE_POSTER_STEPS) as CreatePosterStep;
@@ -52,6 +53,25 @@ function normalizeAddressForCompare(value: string) {
     .replace(/\s*,\s*/g, ',')
     .trim();
 }
+
+const promotionOffers: PromotionOffer[] = [
+  {
+    title: 'Продвижение на неделю',
+    price: '299 ₽',
+    description: 'Ваше объявление поднимется в топ и получит максимум просмотров за 7 дней.',
+    actionText: 'Попробовать',
+    promotionCode: 'boost_7_days'
+  },
+  {
+    title: 'Продвижение на месяц',
+    price: '699 ₽',
+    description: 'Закрепите объявление в поиске на 30 дней и получите стабильный поток заявок.',
+    actionText: 'Попробовать',
+    badgeText: 'Выгодно',
+    highlight: true,
+    promotionCode: 'boost_30_days'
+  }
+];
 
 export function CreatePosterForm() {
   const [complexes, setComplexes] = useState<{ id: number; company_name: string }[]>([]);
@@ -117,6 +137,7 @@ export function CreatePosterForm() {
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isPublished, setIsPublished] = useState(false);
   const [createdAlias, setCreatedAlias] = useState<string | null>(null);
+  const [createdPosterId, setCreatedPosterId] = useState<number | null>(null);
   const [validatedUpToStep, setValidatedUpToStep] = useState(0);
   const [draggingPhotoIndex, setDraggingPhotoIndex] = useState<number | null>(null);
   const [isUploadDragActive, setIsUploadDragActive] = useState(false);
@@ -443,7 +464,9 @@ export function CreatePosterForm() {
       const payload = mapToPayload(formDraft, coordinates);
       const response = await createPoster(payload);
       const alias = response.alias || '';
+      const posterId = Number(response.id);
       setCreatedAlias(alias);
+      setCreatedPosterId(Number.isNaN(posterId) ? null : posterId);
       setIsPublished(true);
     } catch (error: any) {
       const err = error as ErrorResponse
@@ -468,8 +491,13 @@ export function CreatePosterForm() {
         <div className={styles.success}>
           <h2 className={styles.successTitle}>Объявление опубликовано</h2>
           <p>Ваше объявление сохранено и доступно для просмотра.</p>
+          <div className={styles.successPromotion}>
+            {createdPosterId !== null ? (
+              <Promotion offers={promotionOffers} posterId={createdPosterId} />
+            ) : null}
+          </div>
           <div className={styles.nav}>
-            <button className={`${styles.button} ${styles.buttonSecondary}`} type="button" onClick={() => navigate('/')}>
+            <button className={`${styles.button} ${styles.buttonSecondary}`} type="button" onClick={() => navigate('/')}> 
               На главную
             </button>
             {createdAlias && (
@@ -858,5 +886,3 @@ export function CreatePosterForm() {
     </div>
   );
 }
-
-

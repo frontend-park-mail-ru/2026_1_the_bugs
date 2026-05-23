@@ -45,6 +45,21 @@
     width: 100%;
 }
 
+.promotionBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    pointer-events: none;
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(240, 141, 204, 0.35);
+}
+
 .menuBtn {
     position: absolute;
     top: 16px;
@@ -144,4 +159,18 @@
 
 .createBtn{
     margin-bottom: 20px;
+}
+
+.promoteModal {
+    --modal-width: min(860px, calc(100vw - 24px));
+    --modal-max-width: min(860px, calc(100vw - 24px));
+    width: min(720px, 92vw);
+    padding: 28px 32px 32px;
+    border-radius: 22px;
+}
+
+@media (max-width: 640px) {
+    .promoteModal {
+        padding: 24px 18px 26px;
+    }
 }

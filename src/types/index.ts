@@ -25,6 +25,7 @@ export interface Apartment {
   beds: number;
   flat_category: string;
   imageUrl: string;
+  has_active_promotion?: boolean;
 }
 
 export interface Profile {
