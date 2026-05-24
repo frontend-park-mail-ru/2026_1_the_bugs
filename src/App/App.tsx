@@ -27,7 +27,7 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [currentSearch, setCurrentSearch] = useState(window.location.search)
   const isMapPage = currentPath === '/map';
-  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(true);
+  const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
   const [requestsCount, setRequestsCount] = useState(0);
