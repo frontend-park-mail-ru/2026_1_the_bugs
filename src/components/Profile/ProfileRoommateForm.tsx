@@ -48,7 +48,6 @@ const isRoommateForm = (data: any): data is RoommateFormData => {
 		&& typeof data.birthday === 'string'
 		&& typeof data.description === 'string'
 		&& typeof data.gender === 'string'
-		&& Array.isArray(data.tags),
 	);
 };
 
