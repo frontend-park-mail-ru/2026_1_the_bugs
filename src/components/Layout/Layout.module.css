@@ -32,10 +32,9 @@
 
 .supportFrame {
 	width: 100%;
-	height: 100%;
-	border: none;
-	min-height: 640px;
-	display: block;
+    height: 100%;
+    border: none;
+    min-height: min(600px, 70vh);
 }
 
 .button {
