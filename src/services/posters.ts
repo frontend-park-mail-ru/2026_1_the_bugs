@@ -394,10 +394,11 @@ export async function joinRoommates(alias: string): Promise<void> {
 }
 
 export async function removeMeFromPool(alias: string): Promise<void> {
+    const encodedAlias = encodeURIComponent(alias);
     await authService.WithRefresh(async () => {
         const token = apiService.getToken();
         await apiService.delete(
-            '/user/me/roommate-form', // ТУТ ПОМЕНЯТЬ
+            `/posters/${encodedAlias}/roommates`,
 			{
 				Authorization: `Bearer ${token}`,
 				Accept: 'application/json',

@@ -75,8 +75,8 @@
 
 
 .users-pool__modal-content {
-  width: min(720px, 94vw) !important;
-  max-width: min(720px, 94vw) !important;
+  width: min(680px, 92vw) !important;
+  max-width: min(680px, 92vw) !important;
   background: var(--bg);
   border-radius: 24px;
   padding: 20px 24px 20px; 
