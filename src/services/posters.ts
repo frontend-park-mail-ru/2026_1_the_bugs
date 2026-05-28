@@ -396,18 +396,15 @@ export async function joinRoommates(alias: string): Promise<void> {
 export async function removeMeFromPool(alias: string): Promise<void> {
     await authService.WithRefresh(async () => {
         const token = apiService.getToken();
-        await apiService.post(
-            '/test/test', // ТУТ ПОМЕНЯТЬ
-            JSON.stringify({
-                poster_alias: alias,
-            }),
-            {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-            }
-        );
+        await apiService.delete(
+            '/user/me/roommate-form', // ТУТ ПОМЕНЯТЬ
+			{
+				Authorization: `Bearer ${token}`,
+				Accept: 'application/json',
+			}
+		);
     });
-}
+} 
 
 export async function getUserProfileById(userId: number): Promise<UserPoolProfile> {
     const resp: {

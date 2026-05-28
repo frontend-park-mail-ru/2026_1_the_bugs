@@ -2,7 +2,7 @@ import { useEffect, useState } from 'the-react/hooks';
 import style from './Friends.module.css';
 import usersPoolStyle from '../UsersPool/UsersPool.module.css';
 import type { Roommate, UserMatchContacts, UserPoolProfile } from '../../types';
-import { getIncomingRoommateRequests, getMatchedRoommates } from '../../services/roommateMatches';
+import { getIncomingRoommateRequests, getMatchedRoommates, removeRoommateMatchByUserId } from '../../services/roommateMatches';
 import { getUserContactsById, getUserProfileById, sendMatchByUserId } from '../../services/posters';
 import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
@@ -128,11 +128,17 @@ export function FriendsPage() {
         window.history.replaceState(null, '', nextUrl);
     };
 
-    const handleRemoveFriend = (userId: number) => {
-        setFriends(friends.filter((friend) => friend.id !== userId));
+    const handleRemoveFriend = async (userId: number) => {
+        try {
+            setErrorText(null);
+            await removeRoommateMatchByUserId(userId);
+            setFriends((currentFriends) => currentFriends.filter((friend) => friend.id !== userId));
 
-        if (selectedUserId === userId) {
-            handleCloseUserModal();
+            if (selectedUserId === userId) {
+                handleCloseUserModal();
+            }
+        } catch {
+            setErrorText('Не удалось удалить пользователя из друзей');
         }
     };
 
@@ -278,7 +284,7 @@ const handleMatch = async () => {
 
 
 
-    const renderList = (users: Roommate[], emptyText: string, canRemove = false) => {
+    const renderList = (users: Roommate[], emptyText: string) => {
         if (!SHOW_MOCK_ROOMMATE && isLoading) {
             return <p className={style.status}>Загружаем...</p>;
         }
@@ -319,20 +325,18 @@ const handleMatch = async () => {
                                 />
                                 <span className={style.name}>{fullName}</span>
                             </Button>
-                            {canRemove && (
                                 <button
                                     type="button"
                                     className={style.removeBtn}
-                                    onClick={(event: any) => {
+                                    onClick={async (event) => {
                                         event.stopPropagation();
-                                        handleRemoveFriend(user.id);
+                                        await handleRemoveFriend(user.id);
                                     }}
                                     aria-label={`Удалить из друзей: ${fullName}`}
                                     title="Удалить из друзей"
                                 >
                                     &times;
                                 </button>
-                            )}
                         </li>
                     );
                 })}
@@ -383,7 +387,7 @@ const handleMatch = async () => {
 
             {activeTab === 'friends' && (
                 <section className={style.section}>
-                    {renderList(friends, 'Вы пока не добавили ни одного друга', true)}
+                    {renderList(friends, 'Вы пока не добавили ни одного друга')}
                 </section>
             )}
 

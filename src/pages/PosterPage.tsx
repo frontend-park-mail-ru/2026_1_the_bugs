@@ -47,6 +47,11 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
   const [roommates, setRoommates] = useState<Roommate[]>([]);
   const navigate = useNavigate()
 
+  const refreshRoommates = async () => {
+    const resp = await getRoommates(alias);
+    setRoommates(resp.users);
+  };
+
   useEffect(() => {
     const loadPoster = async () => {
       try {
@@ -86,8 +91,7 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
   useEffect(() => {
     const loadRoommates = async () => {
       try {
-        const resp = await getRoommates(alias);
-        setRoommates(resp.users);
+        await refreshRoommates();
       } catch (e: any) {
         console.error(e);
       }
@@ -109,8 +113,7 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
   const handleJoinRoommates = async () => {
     try {
       await joinRoommates(alias);
-      const resp = await getRoommates(alias);
-      setRoommates(resp.users);
+      await refreshRoommates();
     } catch (e: any) {
       navigate('/profile?form=roomate')
     }
@@ -198,7 +201,7 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
               <PosterCompany key="poster_company" poster={poster} />
             </button>
           )}
-          <UsersPool key="users_pool" users={roommates} user={user} onJoin={handleJoinRoommates} isAuth={isAuth} alias={poster.alias} />
+          <UsersPool key="users_pool" users={roommates} user={user} onJoin={handleJoinRoommates} onPoolRefresh={refreshRoommates} isAuth={isAuth} alias={poster.alias} />
         </aside>
       </div>
     );

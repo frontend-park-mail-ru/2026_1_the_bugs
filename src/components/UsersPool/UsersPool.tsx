@@ -12,13 +12,14 @@ import { useNavigate } from '@router-dom';
 interface UsersPoolProps {
   users: Roommate[];
   onJoin?: () => void;
+  onPoolRefresh?: () => Promise<void> | void;
   isAuth: boolean;
   user: UserResponse | null
   alias: string
 }
 
 
-export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps) {
+export function UsersPool({ users, onJoin, onPoolRefresh, isAuth, user, alias }: UsersPoolProps) {
   const navigate = useNavigate();
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -169,6 +170,9 @@ export function UsersPool({ users, onJoin, isAuth, user, alias }: UsersPoolProps
       await removeMeFromPool(alias);
       setIsRemovedFromPool(true);
       setStatusText(null);
+      if (onPoolRefresh) {
+        await onPoolRefresh();
+      }
     } catch {
       showErrorModal('Ошибка', 'Не удалось удалить вашу анкету из пула.');
     } finally {

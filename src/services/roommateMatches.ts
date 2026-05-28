@@ -29,3 +29,16 @@ export function getIncomingRoommateRequests(): Promise<RoommateMatchesResponse> 
 	return getMatches('/user/me/roommate-matches/incoming');
 }
 
+export async function removeRoommateMatchByUserId(userId: number): Promise<void> {
+	await authService.WithRefresh(async () => {
+		const token = apiService.getToken();
+		await apiService.delete(
+			`/user/${userId}/match`,
+			{
+				Authorization: `Bearer ${token}`,
+				Accept: 'application/json',
+			}
+		);
+	});
+}
+
