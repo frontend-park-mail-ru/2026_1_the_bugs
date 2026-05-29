@@ -129,7 +129,7 @@ export function App() {
                 </Router>
                 <Router currentPath={currentPath} path="/friends">
                   <ProtectedLayout path="/friends" isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} key="ProtectedLayoutFriends">
-                      <FriendsPage key="FriendsPage" />
+                      <FriendsPage key="FriendsPage" requestsCount={requestsCount} />
                   </ProtectedLayout>
                 </Router>
                 <Router  currentPath={currentPath} path="/map">

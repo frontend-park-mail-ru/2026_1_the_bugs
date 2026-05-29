@@ -17,9 +17,18 @@ const getInitialTab = (): FriendsTab => {
     return params.get('tab') === 'requests' ? 'requests' : 'friends';
 };
 
+function normalizeRequestsCount(count: number): string {
+  if (count >= 10) return '9+';
+  return count.toString();
+}
+
+interface FriendsProps {
+    requestsCount: number;
+}
 
 
-export function FriendsPage() {
+
+export function FriendsPage({ requestsCount }: FriendsProps) {
     const [activeTab, setActiveTab] = useState<FriendsTab>(getInitialTab());
     const [friends, setFriends] = useState<Roommate[]>([]);
     const [requests, setRequests] = useState<Roommate[]>([]);
@@ -122,7 +131,11 @@ export function FriendsPage() {
         try {
             setErrorText(null);
             await removeRoommateMatchByUserId(userId);
-            setFriends(friends.filter((friend) => friend.id !== userId));
+            if (activeTab === 'requests') {
+                setRequests(requests.filter((request) => request.id !== userId));
+            } else {    
+                setFriends(friends.filter((friend) => friend.id !== userId));
+            }
 
             if (selectedUserId === userId) {
                 handleCloseUserModal();
@@ -364,13 +377,17 @@ const handleMatch = async () => {
                     Активные
                 </button>
                 <span className={style.tabDivider} aria-hidden="true">|</span>
-                <button
+                <div className='menuItemWithBadge'>
+                      <button
                     type="button"
                     className={`${style.tab} ${activeTab === 'requests' ? style.activeTab : ''}`}
                     onClick={() => setTab('requests')}
                 >
                     Заявки
                 </button>
+                {requestsCount > 0  && <span className='badge' style={{'top': '-7px', 'right':' -15px'}}>{normalizeRequestsCount(requestsCount)}</span>}
+                </div>
+              
             </nav>
 
 
