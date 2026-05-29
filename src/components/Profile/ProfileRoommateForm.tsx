@@ -3,6 +3,7 @@ import style from './Profile.module.css';
 import roommateStyle from './ProfileRoommateForm.module.css';
 import posterStyles from '../PosterForm/PosterForm.module.css';
 import { authService } from '../../services/auth';
+import { useNavigate } from '@router-dom';
 
 type RoommateFormData = {
 	birthday: string;
@@ -56,7 +57,12 @@ const isEmptyRoommateForm = (data: any): data is RoommateFormEmptyResponse => {
 	return Boolean(data && (typeof data.error === 'string' || typeof data.details === 'string'));
 };
 
-export function ProfileRoommateForm() {
+interface ProfileRoommateFormProps {
+	onStatusMessage?: (message: string | null) => void;
+}
+
+export function ProfileRoommateForm({ onStatusMessage }: ProfileRoommateFormProps) {
+	const navigate = useNavigate();
 	const [birthday, setBirthday] = useState('');
 	const [gender, setGender] = useState('');
 	const [tags, setTags] = useState<string[]>([]);
@@ -65,7 +71,6 @@ export function ProfileRoommateForm() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [isExisting, setIsExisting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [saveMessage, setSaveMessage] = useState<string | null>(null);
 	const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
 	useEffect(() => {
@@ -74,7 +79,7 @@ export function ProfileRoommateForm() {
 		const fetchRoommateForm = async () => {
 			setIsLoading(true);
 			setError(null);
-			setSaveMessage(null);
+			onStatusMessage?.(null);
 			setFieldErrors({});
 
 			try {
@@ -132,14 +137,14 @@ export function ProfileRoommateForm() {
 			: [...tags, value];
 		setTags(nextTags);
 		setError(null);
-		setSaveMessage(null);
+		onStatusMessage?.(null);
 	};
 
 	const handleDescriptionInput = (event: any) => {
 		const nextValue = event.target.value;
 		setDescription(nextValue);
 		setError(null);
-		setSaveMessage(null);
+		onStatusMessage?.(null);
 		if (fieldErrors.description) {
 			setFieldErrors({ ...fieldErrors, description: '' });
 		}
@@ -150,7 +155,7 @@ export function ProfileRoommateForm() {
 	const handleSave = async (event: any) => {
 		event.preventDefault();
 		setError(null);
-		setSaveMessage(null);
+		onStatusMessage?.(null);
 		setFieldErrors({});
 
 		const errors: Record<string, string> = {};
@@ -185,7 +190,7 @@ export function ProfileRoommateForm() {
 
 		setIsSaving(true);
 		setError(null);
-		setSaveMessage(null);
+		onStatusMessage?.(null);
 
 		const payload: RoommateFormData = {
 			birthday,
@@ -197,11 +202,17 @@ export function ProfileRoommateForm() {
 		try {
 			if (isExisting) {
 				await authService.updateRoommateForm(payload);
-				setSaveMessage('Анкета обновлена');
+				onStatusMessage?.('Анкета обновлена');
 			} else {
 				await authService.createRoommateForm(payload);
 				setIsExisting(true);
-				setSaveMessage('Анкета создана');
+				onStatusMessage?.('Анкета создана');
+			}
+
+			const params = new URLSearchParams(window.location.search);
+			const redirectUri = params.get('redirect_uri');
+			if (redirectUri && redirectUri.startsWith('/')) {
+				navigate(redirectUri);
 			}
 		} catch (e: any) {
 			const message = e?.data?.details || e?.message || 'Не удалось сохранить анкету';
@@ -214,7 +225,6 @@ export function ProfileRoommateForm() {
 	return (
 		<section>
 			{isLoading && <p className={style.status}>Загрузка анкеты...</p>}
-			{!isLoading && !error && saveMessage && <p className={style.status}>{saveMessage}</p>}
 
 			<form className={style.profileForm} onSubmit={handleSave}>
 				<label className={style.label} htmlFor="roommateBirthday">Дата рождения:</label>
@@ -227,7 +237,7 @@ export function ProfileRoommateForm() {
 						onInput={(e: any) => {
 							setBirthday(e.target.value);
 							setError(null);
-							setSaveMessage(null);
+							onStatusMessage?.(null);
 							if (fieldErrors.birthday) setFieldErrors({ ...fieldErrors, birthday: '' });
 						}}
 					/>
@@ -246,7 +256,7 @@ export function ProfileRoommateForm() {
 								onClick={() => {
 									setGender(option.value);
 									setError(null);
-									setSaveMessage(null);
+									onStatusMessage?.(null);
 									if (fieldErrors.gender) setFieldErrors({ ...fieldErrors, gender: '' });
 								}}
 							>

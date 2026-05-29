@@ -155,7 +155,9 @@ export function UsersPool({ users, onJoin, onPoolRefresh, isAuth, user, alias }:
 
   const handleGoToSettings = () => {
     setIsErrorModalOpen(false);
-    navigate('/profile?form=roomate');
+    const redirectUri = `/posters/${encodeURIComponent(alias)}`;
+    const query = new URLSearchParams({ form: 'roomate', redirect_uri: redirectUri }).toString();
+    navigate(`/profile?${query}`);
   };
 
 
@@ -409,7 +411,7 @@ export function UsersPool({ users, onJoin, onPoolRefresh, isAuth, user, alias }:
       <Modal
         isOpen={isJoinConfirmModalOpen}
         onClose={handleCancelJoin}
-        contentClassName={styles['users-pool__modal-content']}
+        contentClassName={`${styles['users-pool__modal-content']} ${styles['users-pool__confirm-modal-content']}`}
       >
         <div className={styles['users-pool__confirm-modal']}>
           <h3 className={styles['users-pool__confirm-modal-title']}>Внимание!</h3>
