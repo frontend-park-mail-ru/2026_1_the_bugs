@@ -409,7 +409,7 @@ export function UsersPool({ users, onJoin, onPoolRefresh, isAuth, user, alias }:
       <Modal
         isOpen={isJoinConfirmModalOpen}
         onClose={handleCancelJoin}
-        contentClassName={styles['users-pool__modal-content']}
+        contentClassName={`${styles['users-pool__modal-content']} ${styles['users-pool__confirm-modal-content']}`}
       >
         <div className={styles['users-pool__confirm-modal']}>
           <h3 className={styles['users-pool__confirm-modal-title']}>Внимание!</h3>

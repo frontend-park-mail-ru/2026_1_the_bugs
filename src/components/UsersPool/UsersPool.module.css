@@ -257,6 +257,11 @@
   gap: 14px;
 }
 
+.users-pool__confirm-modal-content {
+  width: min(420px, 92vw) !important;
+  max-width: min(420px, 92vw) !important;
+}
+
 .users-pool__error-modal-title,
 .users-pool__confirm-modal-title {
   font-size: clamp(20px, 4vw, 28px);
