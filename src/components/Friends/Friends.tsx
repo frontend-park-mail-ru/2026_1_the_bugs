@@ -12,16 +12,6 @@ import { useNavigate } from '@router-dom';
 
 type FriendsTab = 'friends' | 'requests';
 
-const SHOW_MOCK_ROOMMATE = true;
-const MOCK_ROOMMATE: Roommate = {
-    id: -1,
-    first_name: 'Тестовый',
-    last_name: 'Пользователь',
-    avatar_url: '/svg/profile.svg',
-};
-
-
-
 const getInitialTab = (): FriendsTab => {
     const params = new URLSearchParams(window.location.search);
     return params.get('tab') === 'requests' ? 'requests' : 'friends';
@@ -285,17 +275,17 @@ const handleMatch = async () => {
 
 
     const renderList = (users: Roommate[], emptyText: string) => {
-        if (!SHOW_MOCK_ROOMMATE && isLoading) {
+        if ( isLoading) {
             return <p className={style.status}>Загружаем...</p>;
         }
 
 
 
-        if (!SHOW_MOCK_ROOMMATE && error) {
+        if (error) {
             return <p className={style.status}>{error}</p>;
         }
 
-        const usersToRender = SHOW_MOCK_ROOMMATE ? [MOCK_ROOMMATE] : users;
+        const usersToRender =  users;
 
 
 
@@ -328,7 +318,7 @@ const handleMatch = async () => {
                                 <button
                                     type="button"
                                     className={style.removeBtn}
-                                    onClick={async (event) => {
+                                    onClick={async (event: any) => {
                                         event.stopPropagation();
                                         await handleRemoveFriend(user.id);
                                     }}
@@ -467,8 +457,6 @@ const handleMatch = async () => {
                             {statusText && <p className={usersPoolStyle['users-pool__status']}>{statusText}</p>}
 
 
-
-                            {/* Кнопка «Жить вместе» показываем только если пользователь НЕ в друзьях */}
                             {isAuth && !isSelectedUserFriend && (
                                 <Button
                                     variant="accent"
@@ -480,7 +468,6 @@ const handleMatch = async () => {
                                 </Button>
                             )}
 
-                            {/* Кнопка «К объявлению» для друзей, если есть poster_alias */}
                             {isAuth && isSelectedUserFriend && selectedPosterAlias && (
                                 <Button
                                     variant="accent"
