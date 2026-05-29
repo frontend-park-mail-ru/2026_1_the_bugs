@@ -41,6 +41,7 @@ export function Profile({setCurrentUser, form}: Prop) {
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [saveMessage, setSaveMessage] = useState<string | null>(null);
+    const [roommateSaveMessage, setRoommateSaveMessage] = useState<string | null>(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
@@ -309,7 +310,8 @@ export function Profile({setCurrentUser, form}: Prop) {
     return (
         <section className={style.profilePage}>
             {isLoading && <p className={style.status}>Загрузка профиля...</p>}
-            {!isLoading && !error && saveMessage && <p className={style.status}>{saveMessage}</p>}
+            {activeTab === 'main' && !isLoading && !error && saveMessage && <p className={style.status}>{saveMessage}</p>}
+            {activeTab === 'roommate' && roommateSaveMessage && <p className={style.status}>{roommateSaveMessage}</p>}
 
             <article className={style.profileCard}>
                 <div className={style.avatarWrap}>
@@ -405,7 +407,7 @@ export function Profile({setCurrentUser, form}: Prop) {
 
 
             <section style={{ display: activeTab === 'roommate' ? 'block' : 'none' }}>
-            <ProfileRoommateForm />
+            <ProfileRoommateForm onStatusMessage={setRoommateSaveMessage} />
             </section>
 
             <section className={style.profileForm} style={{ display: activeTab === 'password' ? 'block' : 'none' }}>
