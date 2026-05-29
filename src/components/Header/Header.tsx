@@ -12,10 +12,16 @@ interface HeaderProps {
   isAutenticated: boolean;
   currentUser?: UserResponse | null;
   isMapPage?: boolean;
+  requestsCount: number;
+}
+
+function normalizeRequestsCount(count: number): string {
+  if (count >= 10) return '9+';
+  return count.toString();
 }
 
 /** Шапка сайта с логотипом и навигационными действиями; отображает кнопку входа или действия авторизованного пользователя. */
-export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser, isMapPage = false }: HeaderProps) {
+export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorizeClick, isAutenticated, currentUser, isMapPage = false, requestsCount  }: HeaderProps) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,7 +83,8 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
               <img src="/svg/logout.svg" alt="Выйти" aria-hidden="true" draggable="false"/>
             </Button> */}
             <div className={style.menuWrap}>
-              <Button
+              <div className='menuItemWithBadge'>
+                <Button
                 variant='primary'
                 shape="round"
                 className={style.menuBtnActive}
@@ -93,7 +100,8 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                 ) : (
                   <img src="/svg/profile.svg" alt="Меню" aria-hidden="true" draggable="false"/>
                 )}
-              </Button>
+              </Button> {requestsCount > 0 && !isMenuOpen && <span className='badge' >{normalizeRequestsCount(requestsCount)}</span>}
+              </div>
               {isMenuOpen &&(
                 <div className={style.menuPopup}>
                   <Button 
@@ -107,16 +115,19 @@ export function Header({ currentPath, isAuthResolved, onLogoutClick, onAuthorize
                     }}
                   />
                   <div className={style.menuSeparator} />
-                  <Button
-                    variant='menu'
-                    className="fontHero"
-                    text="Мои сожители"
-                    type="button"
-                    onClick={() => {
-                      closeMenu();
-                      navigate('/friends');
-                    }}
-                  />
+                    <div className='menuItemWithBadge'>
+                      <Button
+                        variant='menu'
+                        className="fontHero"
+                        text="Мои сожители"
+                        type="button"
+                        onClick={() => {
+                          closeMenu();
+                          navigate('/friends');
+                        }}
+                      />
+                      {requestsCount > 0 && isMenuOpen && <span className='badge'>{normalizeRequestsCount(requestsCount)}</span>}
+                    </div>
                   <div className={style.menuSeparator} />
                   <Button 
                     variant='menu'

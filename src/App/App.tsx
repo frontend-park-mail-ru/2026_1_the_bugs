@@ -17,6 +17,7 @@ import { apiService } from '../services/apiClass';
 import { Favorites } from '../components/Favorites/Favorites';
 import PostersMap from '../components/PosterMap/PosterMap';
 import { FriendsPage } from '../components/Friends/Friends';
+import { getIncomingRoommateRequests } from '../services/roommateMatches';
 
 /**
  * Общая для отображения разных страниц компонента.
@@ -29,6 +30,7 @@ export function App() {
   const [isAuthenticate, setIsAuthenticate] = useState<boolean>(false);
   const [isAuthResolved, setIsAuthResolved] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
+  const [requestsCount, setRequestsCount] = useState(0);
 
   useEffect(()=>{
     apiService.init()
@@ -47,6 +49,26 @@ export function App() {
     checkAuth();
   }, []);
 
+  
+
+  useEffect(() => {
+    if (!isAuthenticate) return;
+
+    const loadRequestsCount = async () => {
+      try {
+        const res = await getIncomingRoommateRequests();
+        setRequestsCount(res.len);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    loadRequestsCount();
+    const id = window.setInterval(loadRequestsCount, 5000);
+
+    return () => window.clearInterval(id);
+  }, [isAuthenticate]);
+
   useEffect(() => {
     const handler = () => {
       setCurrentPath(window.location.pathname);
@@ -55,7 +77,7 @@ export function App() {
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);
   }, []);
-  console.log("App", currentUser)
+  console.log("App",requestsCount )
 
   return (
     <main className={isMapPage ? 'main mainFull' : 'main'}>
@@ -71,7 +93,7 @@ export function App() {
             <PromotionPaymentPage />
           </Router>
           <Router currentPath={currentPath} path="*">
-            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} setCurrentUser={setCurrentUser} key="Layout">
+            < Layout currentPath={currentPath} isAuthResolved={isAuthResolved} isAuthenticate={isAuthenticate} setIsAuthenticate={setIsAuthenticate} currentUser={currentUser} setCurrentUser={setCurrentUser} requestsCount={requestsCount} key="Layout">
               <Switch key="main" currentPath={currentPath}>
                 <Router currentPath={currentPath} path="/" currentSearch={currentSearch}>
                   <HomePage search_query="" isAuth={isAuthenticate} key="HomePage" />
