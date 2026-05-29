@@ -11,6 +11,11 @@ interface CardProps {
   isAuth: boolean
 }
 
+function normalizeAddress(address: string): string { 
+  if (address.length <= 48) return address;
+  return address.slice(0, 45) + '...';
+}
+
 /** Карточка объявления с фото, адресом, площадью, оценкой и ценой. */
 export function Card({ apartment, isFavorite, isAuth }: CardProps) {
   const [liked, setLiked] = useState<number>(typeof isFavorite === 'boolean' ? (isFavorite ? 1 : -1) : -1);
@@ -62,7 +67,7 @@ export function Card({ apartment, isFavorite, isAuth }: CardProps) {
         <div className={style.meta}>                        
           <span className={style.location}>                 
             <img src="/svg/location.svg" alt="" aria-hidden="true" draggable="false"/>
-            {apartment.address}
+            {normalizeAddress(apartment.address)}
           </span>
           <span>{apartment.area.toString()} м²</span>
         </div>
