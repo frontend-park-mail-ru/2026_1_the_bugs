@@ -101,6 +101,12 @@
 	position: relative;
 	display: flex;
 	align-items: center;
+	transition: transform 0.2s ease;
+}
+
+.item:hover,
+.item:focus-within {
+	transform: scale(1.02);
 }
 
 .card {
@@ -114,6 +120,13 @@
 	background: #fff;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 	text-align: left;
+}
+
+.card:hover:not(:disabled),
+.card:focus,
+.card:active:not(:disabled) {
+	transform: none;
+	opacity: 1;
 }
 
 .avatar {
@@ -138,8 +151,11 @@
 	align-items: center;
 	justify-content: center;
 	position: absolute;
+	box-shadow: none;
+	margin: 0;
 	right: 10px;
 	top: 50%;
+	transform: translateY(-50%);
 	z-index: 2;
 	width: 32px;
 	height: 32px;
@@ -147,26 +163,21 @@
 	border-radius: 50%;
 	background: #fff;
 	color: #a3a3a3;
-	font-size: 20px;
+	font-size: 28px;
 	line-height: 1;
 	cursor: pointer;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-	opacity: 0;
-	transform: translate(-8px, -50%) scale(0.96);
-	pointer-events: none;
-	transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
-.removeBtn:hover {
+.removeBtn:hover:not(:disabled) {
+	transform: translateY(-50%);
+	box-shadow: none;
 	color: #ef4444;
-	transform: translate(0, -50%) scale(1.06);
 }
 
-.item:hover .removeBtn,
-.item:focus-within .removeBtn {
+.removeBtn:active:not(:disabled),
+.removeBtn:focus {
+	transform: translateY(-50%);
 	opacity: 1;
-	transform: translate(0, -50%) scale(1);
-	pointer-events: auto;
 }
 
 @media (max-width: 720px) {

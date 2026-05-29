@@ -122,7 +122,7 @@ export function FriendsPage() {
         try {
             setErrorText(null);
             await removeRoommateMatchByUserId(userId);
-            setFriends((currentFriends) => currentFriends.filter((friend) => friend.id !== userId));
+            setFriends(friends.filter((friend) => friend.id !== userId));
 
             if (selectedUserId === userId) {
                 handleCloseUserModal();
@@ -318,7 +318,7 @@ const handleMatch = async () => {
                                 <button
                                     type="button"
                                     className={style.removeBtn}
-                                    onClick={async (event: any) => {
+                                    onClick={async (event: MouseEvent) => {
                                         event.stopPropagation();
                                         await handleRemoveFriend(user.id);
                                     }}
