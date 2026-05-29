@@ -3,6 +3,7 @@ import style from './Profile.module.css';
 import roommateStyle from './ProfileRoommateForm.module.css';
 import posterStyles from '../PosterForm/PosterForm.module.css';
 import { authService } from '../../services/auth';
+import { useNavigate } from '@router-dom';
 
 type RoommateFormData = {
 	birthday: string;
@@ -61,6 +62,7 @@ interface ProfileRoommateFormProps {
 }
 
 export function ProfileRoommateForm({ onStatusMessage }: ProfileRoommateFormProps) {
+	const navigate = useNavigate();
 	const [birthday, setBirthday] = useState('');
 	const [gender, setGender] = useState('');
 	const [tags, setTags] = useState<string[]>([]);
@@ -205,6 +207,12 @@ export function ProfileRoommateForm({ onStatusMessage }: ProfileRoommateFormProp
 				await authService.createRoommateForm(payload);
 				setIsExisting(true);
 				onStatusMessage?.('Анкета создана');
+			}
+
+			const params = new URLSearchParams(window.location.search);
+			const redirectUri = params.get('redirect_uri');
+			if (redirectUri && redirectUri.startsWith('/')) {
+				navigate(redirectUri);
 			}
 		} catch (e: any) {
 			const message = e?.data?.details || e?.message || 'Не удалось сохранить анкету';

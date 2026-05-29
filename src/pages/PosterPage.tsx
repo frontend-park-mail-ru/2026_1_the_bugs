@@ -114,8 +114,10 @@ export function PosterPage({ alias, isAuth, user }: PosterPageProps) {
     try {
       await joinRoommates(alias);
       await refreshRoommates();
-    } catch (e: any) {
-      navigate('/profile?form=roomate')
+    } catch {
+      const redirectUri = `/posters/${encodeURIComponent(alias)}`;
+      const query = new URLSearchParams({ form: 'roomate', redirect_uri: redirectUri }).toString();
+      navigate(`/profile?${query}`);
     }
   };
 

@@ -155,7 +155,9 @@ export function UsersPool({ users, onJoin, onPoolRefresh, isAuth, user, alias }:
 
   const handleGoToSettings = () => {
     setIsErrorModalOpen(false);
-    navigate('/profile?form=roomate');
+    const redirectUri = `/posters/${encodeURIComponent(alias)}`;
+    const query = new URLSearchParams({ form: 'roomate', redirect_uri: redirectUri }).toString();
+    navigate(`/profile?${query}`);
   };
 
 
