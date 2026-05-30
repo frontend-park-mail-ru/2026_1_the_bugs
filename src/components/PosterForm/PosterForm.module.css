@@ -726,6 +726,13 @@
   font-size: 28px;
 }
 
+.successDivider {
+  width: min(560px, 100%);
+  height: 1px;
+  background: #e9e9e9;
+  margin: 4px auto 2px;
+}
+
 .successPromotion {
   width: min(860px, 100%);
   margin: 16px auto 0;
@@ -849,4 +856,3 @@
     width: 100%;
   }
 }
-

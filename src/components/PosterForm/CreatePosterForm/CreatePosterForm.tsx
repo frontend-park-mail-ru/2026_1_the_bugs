@@ -491,6 +491,7 @@ export function CreatePosterForm() {
         <div className={styles.success}>
           <h2 className={styles.successTitle}>Объявление опубликовано</h2>
           <p>Ваше объявление сохранено и доступно для просмотра.</p>
+          <div className={styles.successDivider} />
           <div className={styles.successPromotion}>
             {createdPosterId !== null ? (
               <Promotion offers={promotionOffers} posterId={createdPosterId} />
