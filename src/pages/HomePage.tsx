@@ -148,10 +148,19 @@ export function HomePage({search_query, isAuth}: Props) {
   };
 
     const handleSearch = (searchVal: string, nextFilters: IFilters) => {
+      const currentQuery = syncQueryParams(searchQuery, filters);
+      const nextQuery = syncQueryParams(searchVal, nextFilters);
+
       setSearchQuery(searchVal);
       setFilters(nextFilters);
-      const query = syncQueryParams(searchVal, nextFilters);
-      navigate(`${window.location.pathname}${query ? `?${query}` : ''}`)
+      navigate(`${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}`)
+
+      if (currentQuery === nextQuery) {
+        setHasMore(true);
+        fetchData(searchVal, nextFilters, false);
+        return;
+      }
+
       setApartments([]);
       setHasMore(true);
     };
