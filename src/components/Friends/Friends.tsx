@@ -24,11 +24,12 @@ function normalizeRequestsCount(count: number): string {
 
 interface FriendsProps {
     requestsCount: number;
+    setRequestsCount: (count: number) => void;
 }
 
 
 
-export function FriendsPage({ requestsCount }: FriendsProps) {
+export function FriendsPage({ requestsCount, setRequestsCount }: FriendsProps) {
     const [activeTab, setActiveTab] = useState<FriendsTab>(getInitialTab());
     const [friends, setFriends] = useState<Roommate[]>([]);
     const [requests, setRequests] = useState<Roommate[]>([]);
@@ -99,6 +100,21 @@ export function FriendsPage({ requestsCount }: FriendsProps) {
         setIsUserModalOpen(true);
     };
 
+    const handleUpdateRequests = async () => {
+        if (activeTab !== 'requests') return;
+        try {
+            const requestsResp = await getIncomingRoommateRequests();
+            const newRequests = Array.isArray(requestsResp.users) ? [...requestsResp.users] : [];
+            setRequests(newRequests);
+            setRequestsCount(requestsResp.len);
+        } catch (err) {
+            console.error('Не удалось обновить список заявок', err);
+        }
+    };
+
+    useEffect(() => {
+        handleUpdateRequests();
+    }, [requestsCount, activeTab]);
 
 
     const handleCloseUserModal = () => {
@@ -131,12 +147,13 @@ export function FriendsPage({ requestsCount }: FriendsProps) {
         try {
             setErrorText(null);
             await removeRoommateMatchByUserId(userId);
-            if (activeTab === 'requests') {
-                setRequests(requests.filter((request) => request.id !== userId));
-            } else {    
-                setFriends(friends.filter((friend) => friend.id !== userId));
-            }
 
+            if (activeTab === 'requests') {
+                await handleUpdateRequests(); 
+            } else {
+                const updatedFriends = friends.filter(f => f.id !== userId);
+                setFriends(updatedFriends);
+            }
             if (selectedUserId === userId) {
                 handleCloseUserModal();
             }
@@ -183,7 +200,7 @@ const handleMatch = async () => {
         if (!exists) {
             setFriends([...friends, newUserRoommate]);
         }
-        setRequests(requests.filter(r => r.id !== selectedUserId));
+        await handleUpdateRequests();
 
         setIsSelectedUserFriend(true);
         setSelectedPosterAlias(newUserRoommate.poster_alias ?? null);
@@ -197,29 +214,18 @@ const handleMatch = async () => {
 
     useEffect(() => {
         let isMounted = true;
-
-
-
         const loadMatches = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
-
-
-
                 const [friendsResp, requestsResp] = await Promise.all([
                     getMatchedRoommates(),
                     getIncomingRoommateRequests(),
                 ]);
 
-
-
                 if (!isMounted) {
                     return;
                 }
-
-
-
                 setFriends(Array.isArray(friendsResp.users) ? friendsResp.users : []);
                 setRequests(Array.isArray(requestsResp.users) ? requestsResp.users : []);
             } catch {
@@ -233,13 +239,7 @@ const handleMatch = async () => {
                 }
             }
         };
-
-
-
         loadMatches();
-
-
-
         return () => {
             isMounted = false;
         };
@@ -253,16 +253,12 @@ const handleMatch = async () => {
                 return;
             }
 
-
-
             try {
                 setIsProfileLoading(true);
                 setErrorText(null);
                 const profile = await getUserProfileById(selectedUserId);
                 setSelectedUserProfile(profile);
 
-
-                // Если пользователь уже в друзьях, сразу загружаем контакты
                 if (isSelectedUserFriend) {
                     try {
                         const contactsData = await getUserContactsById(selectedUserId);
@@ -292,21 +288,15 @@ const handleMatch = async () => {
             return <p className={style.status}>Загружаем...</p>;
         }
 
-
-
         if (error) {
             return <p className={style.status}>{error}</p>;
         }
 
         const usersToRender =  users;
 
-
-
         if (usersToRender.length === 0) {
             return <p className={style.placeholder}>{emptyText}</p>;
         }
-
-
 
         return (
             <ul className={style.list}>
@@ -314,9 +304,9 @@ const handleMatch = async () => {
                     const fullName = `${user.first_name} ${user.last_name}`.trim() || 'Пользователь';
                     return (
                         <li key={user.id} className={style.item}>
-                            <Button
+                            <button
                                 variant="menu"
-                                className={style.card}
+                                className={`${style.card} ${style.btn_menu}` }
                                 onClick={() => handleOpenUser(user)}
                                 aria-label={`Открыть анкету: ${fullName}`}
                             >
@@ -327,8 +317,8 @@ const handleMatch = async () => {
                                     draggable="false"
                                 />
                                 <span className={style.name}>{fullName}</span>
-                            </Button>
-                                <button
+                            </button>
+                            <button
                                     type="button"
                                     className={style.removeBtn}
                                     onClick={async (event: MouseEvent) => {
@@ -339,7 +329,7 @@ const handleMatch = async () => {
                                     title="Удалить из друзей"
                                 >
                                     &times;
-                                </button>
+                            </button>
                         </li>
                     );
                 })}
